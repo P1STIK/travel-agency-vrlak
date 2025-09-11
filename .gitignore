@@ -1,0 +1,33 @@
+# Secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Node & builds (platí aj pre vnorené projekty)
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+out-tsc/
+**/out-tsc/
+coverage/
+**/coverage/
+.angular/
+**/.angular/
+tmp/
+**/tmp/
+
+# IDE/OS
+.DS_Store
+*.log
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Prisma lokálna DB (ak by bola)
+api/booking-api/prisma/*.db*
+api/booking-api/prisma/*.sqlite*
+api/booking-api/prisma/*.db-journal
