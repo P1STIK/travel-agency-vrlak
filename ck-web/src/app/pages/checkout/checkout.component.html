@@ -1,0 +1,69 @@
+<form [formGroup]="form">
+  @if (step === 1) {
+    <section class="card">
+      <label>Počet osôb</label>
+      <input type="number" min="1" formControlName="seats" />
+      @if (form.get('seats')?.touched && form.get('seats')?.invalid) {
+        <p class="error">Zadaj aspoň 1 osobu.</p>
+      }
+
+      @if (quote) {
+        <div class="price">
+          Suma: <strong>{{ (quote.totalCents/100) | number:'1.2-2' }} {{ quote.currency }}</strong>
+        </div>
+      }
+      <div class="actions">
+        <button type="button" class="btn" (click)="next()">Pokračovať</button>
+      </div>
+    </section>
+  }
+
+  @if (step === 2) {
+    <section class="card">
+      <label>E-mail na potvrdenie</label>
+      <input type="email" formControlName="email" placeholder="meno@domena.sk" />
+      @if (form.get('email')?.touched && form.get('email')?.invalid) {
+        <p class="error">Zadaj platný e-mail.</p>
+      }
+
+      <h3>Cestujúci</h3>
+      <div formArrayName="passengers">
+        @for (group of passengers.controls; track $index; let i = $index) {
+          <div class="row" [formGroupName]="i">
+            <input placeholder="Meno" formControlName="firstName" />
+            @if (group.get('firstName')?.touched && group.get('firstName')?.invalid) {
+              <p class="error">Meno je povinné.</p>
+            }
+
+            <input placeholder="Priezvisko" formControlName="lastName" />
+            @if (group.get('lastName')?.touched && group.get('lastName')?.invalid) {
+              <p class="error">Priezvisko je povinné.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn ghost" (click)="back()">Späť</button>
+        <button
+          type="button"
+          class="btn"
+          [disabled]="form.invalid || loading"
+          (click)="createBooking()"
+        >
+          Pokračovať na platbu
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (step === 3) {
+    <section class="card">
+      <p>Rezervácia vytvorená. ID: <code>{{ bookingId }}</code></p>
+      <p>Celkom: <strong>{{ (quote?.totalCents/100) | number:'1.2-2' }} {{ quote?.currency }}</strong></p>
+      <div class="actions">
+        <button type="button" class="btn" (click)="pay()">Zaplatit teraz</button>
+      </div>
+    </section>
+  }
+</form>

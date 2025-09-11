@@ -1,0 +1,16 @@
+<main class="wrap">
+  <h1 class="title">Ďakujeme za rezerváciu</h1>
+
+  <p>Status: <strong>{{ status || '—' }}</strong></p>
+  <p>Booking ID: <code>{{ bookingId || '—' }}</code></p>
+
+  @if (booking) {
+    <section class="card">
+      <p>Počet osôb: <strong>{{ booking.seats }}</strong></p>
+      <p>Suma: <strong>{{ (booking.totalAmount/100) | number:'1.2-2' }} {{ booking.currency }}</strong></p>
+      <p>Stav v DB: <strong class="badge">{{ booking.status }}</strong></p>
+    </section>
+  } @else {
+    <p class="muted">Načítavam údaje o rezervácii…</p>
+  }
+</main>

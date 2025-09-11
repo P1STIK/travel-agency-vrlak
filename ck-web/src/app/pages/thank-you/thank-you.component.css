@@ -1,0 +1,30 @@
+.wrap {
+  padding: 24px;
+  margin: 0 auto;
+  max-width: 720px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 12px;
+}
+
+.card {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eef2ff;
+}
+
+.muted {
+  color: #6b7280;
+}

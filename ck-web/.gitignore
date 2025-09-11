@@ -1,0 +1,59 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.log
+*.log.*
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Env secrets
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Node & builds (platí aj pre vnorené projekty)
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+tmp/
+**/tmp/
+out-tsc/
+**/out-tsc/
+coverage/
+**/coverage/
+.angular/
+**/.angular/
+
+# Angular cache
+.angular/cache
+**/.angular/cache
+
+# Misc
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+bazel-out/
+
+# Backend (NestJS) – lokálne DB/prisma (ak používaš sqlite)
+api/booking-api/prisma/*.db
+api/booking-api/prisma/*.sqlite
+api/booking-api/prisma/*.db-journal
+
+# Docker (ak by si mal lokálne volume priečinky)
+ops/**/data/
+ops/**/postgres-data/
