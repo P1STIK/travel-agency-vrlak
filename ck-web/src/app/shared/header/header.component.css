@@ -1,0 +1,82 @@
+/* helpers */
+.container { @apply max-w-screen-xl mx-auto px-4; }
+.hidden { display: none; }
+
+/* shell */
+.hdr { @apply sticky top-0 z-40 bg-white shadow-sm; }
+.hdr--transparent { @apply bg-transparent shadow-none text-white; }
+.hdr--transparent .topbar { @apply bg-transparent border-transparent text-white; }
+.hdr--transparent .nav__link { @apply text-white hover:text-yellow-300; }
+.hdr--transparent .btn--primary { @apply bg-yellow-500 text-black hover:bg-yellow-400; }
+.hdr--transparent .toggle { @apply text-white hover:bg-white/10; }
+
+/* topbar */
+.topbar { @apply bg-gray-100 text-sm border-b border-gray-200; }
+.topbar .container { @apply flex items-center justify-between py-2; }
+.topbar__left { @apply flex items-center gap-2; }
+.topbar__right { @apply flex items-center gap-3; }
+.topbar__link { @apply text-inherit hover:text-blue-600; }
+.topbar__text { @apply text-inherit; }
+.sep { @apply opacity-60; }
+
+/* mainbar */
+.mainbar { @apply bg-white/80 backdrop-blur; }
+.hdr--transparent .mainbar { @apply bg-transparent; }
+.mainbar .container { @apply flex items-center justify-between py-3; }
+
+/* brand */
+.brand { @apply flex items-center gap-3; }
+.brand__img { @apply h-8 w-auto; }
+.brand__box { @apply inline-flex h-9 w-9 items-center justify-center rounded bg-yellow-500 text-black font-bold; }
+.brand__name { @apply font-semibold text-lg; }
+
+/* nav */
+.nav { @apply items-center gap-6; }
+.nav--desktop { @apply hidden md:flex; }
+.nav__group { @apply relative flex items-center; }
+.nav__link { @apply text-gray-800 hover:text-blue-600 transition; }
+.nav__link--active { @apply text-blue-600 font-semibold; }
+.nav__chev { @apply ml-1 text-gray-500 hover:text-blue-600; }
+
+/* dropdown (bez mt-2, aby nevznikla medzera) */
+.dropdown {
+  @apply hidden absolute top-full left-0 min-w-[220px]
+         rounded-lg border border-gray-200 bg-white shadow-xl p-2 z-50;
+}
+
+/* hover & focus-within držia menu otvorené */
+.nav__group:hover .dropdown,
+.nav__group:focus-within .dropdown {
+  display: block;
+}
+
+/* HOOVER BRIDGE – premostí priestor medzi linkom a menu,
+   aby hover nepadal pri prechode kurzora */
+.dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;   
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+/* položky v menu */
+.dropdown__item { @apply block px-3 py-2 rounded hover:bg-gray-100 text-gray-800; }
+
+/* pre istotu: žiadne overflow hidden na predkoch */
+.mainbar, .hdr, .nav { overflow: visible; }
+
+/* buttons */
+.btn { @apply inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition; }
+.btn--primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
+
+/* mobile */
+.toggle { @apply inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100; }
+.icon { @apply h-6 w-6 stroke-current fill-none; }
+.mobile { @apply border-t border-gray-200 bg-white; }
+.mobile__nav { @apply container flex flex-col gap-1 py-2; }
+.mobile__link { @apply py-2 text-gray-800 hover:text-blue-600 transition; }
+.mobile__link--active { @apply text-blue-600 font-semibold; }
+.mobile__submenu { @apply pl-4 pb-2; }
+.mobile__sublink { @apply block py-1 text-gray-700 hover:text-blue-600; }

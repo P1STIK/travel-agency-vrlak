@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
-  private http = inject(HttpClient);
-  private base = 'http://localhost:3333';
+  private baseUrl = '/api';
+
+  constructor(private http: HttpClient) {}
 
   quote(body: { departureId: string; seats: number; unitPriceCents: number; addons?: any[] }) {
-    return this.http.post<any>(`${this.base}/booking/quote`, body);
+    return this.http.post<any>(`${this.baseUrl}/booking/quote`, body);
   }
 
   create(body: {
@@ -16,14 +17,14 @@ export class BookingService {
     passengers: { firstName: string; lastName: string }[];
     addons?: any[];
   }) {
-    return this.http.post<any>(`${this.base}/booking`, body);
+    return this.http.post<any>(`${this.baseUrl}/booking`, body);
   }
 
   checkoutSession(bookingId: string, returnUrl: string) {
-    return this.http.post<any>(`${this.base}/booking/checkout/session`, { bookingId, returnUrl });
+    return this.http.post<any>(`${this.baseUrl}/booking/checkout/session`, { bookingId, returnUrl });
   }
 
   getBooking(id: string) {
-    return this.http.get<any>(`${this.base}/booking/${id}`);
+    return this.http.get<any>(`${this.baseUrl}/booking/${id}`);
   }
 }

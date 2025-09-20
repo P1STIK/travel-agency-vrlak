@@ -1,0 +1,27 @@
+<main class="wrap">
+  <h1 class="title">Zájazdy</h1>
+
+  @if (!tours().length) {
+    <p class="muted">Zatiaľ nemáme žiadne zájazdy.</p>
+  }
+
+  <div class="grid">
+    @for (t of tours(); track t.slug) {
+      <article class="card">
+        @if (t.heroImage) {
+          <img ngSrc="{{ t.heroImage }}" width="640" height="360" alt="{{ t.title }}">
+        }
+        <h2>{{ t.title }}</h2>
+        @if (t.teaser) { <p class="muted">{{ t.teaser }}</p> }
+
+        @if (t.departures.length) {
+          <p class="price">
+            od <strong>{{ (t.departures[0].unitPriceCents / 100) | number:'1.2-2' }} {{ t.currency }}</strong>
+          </p>
+        }
+
+        <a [routerLink]="['/zajazdy', t.slug]" class="btn">Detail</a>
+      </article>
+    }
+  </div>
+</main>

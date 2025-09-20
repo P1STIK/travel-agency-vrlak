@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn { @apply inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-medium transition; }
+  .btn--dark { @apply bg-gray-900 text-white hover:bg-black; }
+  .nav__link { @apply transition; }
+  .nav__link--active { @apply text-blue-600 font-semibold; }
+}
+
+@layer utilities {
+  .vh { @apply sr-only; } /* alias */
+}

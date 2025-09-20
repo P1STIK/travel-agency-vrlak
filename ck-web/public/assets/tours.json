@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "pariz-na-vikend",
+    "title": "Paríž na víkend",
+    "teaser": "Klasiky Paríža za 3 dni.",
+    "heroImage": "/assets/paris.jpg",
+    "description": "Louvre, Eiffelovka, Montmartre a croissanty. Pohodlný autobus, sprievodca, 2 noci.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-001", "date": "2025-10-03", "unitPriceCents": 12900 },
+      { "id": "wp-002", "date": "2025-11-07", "unitPriceCents": 13900 }
+    ]
+  },
+  {
+    "slug": "benatky-karneval",
+    "title": "Benátky – Karneval",
+    "teaser": "Masky, gondoly a atmosféra.",
+    "heroImage": "/assets/venice.jpg",
+    "description": "Benátky počas karnevalu so sprievodcom. V cene doprava a ubytovanie.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-101", "date": "2026-02-20", "unitPriceCents": 14900 }
+    ]
+  }
+]

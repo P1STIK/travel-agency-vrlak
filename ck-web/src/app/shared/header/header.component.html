@@ -1,0 +1,85 @@
+<header class="hdr">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar__left">
+        <a class="topbar__link" [href]="'tel:' + phone">{{ phone }}</a>
+        <span class="sep">•</span>
+        <a class="topbar__link" [href]="'mailto:' + email">{{ email }}</a>
+        <span class="sep hidden sm:inline">•</span>
+        <span class="topbar__text hidden sm:inline">Po–Pi 8:00–16:00</span>
+      </div>
+      <div class="topbar__right">
+        <!-- sem kľudne social ikony -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MAINBAR -->
+  <div class="mainbar">
+    <div class="container">
+      <!-- logo -->
+      <a routerLink="/" class="brand" (click)="closeAllMenus()">
+        <img src="/assets/images/logo-vtrans.svg" alt="v-trans" class="brand__img" />
+        <!-- fallback ak nebude svg -->
+        <!-- <span class="brand__box">V-T</span><span class="brand__name">v-trans</span> -->
+      </a>
+
+      <!-- desktop nav -->
+<nav class="nav nav--desktop">
+  @for (item of nav; track item.path) {
+    <div class="nav__group group">
+      <a
+        [routerLink]="item.path"
+        class="nav__link"
+        routerLinkActive="nav__link--active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        {{ item.label }}
+      </a>
+
+      @if (item.hasMenu) {
+        <button type="button" class="nav__chev" aria-haspopup="true" aria-expanded="false">▾</button>
+
+        <!-- Pozor: dropdown je PRIAMO vo vnútri .nav__group -->
+        <div class="dropdown">
+          @for (m of toursMenu; track m.path) {
+            <a [routerLink]="m.path" class="dropdown__item">{{ m.label }}</a>
+          }
+        </div>
+      }
+    </div>
+  }
+</nav>
+      <!-- CTA -->
+      <a routerLink="/kontakt" class="btn btn--primary hidden md:inline-flex" (click)="closeAllMenus()">Kontaktujte nás</a>
+
+      <!-- mobile toggle -->
+      <button type="button" class="toggle md:hidden" aria-label="Menu" (click)="openMobile.set(!openMobile())">
+        <span class="sr-only">Menu</span>
+        <svg class="icon" [class.hidden]="openMobile()" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg class="icon" [class.hidden]="!openMobile()" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile md:hidden" [class.hidden]="!openMobile()">
+    <nav class="mobile__nav">
+      @for (item of nav; track item.path) {
+        <a [routerLink]="item.path" class="mobile__link" routerLinkActive="mobile__link--active" (click)="closeAllMenus()">
+          {{ item.label }}
+        </a>
+
+        @if (item.hasMenu) {
+          <div class="mobile__submenu">
+            @for (m of toursMenu; track m.path) {
+              <a [routerLink]="m.path" class="mobile__sublink" (click)="closeAllMenus()">{{ m.label }}</a>
+            }
+          </div>
+        }
+      }
+      <a routerLink="/kontakt" class="btn btn--primary w-full mt-2" (click)="closeAllMenus()">Kontaktujte nás</a>
+    </nav>
+  </div>
+</header>

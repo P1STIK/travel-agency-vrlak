@@ -1,0 +1,14 @@
+{
+  // potlač neznáme @-rules v CSS (editor-only)
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "less.lint.unknownAtRules": "ignore",
+
+  // Tailwind IntelliSense
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.includeLanguages": { "plaintext": "html" },
+  "tailwindCSS.classAttributes": ["class", "ngClass"],
+
+  // odporúčanie: zapni quick suggestions v HTML/TS
+  "editor.quickSuggestions": { "strings": true }
+}

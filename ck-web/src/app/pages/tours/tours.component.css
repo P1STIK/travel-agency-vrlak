@@ -1,0 +1,9 @@
+.wrap { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+.title { font-size: 2rem; margin-bottom: 1rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+.card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; background: #fff; }
+.card img { width: 100%; height: auto; border-radius: 8px; }
+.muted { color: #6b7280; }
+.price { margin: .5rem 0 1rem; }
+.btn { display: inline-block; padding: .5rem .9rem; border-radius: 8px; background: #111827; color: #fff; text-decoration: none; }
+.btn:hover { background: #000; }

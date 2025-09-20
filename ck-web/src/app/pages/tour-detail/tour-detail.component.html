@@ -1,0 +1,56 @@
+@let t = tour();
+
+@if (t) {
+  <main class="wrap">
+    <a routerLink="/zajazdy" class="muted">&larr; Späť na zoznam</a>
+
+    <h1 class="title">{{ t!.title }}</h1>
+
+    @if (t!.heroImage) {
+      <img
+        ngSrc="{{ t!.heroImage }}"
+        width="960"
+        height="540"
+        alt="{{ t!.title }}"
+        class="hero"
+      >
+    }
+
+    @if (t!.description) {
+      <p>{{ t!.description }}</p>
+    }
+
+    <h3>Termíny</h3>
+
+    @if (!t!.departures.length) {
+      <p class="muted">Aktuálne nemáme vypísané termíny.</p>
+    } @else {
+      <div class="terms">
+        @for (d of t!.departures; track d.id) {
+          <div class="row">
+            <div>
+              <div><strong>{{ d.date | date:'d.M.yyyy' }}</strong></div>
+              <div class="muted">
+                Cena: {{ (d.unitPriceCents / 100) | number:'1.2-2' }} {{ t!.currency }}
+              </div>
+            </div>
+
+            <a
+              class="btn"
+              [routerLink]="['/checkout']"
+              [queryParams]="{
+                tourSlug: t!.slug,
+                departureId: d.id,
+                price: d.unitPriceCents
+              }"
+            >
+              Rezervovať
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </main>
+} @else {
+  <main class="wrap"><p class="muted">Načítavam zájazd…</p></main>
+}
