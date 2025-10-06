@@ -1,7 +1,5 @@
 # Travel CK Starter (Headless WP + Angular SSR + NestJS Booking)
 
-Toto je **starter skeleton** pre prístup **B**: *Headless WordPress (CMS) + Angular 19 (SSR) + NestJS booking mikroservisa + PostgreSQL*.
-
 ## Čo tu je
 - **/api/booking-api** – NestJS API s Prisma schémou (Booking/Passenger), endpointmi: `POST /booking/quote`, `POST /booking`, `POST /booking/checkout/session`, `POST /payments/webhook`.
 - **/ops/docker-compose.yml** – Postgres na lokál.
@@ -25,6 +23,3 @@ npm run start:dev
 3) FE (Angular SSR): viď **/web/README.md** – použiješ Angular CLI.
 4) Nastav WordPress (CPT/ACF) podľa **/docs/ARCHITECTURE.md** a napoj FE.
 
----
-
-Happy hacking! 🚀

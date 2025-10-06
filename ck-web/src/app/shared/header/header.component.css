@@ -26,7 +26,7 @@
 
 /* brand */
 .brand { @apply flex items-center gap-3; }
-.brand__img { @apply h-8 w-auto; }
+.brand__img { @apply h-12 w-auto; }
 .brand__box { @apply inline-flex h-9 w-9 items-center justify-center rounded bg-yellow-500 text-black font-bold; }
 .brand__name { @apply font-semibold text-lg; }
 

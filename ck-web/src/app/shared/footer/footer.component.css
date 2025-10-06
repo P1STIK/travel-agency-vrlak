@@ -1,0 +1,43 @@
+ /* layout helpers */
+.container { @apply max-w-screen-xl mx-auto px-4; }
+
+/* CTA pás */
+.ft__cta { @apply bg-blue-50 border-t border-blue-100; }
+.ft__cta__inner { @apply py-8 md:py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4; }
+.ft__cta__title { @apply text-2xl md:text-3xl font-extrabold text-gray-900; }
+.ft__cta__text { @apply text-gray-700; }
+.ft__cta__actions { @apply flex items-center gap-3; }
+.btn { @apply inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition; }
+.btn--primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
+.btn--ghost { @apply border border-gray-300 text-gray-700 hover:bg-gray-50; }
+
+/* hlavný footer */
+.ft { @apply bg-white border-t border-gray-200; }
+.ft__main { @apply py-10; }
+.ft__grid { @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8; }
+
+/* značka */
+.ft__brand { @apply space-y-3; }
+.ft__logo { @apply h-9 w-auto; }
+.ft__logoBox { @apply inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold; }
+.ft__brandName { @apply font-semibold text-lg; }
+.ft__about { @apply text-gray-600; }
+.ft__partners { @apply flex items-center gap-3 pt-2; }
+.ft__partner { @apply h-8 w-auto opacity-80; }
+
+/* stĺpce */
+.ft__col { @apply space-y-3; }
+.ft__heading { @apply text-base font-semibold text-gray-900; }
+.ft__list { @apply space-y-2; }
+.ft__list a { @apply text-gray-700 hover:text-blue-600; }
+
+/* sociálne ikony */
+.ft__socials { @apply flex items-center gap-3 mt-3; }
+.ft__social { @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 hover:bg-gray-50; }
+.ft__icon { @apply h-5 w-5 fill-current text-gray-700; }
+
+/* spodná lišta */
+.ft__legal { @apply bg-gray-50 border-t border-gray-200; }
+.ft__legal__inner { @apply py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-gray-600; }
+.ft__legal__links { @apply flex items-center gap-4; }
+.ft__legal__links a { @apply hover:text-blue-600; }

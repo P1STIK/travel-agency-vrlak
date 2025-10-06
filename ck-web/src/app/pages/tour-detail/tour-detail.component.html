@@ -6,20 +6,71 @@
 
     <h1 class="title">{{ t!.title }}</h1>
 
-    @if (t!.heroImage) {
-      <img
-        ngSrc="{{ t!.heroImage }}"
-        width="960"
-        height="540"
-        alt="{{ t!.title }}"
-        class="hero"
-      >
-    }
+@if (t!.heroImage || t!.gallery?.length) {
 
+  @if (selected()) {
+    <img
+      [ngSrc]="selected()!"
+      width="1200"
+      height="675"
+      alt="{{ t!.title }}"
+      class="hero"
+    >
+  }
+
+  @if (thumbs().length > 1) {
+    <section class="thumbs">
+      @for (img of thumbs(); track img) {
+        <button
+          type="button"
+          class="thumb"
+          [class.thumb--active]="img === selected()"
+          (click)="select(img)"
+          aria-label="Zobraziť obrázok"
+        >
+          <img
+            [ngSrc]="img"
+            width="320"
+            height="200"
+            alt="{{ t!.title }}"
+          >
+        </button>
+      }
+    </section>
+  }
+}
     @if (t!.description) {
       <p>{{ t!.description }}</p>
     }
 
+    <!-- ===== Fakty / dôležité info ===== -->
+    <section class="facts">
+      <ul class="facts__list">
+        <!-- Prípadné dynamické polia nechávame bezpečne podmienené -->
+        @if (t!.duration) {
+          <li><strong>Dĺžka:</strong> {{ t!.duration }}</li>
+        } @else {
+          <li><strong>Dĺžka:</strong> 3 dni (2 noci)</li>
+        }
+
+        <li><strong>V cene:</strong> doprava, ubytovanie, sprievodca</li>
+
+        @if (t!.pickupPoints?.length) {
+          <li><strong>Nástup:</strong> {{ t!.pickupPoints!.join(', ') }}</li>
+        } @else {
+          <li><strong>Nástup:</strong> Bratislava, Trnava (po dohode aj iné)</li>
+        }
+
+        @if (t!.extras?.note) {
+          <li><strong>Poznámka:</strong> {{ t!.extras!.note }}</li>
+        }
+        @if (t!.extras?.difficulty) {
+          <li><strong>Náročnosť:</strong> {{ t!.extras!.difficulty }}</li>
+        }
+      </ul>
+    </section>
+
+    <!-- ===== Termíny ===== -->
     <h3>Termíny</h3>
 
     @if (!t!.departures.length) {
@@ -50,7 +101,34 @@
         }
       </div>
     }
+
+    <!-- ===== Sticky CTA (len mobil) ===== -->
+    @if (t!.departures.length) {
+      <a
+        class="cta-sticky md-hidden"
+        [routerLink]="['/checkout']"
+        [queryParams]="{
+          tourSlug: t!.slug,
+          departureId: t!.departures[0].id,
+          price: t!.departures[0].unitPriceCents
+        }"
+      >
+        Rezervovať
+      </a>
+    }
   </main>
+
+  <!-- ===== SEO breadcrumbs (JSON-LD) ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Zájazdy", "item": "{{ location.origin }}/zajazdy" },
+      { "@type": "ListItem", "position": 2, "name": "{{ t!.title }}", "item": "{{ location.href }}" }
+    ]
+  }
+  </script>
 } @else {
   <main class="wrap"><p class="muted">Načítavam zájazd…</p></main>
 }

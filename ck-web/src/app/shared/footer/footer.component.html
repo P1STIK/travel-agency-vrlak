@@ -1,0 +1,95 @@
+<footer class="ft">
+  <!-- horný pás s call-to-action -->
+  <section class="ft__cta">
+    <div class="container ft__cta__inner">
+      <div>
+        <h2 class="ft__cta__title">Máte otázku k doprave alebo zájazdom?</h2>
+        <p class="ft__cta__text">Ozvite sa nám – radi poradíme s termínom, ponukou aj prenájmom autobusu.</p>
+      </div>
+      <div class="ft__cta__actions">
+        <a routerLink="/kontakt" class="btn btn--primary">Kontaktujte nás</a>
+        <a routerLink="/dopyt" class="btn btn--ghost">Nezáväzný dopyt</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- hlavný obsah footeru -->
+  <section class="ft__main">
+    <div class="container ft__grid">
+      <!-- značka / o firme -->
+      <div class="ft__brand">
+        <!-- logo (ak nemáš obrázok, nechaj box + názov) -->
+        <!-- <img src="/assets/images/logo-vtrans.svg" alt="v-trans" class="ft__logo" /> -->
+        <div class="ft__logoBox">V-T</div>
+        <div class="ft__brandName">v-trans</div>
+
+        <p class="ft__about">
+          Autobusová doprava a zájazdy na mieru. Bezpečne, spoľahlivo a s úsmevom už od roku 2005.
+        </p>
+
+        <!-- partneri / certifikáty – ilustračné logá -->
+        <div class="ft__partners">
+          <img src="/assets/images/partners/partner-1.webp" alt="Partner 1" class="ft__partner" />
+          <img src="/assets/images/partners/partner-2.webp" alt="Partner 2" class="ft__partner" />
+        </div>
+      </div>
+
+      <!-- navigácia -->
+      <nav class="ft__col">
+        <h3 class="ft__heading">Zájazdy</h3>
+        <ul class="ft__list">
+          <li><a routerLink="/zajazdy">Všetky zájazdy</a></li>
+          <li><a routerLink="/zajazdy/poznavacie">Poznávacie</a></li>
+          <li><a routerLink="/zajazdy/lyzovacky">Lyžovačky</a></li>
+          <li><a routerLink="/zajazdy/pute">Púte</a></li>
+        </ul>
+      </nav>
+
+      <nav class="ft__col">
+        <h3 class="ft__heading">Služby</h3>
+        <ul class="ft__list">
+          <li><a routerLink="/prenajom">Prenájom autobusu</a></li>
+          <li><a routerLink="/doprava">Autobusová doprava</a></li>
+          <li><a routerLink="/cennik">Cenník</a></li>
+          <li><a routerLink="/galeria">Galéria</a></li>
+        </ul>
+      </nav>
+
+      <div class="ft__col">
+        <h3 class="ft__heading">Kontakt</h3>
+        <ul class="ft__list">
+          <li><a href="tel:+421900000000">+421 900 000 000</a></li>
+          <li>
+            <a href="mailto:info&#64;v-trans.sk">info&#64;v-trans.sk</a>
+          </li>
+          <li>Po–Pi 8:00–16:00</li>
+          <li>Hlavná 12, 010 01 Žilina</li>
+        </ul>
+
+        <div class="ft__socials">
+          <a href="#" aria-label="Facebook" class="ft__social">
+            <svg viewBox="0 0 24 24" class="ft__icon"><path d="M13 10h3l-1 4h-2v8h-4v-8H7v-4h2V8a4 4 0 0 1 4-4h3v4h-3a1 1 0 0 0-1 1v1z"/></svg>
+          </a>
+          <a href="#" aria-label="Instagram" class="ft__social">
+            <svg viewBox="0 0 24 24" class="ft__icon"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm6.5-.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM12 9a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+          </a>
+          <a href="#" aria-label="YouTube" class="ft__social">
+            <svg viewBox="0 0 24 24" class="ft__icon"><path d="M23 7s-.2-1.4-.8-2c-.7-.8-1.6-.8-2-.8C16.9 4 12 4 12 4s-4.9 0-8.2.2c-.4 0-1.3 0-2 .8C1.2 5.6 1 7 1 7S.8 8.6.8 10.2v1.6C.8 13.4 1 15 1 15s.2 1.4.8 2c.7.8 1.6.8 2 .8C7.1 18 12 18 12 18s4.9 0 8.2-.2c.4 0 1.3 0 2-.8.6-.6.8-2 .8-2s.2-1.6.2-3.2v-1.6C23.2 8.6 23 7 23 7zM10 14V8l6 3-6 3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- spodná lišta -->
+  <section class="ft__legal">
+    <div class="container ft__legal__inner">
+      <p>© {{ year }} v-trans s.r.o. Všetky práva vyhradené.</p>
+      <nav class="ft__legal__links">
+        <a routerLink="/obchodne-podmienky">Obchodné podmienky</a>
+        <a routerLink="/gdpr">Ochrana osobných údajov</a>
+        <a routerLink="/cookies">Cookies</a>
+      </nav>
+    </div>
+  </section>
+</footer>

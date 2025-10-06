@@ -1,26 +1,53 @@
-<main class="wrap">
-  <h1 class="title">Zájazdy</h1>
+<main class="container">
+  <h1 class="t-h1">Zájazdy</h1>
 
   @if (!tours().length) {
-    <p class="muted">Zatiaľ nemáme žiadne zájazdy.</p>
+    <p class="empty">Zatiaľ nemáme žiadne zájazdy.</p>
   }
 
-  <div class="grid">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 items-stretch">
     @for (t of tours(); track t.slug) {
       <article class="card">
-        @if (t.heroImage) {
-          <img ngSrc="{{ t.heroImage }}" width="640" height="360" alt="{{ t.title }}">
-        }
-        <h2>{{ t.title }}</h2>
-        @if (t.teaser) { <p class="muted">{{ t.teaser }}</p> }
+        <div class="card__media">
+          <img
+            ngSrc="{{ thumb(t) }}"
+            width="800" height="600"     
+            alt="{{ t.title }}"
+            class="card__img"
+          />
+        </div>
 
-        @if (t.departures.length) {
-          <p class="price">
-            od <strong>{{ (t.departures[0].unitPriceCents / 100) | number:'1.2-2' }} {{ t.currency }}</strong>
-          </p>
-        }
+        <div class="card__body">
+          <h2 class="card__title">{{ t.title }}</h2>
+          <p class="card__desc">{{ desc(t) }}</p>
 
-        <a [routerLink]="['/zajazdy', t.slug]" class="btn">Detail</a>
+          <div class="card__spacer"></div>
+
+          @if (minPrice(t) !== null) {
+            <div class="card__price">
+              od {{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}
+            </div>
+          } @else {
+            <div class="card__price card__price--muted">Cena na vyžiadanie</div>
+          }
+
+          <div class="card__actions">
+            <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--ghost">Detail</a>
+            @if (firstDeparture(t)) {
+              <a
+                [routerLink]="['/checkout']"
+                [queryParams]="{
+                  tourSlug: t.slug,
+                  departureId: firstDeparture(t)!.id,
+                  price: firstDeparture(t)!.unitPriceCents
+                }"
+                class="btn btn--primary"
+              >
+                Rezervovať
+              </a>
+            }
+          </div>
+        </div>
       </article>
     }
   </div>

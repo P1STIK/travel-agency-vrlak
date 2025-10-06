@@ -1,9 +1,30 @@
-.wrap { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-.title { font-size: 2rem; margin-bottom: 1rem; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-.card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1rem; background: #fff; }
-.card img { width: 100%; height: auto; border-radius: 8px; }
-.muted { color: #6b7280; }
-.price { margin: .5rem 0 1rem; }
-.btn { display: inline-block; padding: .5rem .9rem; border-radius: 8px; background: #111827; color: #fff; text-decoration: none; }
-.btn:hover { background: #000; }
+/* helpers */
+.container { @apply max-w-screen-xl mx-auto px-4; }
+.t-h1 { @apply text-3xl md:text-4xl font-extrabold; }
+.t-lead { @apply text-gray-600 mt-1; }
+.empty { @apply mt-10 text-gray-500; }
+
+/* CARD – rovnaká výška + pekné tieňe */
+.card { @apply h-full flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition; }
+
+/* MEDIA – zvoľ si jeden pomer */
+/* 4:3: */ .card__media { @apply relative w-full aspect-[4/3]; }
+/* alebo 16:9:  .card__media { @apply relative w-full aspect-video; } */
+
+.card__img { @apply absolute inset-0 w-full h-full object-cover object-center; }
+
+/* BODY – tlačidlá pekne dole */
+.card__body { @apply flex-1 p-4 flex flex-col gap-3; }
+.card__title { @apply text-lg font-semibold leading-tight min-h-[1.75rem]; }
+.card__desc  { @apply text-gray-600 line-clamp-2 min-h-[3rem]; } /* drží výšku popisu */
+.card__spacer { @apply mt-auto; }
+
+.card__price { @apply text-base font-semibold; }
+.card__price--muted { @apply text-gray-500; }
+
+.card__actions { @apply mt-2 flex items-center justify-between gap-3; }
+
+/* Buttons (zdieľané) */
+.btn { @apply inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition; }
+.btn--primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
+.btn--ghost { @apply border border-gray-300 text-gray-700 hover:bg-gray-50; }

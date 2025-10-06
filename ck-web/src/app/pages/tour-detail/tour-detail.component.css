@@ -1,7 +1,172 @@
-.wrap { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
-.title { font-size: 2rem; margin: .5rem 0 1rem; }
-.hero { width: 100%; height: auto; border-radius: 12px; margin-bottom: 1rem; }
-.terms { display: grid; gap: .75rem; margin-top: 1rem; }
-.row { display: flex; justify-content: space-between; align-items: center; border: 1px solid #e5e7eb; border-radius: 10px; padding: .75rem 1rem; }
-.muted { color: #6b7280; }
-.btn { padding: .5rem .9rem; border-radius: 8px; background: #111827; color: #fff; text-decoration: none; }
+/* ========== Layout + typografia ========== */
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.title {
+  font-size: clamp(1.8rem, 2.5vw + 1rem, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin: 0.5rem 0 1rem;
+}
+
+.muted { color: #6b7280; } /* gray-500 */
+
+/* ========== Hero obrázok ========== */
+.hero {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 40vw, 420px);
+  object-fit: cover;
+  border-radius: 0.75rem;      /* 12px */
+  margin: 1rem 0 .75rem;
+  box-shadow: 0 10px 20px rgba(0,0,0,.06);
+}
+
+/* ========== Klikateľné náhľady (mini galéria) ========== */
+/* kontajner s náhľadmi */
+.thumbs {
+  display: grid;
+  gap: .6rem;
+  grid-template-columns: repeat(3, 1fr);
+  margin: .25rem 0 1.1rem;
+}
+@media (min-width: 640px) {
+  .thumbs { grid-template-columns: repeat(5, 1fr); }
+}
+@media (min-width: 900px) {
+  .thumbs { grid-template-columns: repeat(6, 1fr); }
+}
+
+/* samotné “tlačidlo” náhľadu */
+.thumb {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: .55rem;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+  outline: none;
+}
+
+/* obrázok v náhľade */
+.thumb img {
+  display: block;
+  width: 100%;
+  height: 5.2rem;         /* mobil */
+  object-fit: cover;
+  transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+}
+@media (min-width: 768px) {
+  .thumb img { height: 5.6rem; }
+}
+
+.thumb:hover img { transform: scale(1.03); }
+.thumb:focus-visible { box-shadow: 0 0 0 3px rgba(37,99,235,.40); }
+
+/* aktívny náhľad */
+.thumb--active {
+  box-shadow: 0 0 0 2px #2563eb inset, 0 6px 14px rgba(0,0,0,.06);
+}
+.thumb--active img { filter: saturate(110%); }
+
+/* ========== Fakty / dôležité info ========== */
+.facts { margin: .75rem 0 1.25rem; }
+.facts__list {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: grid; gap: .45rem;
+}
+.facts__list li {
+  background: #f9fafb;
+  border: 1px solid #eef2f7;
+  border-radius: .6rem;
+  padding: .6rem .75rem;
+}
+
+/* ========== Termíny ========== */
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.terms {
+  margin-top: .5rem;
+  border: 1px solid #e5e7eb;   /* gray-200 */
+  border-radius: .75rem;
+  overflow: hidden;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem .875rem;
+  border-top: 1px solid #f3f4f6; /* gray-100 */
+}
+.row:first-child { border-top: 0; }
+.row strong { font-weight: 600; }
+
+/* ========== Tlačidlo ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .9rem;
+  border-radius: .6rem;
+  background: #2563eb;   /* blue-600 */
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .95rem;
+  transition: background .15s ease;
+  white-space: nowrap;
+}
+.btn:hover { background: #1d4ed8; } /* blue-700 */
+
+/* ========== Sticky CTA (iba mobil) ========== */
+@media (max-width: 640px) {
+  .md-hidden { display: block; }
+  .cta-sticky {
+    position: sticky; bottom: .75rem; left: 1rem; right: 1rem;
+    margin: .75rem auto 0; text-align: center; z-index: 30;
+    display: block; width: calc(100% - 2rem);
+    padding: .9rem 1rem; border-radius: .9rem;
+    background: #2563eb; color: #fff; font-weight: 700;
+    box-shadow: 0 12px 24px rgba(37,99,235,.25);
+  }
+}
+@media (min-width: 641px) {
+  .md-hidden { display: none; }
+}
+
+/* ========== (Voliteľné) Starý grid galérie – ak by si niekde používal .gallery ========== */
+.gallery {
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: repeat(2, 1fr);
+  margin: .25rem 0 1rem;
+}
+@media (min-width: 768px) {
+  .gallery { grid-template-columns: repeat(3, 1fr); }
+}
+.gallery__img {
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: .6rem;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+}
+
+/* ========== Responsívne drobnosti ========== */
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; align-items: start; }
+  .btn { justify-self: start; margin-top: .25rem; }
+}
