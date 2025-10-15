@@ -1,0 +1,102 @@
+[
+  {
+    "slug": "pariz-na-vikend",
+    "title": "Paríž na víkend",
+    "teaser": "Klasiky Paríža za 3 dni.",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "gallery": [
+    "/assets/images/pariz.jpg",
+    "/assets/images/pariz.jpg",
+    "/assets/images/pariz.jpg"
+  ],
+    "description": "Louvre, Eiffelovka, Montmartre a croissanty. Pohodlný autobus, sprievodca, 2 noci.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-001", "date": "2025-10-03", "unitPriceCents": 12900 },
+      { "id": "wp-002", "date": "2025-11-07", "unitPriceCents": 13900 }
+    ]
+  },
+  {
+    "slug": "benatky-karneval",
+    "title": "Benátky – Karneval",
+    "teaser": "Masky, gondoly a atmosféra.",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "gallery": [
+    "/assets/images/benatky.jpg",
+    "/assets/images/benatky.jpg",
+    "/assets/images/benatky.jpg"
+  ],
+    "description": "Benátky počas karnevalu so sprievodcom. V cene doprava a ubytovanie.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-101", "date": "2026-02-20", "unitPriceCents": 14900 }
+    ]
+  },
+  {
+  "slug": "roadtrip-po-atrakciach-eu",
+  "title": "Roadtrip po Európe",
+  "description": "Panoramatické priechody, pár brakedowns, vela energeťákov, nervov, ale hlavne good times.",
+  "currency": "EUR",
+  "heroImage": "/assets/images/cute.jpeg",
+  "thumbImage": "/assets/images/daniela.jpeg",
+  "gallery": [
+    "/assets/images/daniela.jpeg",
+    "/assets/images/daniela.jpeg",
+    "/assets/images/daniela.jpeg",
+    "/assets/images/cute.jpeg",
+    "/assets/images/cute.jpeg",
+    "/assets/images/cute.jpeg"
+  ],
+  "departures": [
+    { "id": "rt-001", "date": "2025-12-05", "unitPriceCents": 9900 },
+    { "id": "rt-002", "date": "2026-03-15", "unitPriceCents": 10900 }
+  ],
+  "tags": ["romantika", "hory", "roadtrip", "inside-jokes"],
+  "extras": {
+    "note": "Obsahuje povinné zastávky na fotenie západov slnka a kakaové croissanty.",
+    "difficulty": "ľahká až úsmevná"
+  }
+},
+  {
+    "slug": "pariz-na-vikend",
+    "title": "Paríž na víkend",
+    "teaser": "Klasiky Paríža za 3 dni.",
+    "heroImage": "/assets/paris.jpg",
+    "description": "Louvre, Eiffelovka, Montmartre a croissanty. Pohodlný autobus, sprievodca, 2 noci.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-001", "date": "2025-10-03", "unitPriceCents": 12900 },
+      { "id": "wp-002", "date": "2025-11-07", "unitPriceCents": 13900 }
+    ]
+  },
+  {
+    "slug": "benatky-karneval",
+    "title": "Benátky – Karneval",
+    "teaser": "Masky, gondoly a atmosféra.",
+    "heroImage": "/assets/venice.jpg",
+    "description": "Benátky počas karnevalu so sprievodcom. V cene doprava a ubytovanie.",
+    "currency": "EUR",
+    "departures": [
+      { "id": "wp-101", "date": "2026-02-20", "unitPriceCents": 14900 }
+    ]
+  },
+  {
+  "slug": "roadtrip-cez-hory-pre-mna-a-danielu",
+  "title": "Roadtrip po Európe cez hory (pre mňa & Danielu)",
+  "description": "Panoramatické priechody, termoska kávy a soundtrack našich inside jokov. Bonus: ja šoférujem, Daniela naviguje (obaja predstierame, že vieme kam).",
+  "currency": "EUR",
+  "heroImage": "/assets/images/tours/roadtrip-hory.webp",
+  "thumbImage": "/assets/images/tours/roadtrip-hory.webp",
+  "departures": [
+    { "id": "rt-001", "date": "2025-12-05", "unitPriceCents": 9900 },
+    { "id": "rt-002", "date": "2026-03-15", "unitPriceCents": 10900 }
+  ],
+  "tags": ["romantika", "hory", "roadtrip", "inside-jokes"],
+  "extras": {
+    "note": "Obsahuje povinné zastávky na fotenie západov slnka a kakaové croissanty.",
+    "difficulty": "ľahká až úsmevná"
+  }
+}
+]

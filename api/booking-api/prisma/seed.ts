@@ -1,33 +1,72 @@
 import { PrismaClient } from '@prisma/client';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 const prisma = new PrismaClient();
 
-async function main() {
-  // Seed je dobrovoľný – pre booking nepotrebuješ dáta,
-  // lebo departures a ceny sú vo WP. Môžeš pridať test rezerváciu:
-  await prisma.booking.create({
-    data: {
-      code: 'DEMO1234',
-      departureId: 'wp-departure-1',
-      tourSlug: 'pariz-na-vikend',
-      email: 'demo@example.com',
-      seats: 2,
-      unitPriceCents: 12900,
-      totalAmount: 25800,
-      currency: 'EUR',
-      status: 'PENDING',
-      passengers: {
-        create: [
-          { firstName: 'Anna', lastName: 'Novak' },
-          { firstName: 'Ivan', lastName: 'Novak' },
-        ]
-      }
-    }
-  });
+function asArray(val: any): string[] {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean);
+  return String(val).split(',').map(s => s.trim()).filter(Boolean);
 }
 
-main().catch(e => {
-  console.error(e);
-  process.exit(1);
-}).finally(async () => {
-  await prisma.$disconnect();
-});
+async function main() {
+  const file = join(process.cwd(), 'prisma', 'seed', 'tours.json');
+  const tours = JSON.parse(readFileSync(file, 'utf8')) as any[];
+
+  for (const t of tours) {
+    const { departures = [], slug, ...rest } = t;
+
+    const tour = await prisma.tour.upsert({
+      where: { slug },
+      update: {
+        ...rest,
+        currency: rest.currency ?? 'EUR',
+        teaser: rest.teaser ?? null,
+        description: rest.description ?? null,
+        heroImage: rest.heroImage ?? null,
+        thumbImage: rest.thumbImage ?? null,
+        duration: rest.duration ?? null,
+        pickupPoints: asArray(rest.pickupPoints),
+        gallery: asArray(rest.gallery),
+      },
+      create: {
+        slug,
+        ...rest,
+        currency: rest.currency ?? 'EUR',
+        teaser: rest.teaser ?? null,
+        description: rest.description ?? null,
+        heroImage: rest.heroImage ?? null,
+        thumbImage: rest.thumbImage ?? null,
+        duration: rest.duration ?? null,
+        pickupPoints: asArray(rest.pickupPoints),
+        gallery: asArray(rest.gallery),
+      },
+    });
+
+    // refresh departures robustne (mimo nested write)
+    await prisma.departure.deleteMany({ where: { tourId: tour.id } });
+    if (departures.length) {
+      await prisma.departure.createMany({
+        data: departures.map((d: any) => ({
+          tourId: tour.id,
+          date: new Date(d.date),
+          unitPriceCents: Number(d.unitPriceCents),
+        })),
+      });
+    }
+
+    console.log('Seeded:', slug);
+  }
+
+  console.log(`✅ Seed hotový: ${tours.length} zájazdov`);
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Seed zlyhal:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

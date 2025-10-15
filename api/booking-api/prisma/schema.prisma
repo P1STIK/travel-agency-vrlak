@@ -40,3 +40,32 @@ model Passenger {
   firstName String
   lastName  String
 }
+
+model Tour {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  teaser      String?
+  description String?
+  currency    String      @default("EUR")
+  heroImage   String?
+  thumbImage  String?
+  duration    String?
+  pickupPoints String[]   // ak nechceš array, zmeň na String? a ulož CSV
+  gallery     String[]    // voliteľné, pre mini-galériu
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  departures  Departure[]
+}
+
+model Departure {
+  id             String   @id @default(cuid())
+  date           DateTime
+  unitPriceCents Int
+  tourId         String
+  tour           Tour     @relation(fields: [tourId], references: [id])
+
+  @@index([tourId])
+}
+

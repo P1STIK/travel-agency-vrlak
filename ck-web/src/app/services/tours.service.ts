@@ -43,12 +43,10 @@ export class ToursService {
     return this.http.get<Tour[]>('/assets/tours.json').pipe(shareReplay(1));
   }
 
-  /** Nájde zájazd podľa slug */
   bySlug(slug: string): Observable<Tour | undefined> {
     return this.all().pipe(map(list => list.find(t => t.slug === slug)));
   }
 
-  /** Ak chceš verziu, ktorá vyhodí chybu, keď sa nenašlo */
   bySlugStrict(slug: string): Observable<Tour> {
     return this.bySlug(slug).pipe(
       map(t => {
@@ -58,8 +56,6 @@ export class ToursService {
     );
   }
 }
-
-/* --- Pomocné funkcie (nepovinné) ------------------------------ */
 
 export function minPriceCents(t: Tour): number | null {
   if (!t.departures?.length) return null;
