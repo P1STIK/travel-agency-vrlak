@@ -10,7 +10,6 @@
         <span class="topbar__text hidden sm:inline">Po–Pi 8:00–16:00</span>
       </div>
       <div class="topbar__right">
-        <!-- sem kľudne social ikony -->
       </div>
     </div>
   </div>
@@ -24,17 +23,17 @@
       </a>
 
       <!-- desktop nav -->
-<nav class="nav nav--desktop">
-  @for (item of nav; track item.path) {
-    <div class="nav__group group">
-      <a
-        [routerLink]="item.path"
-        class="nav__link"
-        routerLinkActive="nav__link--active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        {{ item.label }}
-      </a>
+    <nav class="nav nav--desktop">
+      @for (item of nav; track item.path) {
+        <div class="nav__group group">
+          <a
+            [routerLink]="item.path"
+            class="nav__link"
+            routerLinkActive="nav__link--active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            {{ item.label }}
+          </a>
 
       @if (item.hasMenu) {
         <button type="button" class="nav__chev" aria-haspopup="true" aria-expanded="false">▾</button>

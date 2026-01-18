@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Tour" ADD COLUMN     "extras" JSONB,
+ADD COLUMN     "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+ALTER COLUMN "pickupPoints" SET DEFAULT ARRAY[]::TEXT[],
+ALTER COLUMN "gallery" SET DEFAULT ARRAY[]::TEXT[];

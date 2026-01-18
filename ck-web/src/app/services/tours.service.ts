@@ -3,6 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { environment } from '../../enviroments/enviroments';
+
 
 export interface Departure {
   id: string;
@@ -36,15 +38,15 @@ export interface Tour {
 
 @Injectable({ providedIn: 'root' })
 export class ToursService {
-  private http = inject(HttpClient);
+    private http = inject(HttpClient);
+    private base = environment.api;
 
-  /** Zoznam zájazdov (kešované) */
-  all(): Observable<Tour[]> {
-    return this.http.get<Tour[]>('/assets/tours.json').pipe(shareReplay(1));
+  all() {
+    return this.http.get<Tour[]>(`${this.base}/tours`);
   }
 
-  bySlug(slug: string): Observable<Tour | undefined> {
-    return this.all().pipe(map(list => list.find(t => t.slug === slug)));
+  bySlug(slug: string) {
+    return this.http.get<Tour>(`${this.base}/tours/${slug}`);
   }
 
   bySlugStrict(slug: string): Observable<Tour> {

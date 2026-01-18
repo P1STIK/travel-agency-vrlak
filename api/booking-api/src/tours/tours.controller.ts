@@ -3,17 +3,15 @@ import { ToursService } from './tours.service';
 
 @Controller('tours')
 export class ToursController {
-  constructor(private tours: ToursService) {}
+  constructor(private readonly tours: ToursService) {}
 
   @Get()
   findAll() {
-    return this.tours.getAll();
+    return this.tours.findAll();
   }
 
   @Get(':slug')
-  async findOne(@Param('slug') slug: string) {
-    const tour = await this.tours.getBySlug(slug);
-    if (!tour) throw new NotFoundException('Tour not found');
-    return tour;
+  findOne(@Param('slug') slug: string) {
+    return this.tours.findBySlug(slug);
   }
 }
