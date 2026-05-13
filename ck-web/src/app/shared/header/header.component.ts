@@ -20,13 +20,12 @@ export class HeaderComponent {
   openTours = signal(false); // dropdown „Zájazdy“
 
   nav = [
-    { label: 'Úvodná stránka', path: '/' },
+    { label: 'Domov', path: '/' },
     { label: 'O spoločnosti', path: '/o-nas' },
     // „Zájazdy“ má submenu, hlavný odkaz nech ostane tiež klikateľný:
     { label: 'Zájazdy', path: '/zajazdy', hasMenu: true },
     { label: 'Ski-bus', path: '/ski-bus' },
     { label: 'Galéria', path: '/galeria' },
-    { label: 'Kontakt', path: '/kontakt' },
   ];
 
   // položky v dropdown „Zájazdy“ (príklady)

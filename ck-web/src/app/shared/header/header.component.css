@@ -12,7 +12,7 @@
 
 /* topbar */
 .topbar { @apply bg-gray-100 text-sm border-b border-gray-200; }
-.topbar .container { @apply flex items-center justify-between py-2; }
+.topbar .container { @apply flex items-center justify-between py-1; }
 .topbar__left { @apply flex items-center gap-2; }
 .topbar__right { @apply flex items-center gap-3; }
 .topbar__link { @apply text-inherit hover:text-blue-600; }

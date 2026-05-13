@@ -38,7 +38,6 @@
       @if (item.hasMenu) {
         <button type="button" class="nav__chev" aria-haspopup="true" aria-expanded="false">▾</button>
 
-        <!-- Pozor: dropdown je PRIAMO vo vnútri .nav__group -->
         <div class="dropdown">
           @for (m of toursMenu; track m.path) {
             <a [routerLink]="m.path" class="dropdown__item">{{ m.label }}</a>

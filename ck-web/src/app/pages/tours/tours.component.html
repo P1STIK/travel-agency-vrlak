@@ -1,54 +1,72 @@
-<main class="container">
-  <h1 class="t-h1">Zájazdy</h1>
+<main class="tours">
 
-  @if (!tours().length) {
-    <p class="empty">Zatiaľ nemáme žiadne zájazdy.</p>
-  }
+  <!-- HERO -->
+  <section class="tours__hero">
+    <div class="container">
+      <h1 class="tours__title">Zájazdy</h1>
+      <p class="tours__subtitle">Vyberte si z našej ponuky zájazdov a dovoleniek</p>
+    </div>
+  </section>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 items-stretch">
-    @for (t of tours(); track t.slug) {
-      <article class="card">
-        <div class="card__media">
-          <img
-            ngSrc="{{ thumb(t) }}"
-            width="800" height="600"     
-            alt="{{ t.title }}"
-            class="card__img"
-          />
-        </div>
+  <!-- GRID -->
+  <section class="tours__section container">
 
-        <div class="card__body">
-          <h2 class="card__title">{{ t.title }}</h2>
-          <p class="card__desc">{{ desc(t) }}</p>
-
-          <div class="card__spacer"></div>
-
-          @if (minPrice(t) !== null) {
-            <div class="card__price">
-              od {{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}
-            </div>
-          } @else {
-            <div class="card__price card__price--muted">Cena na vyžiadanie</div>
-          }
-
-          <div class="card__actions">
-            <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--ghost">Detail</a>
-            @if (firstDeparture(t)) {
-              <a
-                [routerLink]="['/checkout']"
-                [queryParams]="{
-                  tourSlug: t.slug,
-                  departureId: firstDeparture(t)!.id,
-                  price: firstDeparture(t)!.unitPriceCents
-                }"
-                class="btn btn--primary"
-              >
-                Rezervovať
-              </a>
-            }
-          </div>
-        </div>
-      </article>
+    @if (!tours().length) {
+      <p class="tours__empty">Zatiaľ nemáme žiadne zájazdy.</p>
     }
-  </div>
+
+    <div class="tours__grid">
+      @for (t of tours(); track t.slug) {
+        <article class="card">
+          <div class="card__media">
+            <img
+              ngSrc="{{ thumb(t) }}"
+              width="800" height="600"
+              alt="{{ t.title }}"
+              class="card__img"
+            />
+          </div>
+
+          <div class="card__body">
+            <h2 class="card__title">{{ t.title }}</h2>
+            <p class="card__desc">{{ desc(t) }}</p>
+
+            <div class="card__spacer"></div>
+
+            @if (minPrice(t) !== null) {
+              <div class="card__price">od {{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}</div>
+            } @else {
+              <div class="card__price card__price--muted">Cena na vyžiadanie</div>
+            }
+
+            @if (firstDeparture(t); as dep) {
+              <div class="card__occupancy">
+                <span>Obsadenosť:</span>
+                <span class="card__occupancy-value">{{ dep.bookedSeats }}/{{ dep.capacity }}</span>
+              </div>
+            }
+
+            <div class="card__actions">
+              <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--ghost">Detail</a>
+              @if (firstDeparture(t)) {
+                <a
+                  [routerLink]="['/checkout']"
+                  [queryParams]="{
+                    tourSlug: t.slug,
+                    departureId: firstDeparture(t)!.id,
+                    price: firstDeparture(t)!.unitPriceCents
+                  }"
+                  class="btn btn--primary"
+                >
+                  Rezervovať
+                </a>
+              }
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+  </section>
+
 </main>
