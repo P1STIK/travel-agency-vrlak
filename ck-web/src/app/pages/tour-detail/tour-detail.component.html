@@ -84,6 +84,9 @@
               <div class="muted">
                 Cena: {{ (d.unitPriceCents / 100) | number:'1.2-2' }} {{ t!.currency }}
               </div>
+              <div class="muted">
+                Obsadenosť: {{ d.bookedSeats }}/{{ d.capacity }}
+              </div>
             </div>
 
             <a

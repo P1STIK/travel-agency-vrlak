@@ -1,7 +1,7 @@
 // src/app/services/tours.service.ts
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, shareReplay } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/enviroments';
 
@@ -10,6 +10,8 @@ export interface Departure {
   id: string;
   date: string;            // ISO date string
   unitPriceCents: number;
+  capacity: number;
+  bookedSeats: number;
 }
 
 export interface TourExtras {
