@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'nestjs-prisma';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ToursService {
@@ -9,17 +9,28 @@ export class ToursService {
     const tours = await this.prisma.tour.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        departures: { orderBy: { date: 'asc' } },
+        departures: {
+          orderBy: { date: 'asc' },
+          include: {
+            bookings: {
+              where: { status: { notIn: ['CANCELLED', 'REFUNDED'] } },
+              select: { seats: true },
+            },
+          },
+        },
       },
     });
 
-    // doplníme pár derived fieldov (dobré pre FE, ale nie je nutné)
     return tours.map((t) => ({
       ...t,
       minPriceCents: t.departures.length
         ? Math.min(...t.departures.map((d) => d.unitPriceCents))
         : null,
       firstDeparture: t.departures[0]?.date ?? null,
+      departures: t.departures.map(({ bookings, ...d }) => ({
+        ...d,
+        bookedSeats: bookings.reduce((sum, b) => sum + b.seats, 0),
+      })),
     }));
   }
 
@@ -27,7 +38,15 @@ export class ToursService {
     const tour = await this.prisma.tour.findUnique({
       where: { slug },
       include: {
-        departures: { orderBy: { date: 'asc' } },
+        departures: {
+          orderBy: { date: 'asc' },
+          include: {
+            bookings: {
+              where: { status: { notIn: ['CANCELLED', 'REFUNDED'] } },
+              select: { seats: true },
+            },
+          },
+        },
       },
     });
 
@@ -39,6 +58,10 @@ export class ToursService {
         ? Math.min(...tour.departures.map((d) => d.unitPriceCents))
         : null,
       firstDeparture: tour.departures[0]?.date ?? null,
+      departures: tour.departures.map(({ bookings, ...d }) => ({
+        ...d,
+        bookedSeats: bookings.reduce((sum, b) => sum + b.seats, 0),
+      })),
     };
   }
 }

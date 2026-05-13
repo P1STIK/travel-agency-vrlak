@@ -19,6 +19,7 @@ model Booking {
   id             String        @id @default(cuid())
   code           String        @unique
   departureId    String
+  departure      Departure?    @relation(fields: [departureId], references: [id])
   tourSlug       String?
   email          String
   seats          Int
@@ -61,11 +62,13 @@ model Tour {
 }
 
 model Departure {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   date           DateTime
   unitPriceCents Int
+  capacity       Int       @default(50)
   tourId         String
-  tour           Tour     @relation(fields: [tourId], references: [id])
+  tour           Tour      @relation(fields: [tourId], references: [id])
+  bookings       Booking[]
 
   @@index([tourId])
 }
