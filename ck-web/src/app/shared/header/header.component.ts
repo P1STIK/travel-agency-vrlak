@@ -28,12 +28,13 @@ export class HeaderComponent {
     { label: 'Galéria', path: '/galeria' },
   ];
 
-  // položky v dropdown „Zájazdy“ (príklady)
   toursMenu = [
-    { label: 'Všetky zájazdy', path: '/zajazdy' },
-    { label: 'Poznávacie', path: '/zajazdy/poznavacie' },
-    { label: 'Lyžovačky', path: '/zajazdy/lyzovacky' },
-    { label: 'Púte', path: '/zajazdy/pute' },
+    { label: 'Všetky zájazdy',   category: null },
+    { label: 'Letné dovolenky',  category: 'letne' },
+    { label: 'Jednodňové výlety', category: 'jednodnove' },
+    { label: 'Silvestr',         category: 'silvestr' },
+    { label: 'Lyžovačky',        category: 'lyzovacky' },
+    { label: 'Púte',             category: 'pute' },
   ];
 
   // transparentná hlavička len na / (home)

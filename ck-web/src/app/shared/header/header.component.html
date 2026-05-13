@@ -39,8 +39,12 @@
         <button type="button" class="nav__chev" aria-haspopup="true" aria-expanded="false">▾</button>
 
         <div class="dropdown">
-          @for (m of toursMenu; track m.path) {
-            <a [routerLink]="m.path" class="dropdown__item">{{ m.label }}</a>
+          @for (m of toursMenu; track m.label) {
+            <a
+              routerLink="/zajazdy"
+              [queryParams]="m.category ? { category: m.category } : {}"
+              class="dropdown__item"
+            >{{ m.label }}</a>
           }
         </div>
       }
@@ -69,8 +73,13 @@
 
         @if (item.hasMenu) {
           <div class="mobile__submenu">
-            @for (m of toursMenu; track m.path) {
-              <a [routerLink]="m.path" class="mobile__sublink" (click)="closeAllMenus()">{{ m.label }}</a>
+            @for (m of toursMenu; track m.label) {
+              <a
+                routerLink="/zajazdy"
+                [queryParams]="m.category ? { category: m.category } : {}"
+                class="mobile__sublink"
+                (click)="closeAllMenus()"
+              >{{ m.label }}</a>
             }
           </div>
         }

@@ -53,8 +53,9 @@ model Tour {
   duration     String?
   pickupPoints String[]    @default([])
   gallery      String[]    @default([])
-  tags         String[]    @default([]) // <--- nové
-  extras       Json?                   // <--- nové
+  category     String?
+  tags         String[]    @default([])
+  extras       Json?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 

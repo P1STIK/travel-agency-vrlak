@@ -1,102 +1,142 @@
 [
   {
-    "slug": "pariz-na-vikend",
-    "title": "Paríž na víkend",
-    "teaser": "Klasiky Paríža za 3 dni.",
+    "slug": "chorvat-split-trogir",
+    "title": "Chorvátsko – Split & Trogir",
+    "category": "letne",
+    "teaser": "Jadrán, história a slnko.",
+    "description": "7-dňová dovolenka na Jadranskom pobreží. V cene doprava autobusom, ubytovanie v hoteli a polpenzia.",
+    "currency": "EUR",
     "heroImage": "/assets/images/pariz.jpg",
     "thumbImage": "/assets/images/pariz.jpg",
-    "gallery": [
-    "/assets/images/pariz.jpg",
-    "/assets/images/pariz.jpg",
-    "/assets/images/pariz.jpg"
-  ],
-    "description": "Louvre, Eiffelovka, Montmartre a croissanty. Pohodlný autobus, sprievodca, 2 noci.",
-    "currency": "EUR",
     "departures": [
-      { "id": "wp-001", "date": "2025-10-03", "unitPriceCents": 12900 },
-      { "id": "wp-002", "date": "2025-11-07", "unitPriceCents": 13900 }
+      { "id": "cr-001", "date": "2026-07-04", "unitPriceCents": 54900, "capacity": 50, "bookedSeats": 28 },
+      { "id": "cr-002", "date": "2026-07-25", "unitPriceCents": 58900, "capacity": 50, "bookedSeats": 10 },
+      { "id": "cr-003", "date": "2026-08-08", "unitPriceCents": 62900, "capacity": 50, "bookedSeats": 44 }
     ]
   },
   {
-    "slug": "benatky-karneval",
-    "title": "Benátky – Karneval",
-    "teaser": "Masky, gondoly a atmosféra.",
+    "slug": "grecko-kos",
+    "title": "Grécko – ostrov Kos",
+    "category": "letne",
+    "teaser": "Antická história a tyrkysové more.",
+    "description": "8-dňový letný pobyt na ostrove Kos. Ubytovanie all-inclusive, doprava autobusom na letisko a späť.",
+    "currency": "EUR",
     "heroImage": "/assets/images/benatky.jpg",
     "thumbImage": "/assets/images/benatky.jpg",
-    "gallery": [
-    "/assets/images/benatky.jpg",
-    "/assets/images/benatky.jpg",
-    "/assets/images/benatky.jpg"
-  ],
-    "description": "Benátky počas karnevalu so sprievodcom. V cene doprava a ubytovanie.",
-    "currency": "EUR",
     "departures": [
-      { "id": "wp-101", "date": "2026-02-20", "unitPriceCents": 14900 }
+      { "id": "gr-001", "date": "2026-06-27", "unitPriceCents": 72900, "capacity": 45, "bookedSeats": 15 },
+      { "id": "gr-002", "date": "2026-08-15", "unitPriceCents": 79900, "capacity": 45, "bookedSeats": 38 }
     ]
   },
   {
-  "slug": "roadtrip-po-atrakciach-eu",
-  "title": "Roadtrip po Európe",
-  "description": "Panoramatické priechody, pár brakedowns, vela energeťákov, nervov, ale hlavne good times.",
-  "currency": "EUR",
-  "heroImage": "/assets/images/cute.jpeg",
-  "thumbImage": "/assets/images/daniela.jpeg",
-  "gallery": [
-    "/assets/images/daniela.jpeg",
-    "/assets/images/daniela.jpeg",
-    "/assets/images/daniela.jpeg",
-    "/assets/images/cute.jpeg",
-    "/assets/images/cute.jpeg",
-    "/assets/images/cute.jpeg"
-  ],
-  "departures": [
-    { "id": "rt-001", "date": "2025-12-05", "unitPriceCents": 9900 },
-    { "id": "rt-002", "date": "2026-03-15", "unitPriceCents": 10900 }
-  ],
-  "tags": ["romantika", "hory", "roadtrip", "inside-jokes"],
-  "extras": {
-    "note": "Obsahuje povinné zastávky na fotenie západov slnka a kakaové croissanty.",
-    "difficulty": "ľahká až úsmevná"
+    "slug": "jednodenni-vieden",
+    "title": "Jednodňový výlet – Viedeň",
+    "category": "jednodnove",
+    "teaser": "Cisárske mesto za jeden deň.",
+    "description": "Výlet do Viedne s návštevou historického centra a Schönbrunnu. Odchod ráno, návrat večer.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "vi-001", "date": "2026-05-30", "unitPriceCents": 2900, "capacity": 55, "bookedSeats": 40 },
+      { "id": "vi-002", "date": "2026-06-27", "unitPriceCents": 2900, "capacity": 55, "bookedSeats": 12 },
+      { "id": "vi-003", "date": "2026-09-12", "unitPriceCents": 2900, "capacity": 55, "bookedSeats": 5 }
+    ]
+  },
+  {
+    "slug": "jednodenni-budapest",
+    "title": "Jednodňový výlet – Budapešť",
+    "category": "jednodnove",
+    "teaser": "Perla Dunaja na jeden deň.",
+    "description": "Návšteva Budapešti – Rybárska bašta, Parlament, trhy. Odchod skoro ráno, návrat večer.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "bp-001", "date": "2026-06-06", "unitPriceCents": 2500, "capacity": 55, "bookedSeats": 30 },
+      { "id": "bp-002", "date": "2026-10-10", "unitPriceCents": 2500, "capacity": 55, "bookedSeats": 8 }
+    ]
+  },
+  {
+    "slug": "silvestr-zakopane",
+    "title": "Silvestrovsky pobyt – Zakopaný",
+    "category": "silvestr",
+    "teaser": "Oslavte Nový rok v Tatrách.",
+    "description": "4-dňový Silvestrovsky pobyt v Zakopanom. V cene ubytovanie, polpenzia, silvestrovská večera a doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "sz-001", "date": "2026-12-29", "unitPriceCents": 28900, "capacity": 45, "bookedSeats": 22 }
+    ]
+  },
+  {
+    "slug": "silvestr-krakov",
+    "title": "Silvestrovsky pobyt – Krakov",
+    "category": "silvestr",
+    "teaser": "Historické mesto s výnimočnou atmosférou.",
+    "description": "3-dňový Silvestrovsky pobyt v Krakove – historické centrum, Wawel a silvestrovský program. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "sk-001", "date": "2026-12-30", "unitPriceCents": 22900, "capacity": 50, "bookedSeats": 10 }
+    ]
+  },
+  {
+    "slug": "lyzovacka-jasna",
+    "title": "Lyžovačka – Jasná Nízke Tatry",
+    "category": "lyzovacky",
+    "teaser": "Najlepšie svahy na Slovensku.",
+    "description": "5-dňová lyžovačka v Jasnej so skipasom, ubytovaním v hoteli a polpenziou. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "jn-001", "date": "2027-01-09", "unitPriceCents": 38900, "capacity": 45, "bookedSeats": 20 },
+      { "id": "jn-002", "date": "2027-01-23", "unitPriceCents": 41900, "capacity": 45, "bookedSeats": 35 },
+      { "id": "jn-003", "date": "2027-02-06", "unitPriceCents": 44900, "capacity": 45, "bookedSeats": 40 }
+    ]
+  },
+  {
+    "slug": "lyzovacka-snowland",
+    "title": "Lyžovačka – Snowland Valčianska dolina",
+    "category": "lyzovacky",
+    "teaser": "Rodinné stredisko v srdci Malej Fatry.",
+    "description": "4-dňová lyžovačka v Snowlande. Ideálne pre rodiny aj začiatočníkov. V cene skipas, ubytovanie, raňajky.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/daniela.jpeg",
+    "thumbImage": "/assets/images/daniela.jpeg",
+    "departures": [
+      { "id": "sn-001", "date": "2027-01-16", "unitPriceCents": 28900, "capacity": 50, "bookedSeats": 15 },
+      { "id": "sn-002", "date": "2027-02-13", "unitPriceCents": 31900, "capacity": 50, "bookedSeats": 28 }
+    ]
+  },
+  {
+    "slug": "put-medzdugorie",
+    "title": "Púť – Medžugorie",
+    "category": "pute",
+    "teaser": "Mariánske pútnické miesto v Bosne.",
+    "description": "5-dňová duchovná púť do Medžugoria s ubytovaním, polpenziou a duchovným programom. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "md-001", "date": "2026-08-01", "unitPriceCents": 32900, "capacity": 50, "bookedSeats": 35 },
+      { "id": "md-002", "date": "2026-09-05", "unitPriceCents": 32900, "capacity": 50, "bookedSeats": 18 }
+    ]
+  },
+  {
+    "slug": "put-rim",
+    "title": "Púť – Rím",
+    "category": "pute",
+    "teaser": "Večné mesto a srdce kresťanstva.",
+    "description": "7-dňová púť do Ríma – Vatikán, Bazilika sv. Petra, katakomby a omša s pápežom. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "rm-001", "date": "2026-10-03", "unitPriceCents": 48900, "capacity": 45, "bookedSeats": 22 }
+    ]
   }
-},
-  {
-    "slug": "pariz-na-vikend",
-    "title": "Paríž na víkend",
-    "teaser": "Klasiky Paríža za 3 dni.",
-    "heroImage": "/assets/paris.jpg",
-    "description": "Louvre, Eiffelovka, Montmartre a croissanty. Pohodlný autobus, sprievodca, 2 noci.",
-    "currency": "EUR",
-    "departures": [
-      { "id": "wp-001", "date": "2025-10-03", "unitPriceCents": 12900 },
-      { "id": "wp-002", "date": "2025-11-07", "unitPriceCents": 13900 }
-    ]
-  },
-  {
-    "slug": "benatky-karneval",
-    "title": "Benátky – Karneval",
-    "teaser": "Masky, gondoly a atmosféra.",
-    "heroImage": "/assets/venice.jpg",
-    "description": "Benátky počas karnevalu so sprievodcom. V cene doprava a ubytovanie.",
-    "currency": "EUR",
-    "departures": [
-      { "id": "wp-101", "date": "2026-02-20", "unitPriceCents": 14900 }
-    ]
-  },
-  {
-  "slug": "roadtrip-cez-hory-pre-mna-a-danielu",
-  "title": "Roadtrip po Európe cez hory (pre mňa & Danielu)",
-  "description": "Panoramatické priechody, termoska kávy a soundtrack našich inside jokov. Bonus: ja šoférujem, Daniela naviguje (obaja predstierame, že vieme kam).",
-  "currency": "EUR",
-  "heroImage": "/assets/images/tours/roadtrip-hory.webp",
-  "thumbImage": "/assets/images/tours/roadtrip-hory.webp",
-  "departures": [
-    { "id": "rt-001", "date": "2025-12-05", "unitPriceCents": 9900 },
-    { "id": "rt-002", "date": "2026-03-15", "unitPriceCents": 10900 }
-  ],
-  "tags": ["romantika", "hory", "roadtrip", "inside-jokes"],
-  "extras": {
-    "note": "Obsahuje povinné zastávky na fotenie západov slnka a kakaové croissanty.",
-    "difficulty": "ľahká až úsmevná"
-  }
-}
 ]

@@ -22,19 +22,16 @@ export interface TourExtras {
 export interface Tour {
   slug: string;
   title: string;
+  category?: string;
   teaser?: string;
-
   description?: string;
   currency: string;
   departures: Departure[];
-
   heroImage?: string;
   thumbImage?: string;
-
-  duration?: string;            
-  pickupPoints?: string[];      
-  extras?: TourExtras;   
-  
+  duration?: string;
+  pickupPoints?: string[];
+  extras?: TourExtras;
   gallery?: string[];
 }
 

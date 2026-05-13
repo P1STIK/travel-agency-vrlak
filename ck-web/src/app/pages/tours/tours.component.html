@@ -8,65 +8,95 @@
     </div>
   </section>
 
+  <!-- FILTERS -->
+  <section class="filters container">
+    <div class="filters__categories">
+      <button
+        class="pill"
+        [class.pill--active]="activeCategory() === null"
+        (click)="setCategory(null)"
+      >Všetky</button>
+
+      @for (cat of categories; track cat.key) {
+        <button
+          class="pill"
+          [class.pill--active]="activeCategory() === cat.key"
+          (click)="setCategory(cat.key)"
+        >{{ cat.label }}</button>
+      }
+    </div>
+
+    <button class="sort-btn" (click)="toggleSort()">
+      <span>Dátum</span>
+      <span class="sort-btn__arrow">{{ sortOrder() === 'asc' ? '↑' : '↓' }}</span>
+    </button>
+  </section>
+
   <!-- GRID -->
   <section class="tours__section container">
 
     @if (!tours().length) {
-      <p class="tours__empty">Zatiaľ nemáme žiadne zájazdy.</p>
+      <p class="tours__empty">Žiadne zájazdy v tejto kategórii.</p>
     }
 
     <div class="tours__grid">
       @for (t of tours(); track t.slug) {
         <article class="card">
           <div class="card__media">
-            <img
-              ngSrc="{{ thumb(t) }}"
-              width="800" height="600"
-              alt="{{ t.title }}"
-              class="card__img"
-            />
+            <img [src]="thumb(t)" [alt]="t.title" class="card__img" />
+            @if (t.category) {
+              <span class="card__badge">{{ categoryLabel(t.category!) }}</span>
+            }
           </div>
 
           <div class="card__body">
             <h2 class="card__title">{{ t.title }}</h2>
             <p class="card__desc">{{ desc(t) }}</p>
 
-            <div class="card__spacer"></div>
-
-            @if (minPrice(t) !== null) {
-              <div class="card__price">od {{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}</div>
-            } @else {
-              <div class="card__price card__price--muted">Cena na vyžiadanie</div>
-            }
-
-            @if (firstDeparture(t); as dep) {
+            @if (departure(t); as dep) {
+              <div class="card__meta">
+                <span class="card__meta-label">Najbližší termín:</span>
+                <span>{{ formatDate(dep.date) }}</span>
+              </div>
               <div class="card__occupancy">
-                <span>Obsadenosť:</span>
-                <span class="card__occupancy-value">{{ dep.bookedSeats }}/{{ dep.capacity }}</span>
+                <div class="occupancy__bar">
+                  <div
+                    class="occupancy__fill"
+                    [style.width.%]="(dep.bookedSeats / dep.capacity) * 100"
+                  ></div>
+                </div>
+                <span class="occupancy__text">{{ dep.bookedSeats }}/{{ dep.capacity }} miest</span>
               </div>
             }
 
-            <div class="card__actions">
-              <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--ghost">Detail</a>
-              @if (firstDeparture(t)) {
-                <a
-                  [routerLink]="['/checkout']"
-                  [queryParams]="{
-                    tourSlug: t.slug,
-                    departureId: firstDeparture(t)!.id,
-                    price: firstDeparture(t)!.unitPriceCents
-                  }"
-                  class="btn btn--primary"
-                >
-                  Rezervovať
-                </a>
-              }
+            <div class="card__footer">
+              <div class="card__price-block">
+                <span class="card__price-label">CENA ZA OSOBU</span>
+                @if (minPrice(t) !== null) {
+                  <span class="card__price">{{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+                } @else {
+                  <span class="card__price card__price--muted">Na vyžiadanie</span>
+                }
+              </div>
+              <div class="card__actions">
+                <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--ghost">Detail</a>
+                @if (departure(t)) {
+                  <a
+                    [routerLink]="['/checkout']"
+                    [queryParams]="{
+                      tourSlug: t.slug,
+                      departureId: departure(t)!.id,
+                      price: departure(t)!.unitPriceCents
+                    }"
+                    class="btn btn--primary"
+                  >Rezervovať</a>
+                }
+              </div>
             </div>
           </div>
         </article>
       }
     </div>
-
   </section>
 
 </main>
