@@ -1,0 +1,306 @@
+.home {
+  min-height: 100vh;
+}
+
+/* ── HERO ────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/assets/images/benatky.jpg') center center / cover no-repeat;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 25, 47, 0.62);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  padding: 2rem 1.5rem;
+  max-width: 760px;
+}
+
+.hero__title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 1.25rem;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+
+.hero__sub {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  opacity: 0.9;
+  margin: 0 0 2rem;
+}
+
+.hero__cta {
+  display: inline-block;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.2rem;
+  border-radius: 2rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.hero__cta:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+/* ── SHARED ──────────────────────────────── */
+.section__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  margin: 0 0 2rem;
+}
+
+.section__title--left {
+  text-align: left;
+}
+
+/* ── FEATURED TOURS ──────────────────────── */
+.featured {
+  padding: 4rem 1rem;
+  background: #f8fafc;
+}
+
+.featured__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.featured__more {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+/* FCARD */
+.fcard {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s;
+}
+
+.fcard:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.13);
+}
+
+.fcard__media {
+  width: 100%;
+  aspect-ratio: 16/10;
+  overflow: hidden;
+}
+
+.fcard__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s;
+}
+
+.fcard:hover .fcard__img {
+  transform: scale(1.04);
+}
+
+.fcard__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem 1.5rem;
+  gap: 0.6rem;
+}
+
+.fcard__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.fcard__desc {
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fcard__meta {
+  display: flex;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.fcard__meta-label {
+  font-weight: 600;
+}
+
+.fcard__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.fcard__price-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.fcard__price-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.fcard__price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.fcard__price--muted {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ── ABOUT TEASER ────────────────────────── */
+.about-teaser {
+  padding: 4rem 1rem;
+  background: #fff;
+}
+
+.about-teaser__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.about-teaser__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-teaser__text p {
+  color: #374151;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.about-teaser__btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.about-teaser__image {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  aspect-ratio: 4/3;
+}
+
+.about-teaser__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── BUTTONS ─────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn--primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: #1d4ed8;
+}
+
+.btn--outline {
+  border: 2px solid #2563eb;
+  color: #2563eb;
+  padding: 0.65rem 2rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+}
+
+.btn--outline:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 900px) {
+  .featured__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .about-teaser__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about-teaser__image {
+    order: -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero__title {
+    font-size: 2rem;
+  }
+
+  .featured__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section__title--left {
+    text-align: center;
+  }
+}

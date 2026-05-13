@@ -1,0 +1,82 @@
+<main class="home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__overlay"></div>
+    <div class="hero__content">
+      <h1 class="hero__title">Autobusová doprava<br>a cestovná kancelária</h1>
+      <p class="hero__sub">
+        V-TRANS, s.r.o. – spoľahlivá preprava osôb po celom Slovensku a do zahraničia.<br>
+        Od mája 2025 aj organizácia zájazdov a dovoleniek.
+      </p>
+      <a routerLink="/zajazdy" class="hero__cta">Pozrieť aktuálne zájazdy</a>
+    </div>
+  </section>
+
+  <!-- FEATURED TOURS -->
+  <section class="featured">
+    <div class="container">
+      <h2 class="section__title">Aktuálne zájazdy</h2>
+
+      <div class="featured__grid">
+        @for (t of featuredTours(); track t.slug) {
+          <article class="fcard">
+            <div class="fcard__media">
+              <img [src]="thumb(t)" [alt]="t.title" class="fcard__img" />
+            </div>
+            <div class="fcard__body">
+              <h3 class="fcard__title">{{ t.title }}</h3>
+              <p class="fcard__desc">{{ t.teaser || t.description }}</p>
+
+              @if (departure(t); as dep) {
+                <div class="fcard__meta">
+                  <span class="fcard__meta-label">Termín:</span>
+                  <span>{{ formatDate(dep.date) }}</span>
+                </div>
+              }
+
+              <div class="fcard__footer">
+                <div class="fcard__price-block">
+                  <span class="fcard__price-label">CENA ZA OSOBU</span>
+                  @if (minPrice(t) !== null) {
+                    <span class="fcard__price">{{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+                  } @else {
+                    <span class="fcard__price fcard__price--muted">Na vyžiadanie</span>
+                  }
+                </div>
+                <a [routerLink]="['/zajazdy', t.slug]" class="btn btn--primary">Detail zájazdu</a>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <div class="featured__more">
+        <a routerLink="/zajazdy" class="btn btn--outline">Všetky zájazdy nájdete tu</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- O SPOLOCNOSTI TEASER -->
+  <section class="about-teaser">
+    <div class="container about-teaser__inner">
+      <div class="about-teaser__text">
+        <h2 class="section__title section__title--left">O spoločnosti</h2>
+        <p>
+          Firma <strong>V-TRANS, s.r.o.</strong> sa zaoberá autobusovou a osobnou dopravou osôb
+          v tuzemsku i do zahraničia. Od <strong>16.&nbsp;mája&nbsp;2025</strong> sme rozšírili
+          naše služby o prevádzku cestovnej kancelárie.
+        </p>
+        <p>
+          Zabezpečíme dopravu na svadby, školenia, lyžiarske kurzy, nákupy aj kultúrne podujatia –
+          autobusmi aj osobnými vozidlami.
+        </p>
+        <a routerLink="/o-nas" class="btn btn--primary about-teaser__btn">Viac o nás</a>
+      </div>
+      <div class="about-teaser__image">
+        <img src="/assets/images/pariz.jpg" alt="V-TRANS autobus" class="about-teaser__img" />
+      </div>
+    </div>
+  </section>
+
+</main>

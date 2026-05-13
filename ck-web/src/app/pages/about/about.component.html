@@ -1,0 +1,48 @@
+<main class="about">
+
+  <!-- HERO -->
+  <section class="about__hero">
+    <div class="container">
+      <h1 class="about__title">O spoločnosti</h1>
+      <p class="about__subtitle">V-TRANS, s.r.o.</p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="about__section container">
+    <div class="about__card">
+      <h2 class="about__heading">Kto sme</h2>
+      <p class="about__text">
+        Vítame Vás na stránke firmy <strong>V-TRANS, s.r.o.</strong>, ktorá sa zaoberá
+        autobusovou a osobnou dopravou osôb v tuzemsku i do zahraničia.
+      </p>
+      <p class="about__text">
+        Od <strong>16.&nbsp;mája&nbsp;2025</strong> sme rozšírili naše prepravné služby
+        o prevádzku <strong>cestovnej kancelárie</strong>. Zameriavame sa na poskytovanie
+        komplexných služieb v oblasti cestovného ruchu – letné dovolenkové destinácie,
+        jednodňové poznávacie zájazdy, Silvestrovské pobyty doma i v zahraničí
+        a prepravu lyžiarskych kurzov so zabezpečeným ubytovaním.
+      </p>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="about__section container">
+    <div class="about__card">
+      <h2 class="about__heading">Čo zabezpečíme</h2>
+      <p class="about__text">
+        Našimi vozidlami – autobusmi aj osobnými vozidlami – sme schopní zabezpečiť
+        dopravu všetkých typov:
+      </p>
+      <ul class="about__list">
+        @for (item of services; track item) {
+          <li class="about__list-item">
+            <span class="about__check">✓</span>
+            {{ item }}
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+
+</main>

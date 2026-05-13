@@ -1,0 +1,94 @@
+.about {
+  min-height: 100vh;
+}
+
+/* HERO */
+.about__hero {
+  background: linear-gradient(135deg, #1a3a5c 0%, #2563eb 100%);
+  color: #fff;
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+
+.about__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.about__subtitle {
+  font-size: 1.25rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* SECTIONS */
+.about__section {
+  padding: 3rem 1rem;
+}
+
+.about__card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem 2.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about__heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a3a5c;
+  margin: 0 0 1rem;
+  border-bottom: 3px solid #2563eb;
+  padding-bottom: 0.5rem;
+}
+
+.about__text {
+  color: #374151;
+  line-height: 1.8;
+  margin: 0 0 1rem;
+}
+
+.about__text:last-child {
+  margin-bottom: 0;
+}
+
+/* SERVICE LIST */
+.about__list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1.5rem;
+}
+
+.about__list-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.about__check {
+  color: #2563eb;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+@media (max-width: 520px) {
+  .about__title {
+    font-size: 1.75rem;
+  }
+
+  .about__card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .about__list {
+    grid-template-columns: 1fr;
+  }
+}
