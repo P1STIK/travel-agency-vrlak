@@ -14,14 +14,15 @@ function asArray(val: unknown): string[] {
 }
 
 type RawDeparture = {
-  id?: string;
   date: string;
   unitPriceCents: number;
+  capacity?: number;
 };
 
 type RawTour = {
   slug: string;
   title: string;
+  category?: string;
   teaser?: string;
   description?: string;
   currency?: string;
@@ -45,6 +46,7 @@ async function main() {
 
     const data = {
       title: t.title,
+      category: t.category ?? null,
       teaser: t.teaser ?? null,
       description: t.description ?? null,
       currency: t.currency ?? 'EUR',
@@ -54,7 +56,7 @@ async function main() {
       pickupPoints: asArray(t.pickupPoints),
       gallery: asArray(t.gallery),
       tags: asArray(t.tags),
-      extras: t.extras ?? null
+      extras: t.extras ?? null,
     };
 
     const tour = await prisma.tour.upsert({
@@ -74,8 +76,9 @@ async function main() {
         data: departures.map((d) => ({
           tourId: tour.id,
           date: new Date(d.date),
-          unitPriceCents: Number(d.unitPriceCents)
-        }))
+          unitPriceCents: Number(d.unitPriceCents),
+          capacity: d.capacity ?? 50,
+        })),
       });
     }
 
