@@ -1,0 +1,42 @@
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="/assets/images/vtrans-logo-black.png" alt="V-TRANS" />
+    </div>
+    <h1 class="login-title">Admin</h1>
+
+    <form class="login-form" (ngSubmit)="submit()">
+      @if (error()) {
+        <p class="login-error">{{ error() }}</p>
+      }
+
+      <label class="field">
+        <span class="field__label">Používateľské meno</span>
+        <input
+          class="field__input"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          autocomplete="username"
+          required
+        />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Heslo</span>
+        <input
+          class="field__input"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+      </label>
+
+      <button class="login-btn" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Prihlasovanie...' : 'Prihlásiť sa' }}
+      </button>
+    </form>
+  </div>
+</div>

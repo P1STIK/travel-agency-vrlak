@@ -1,0 +1,141 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Rezervácie</h1>
+    <button class="btn btn--primary" (click)="showForm.set(!showForm())">
+      {{ showForm() ? 'Zrušiť' : '+ Manuálne pridať' }}
+    </button>
+  </div>
+
+  <!-- MANUAL BOOKING FORM -->
+  @if (showForm()) {
+    <div class="card form-card">
+      <h2 class="card__title">Manuálne pridanie rezervácie</h2>
+
+      @if (error()) {
+        <p class="form-error">{{ error() }}</p>
+      }
+
+      <form class="form" (ngSubmit)="submit()">
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Zájazd *</span>
+            <select class="field__input" [(ngModel)]="form.tourSlug" name="tourSlug" required>
+              <option value="">– vybrať zájazd –</option>
+              @for (t of tours(); track t.slug) {
+                <option [value]="t.slug">{{ t.title }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Odchod *</span>
+            <select class="field__input" [(ngModel)]="form.departureId" name="departureId" required [disabled]="!selectedTour">
+              <option value="">– vybrať odchod –</option>
+              @for (dep of selectedTour?.departures ?? []; track dep.id) {
+                <option [value]="dep.id">
+                  {{ formatDate(dep.date) }} – {{ dep.bookedSeats }}/{{ dep.capacity }} miest
+                </option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">E-mail *</span>
+            <input class="field__input" type="email" [(ngModel)]="form.email" name="email" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Počet miest *</span>
+            <input class="field__input" type="number" [(ngModel)]="form.seats" name="seats" min="1" required />
+          </label>
+        </div>
+
+        <!-- PASSENGERS -->
+        <div class="passengers-section">
+          <div class="passengers-section__header">
+            <span class="field__label">Cestujúci</span>
+            <button type="button" class="btn btn--sm btn--ghost" (click)="addPassenger()">+ Pridať</button>
+          </div>
+          @for (p of form.passengers; track $index) {
+            <div class="passenger-row">
+              <label class="field">
+                <span class="field__label">Meno</span>
+                <input class="field__input" [(ngModel)]="p.firstName" [name]="'fn_' + $index" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Priezvisko</span>
+                <input class="field__input" [(ngModel)]="p.lastName" [name]="'ln_' + $index" required />
+              </label>
+              @if (form.passengers.length > 1) {
+                <button type="button" class="btn btn--sm btn--danger" (click)="removePassenger($index)">✕</button>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Ukladám...' : 'Uložiť rezerváciu' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <label class="field field--inline">
+      <span class="field__label">Filtrovať podľa zájazdu:</span>
+      <select class="field__input" [(ngModel)]="filterSlug" (ngModelChange)="loadBookings()" name="filter">
+        <option value="">Všetky</option>
+        @for (t of tours(); track t.slug) {
+          <option [value]="t.slug">{{ t.title }}</option>
+        }
+      </select>
+    </label>
+    <span class="filter-count">{{ bookings().length }} rezervácií</span>
+  </div>
+
+  <!-- BOOKINGS TABLE -->
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (!bookings().length) {
+    <p class="state-msg">Žiadne rezervácie.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Kód</th>
+            <th>Zájazd</th>
+            <th>Odchod</th>
+            <th>Email</th>
+            <th>Miest</th>
+            <th>Cestujúci</th>
+            <th>Suma</th>
+            <th>Stav</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of bookings(); track b.id) {
+            <tr>
+              <td><span class="code">{{ b.code }}</span></td>
+              <td>{{ b.tourSlug }}</td>
+              <td>{{ b.departure ? formatDate(b.departure.date) : '–' }}</td>
+              <td>{{ b.email }}</td>
+              <td class="center">{{ b.seats }}</td>
+              <td>
+                @for (p of b.passengers; track p.id) {
+                  <div>{{ p.firstName }} {{ p.lastName }}</div>
+                }
+              </td>
+              <td>{{ (b.totalAmount / 100) | number:'1.0-0' }} €</td>
+              <td><span class="badge" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

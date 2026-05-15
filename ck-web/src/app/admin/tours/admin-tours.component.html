@@ -1,0 +1,139 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Zájazdy</h1>
+    <button class="btn btn--primary" (click)="showForm.set(!showForm())">
+      {{ showForm() ? 'Zrušiť' : '+ Nový zájazd' }}
+    </button>
+  </div>
+
+  <!-- FORM -->
+  @if (showForm()) {
+    <div class="card form-card">
+      <h2 class="card__title">Nový zájazd</h2>
+
+      @if (error()) {
+        <p class="form-error">{{ error() }}</p>
+      }
+
+      <form class="form" (ngSubmit)="submit()">
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Slug *</span>
+            <input class="field__input" [(ngModel)]="form.slug" name="slug" placeholder="napr. pariz-vikend" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Kategória</span>
+            <select class="field__input" [(ngModel)]="form.category" name="category">
+              <option value="">– vybrať –</option>
+              @for (c of categories; track c.key) {
+                <option [value]="c.key">{{ c.label }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Názov *</span>
+          <input class="field__input" [(ngModel)]="form.title" name="title" required />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Krátky popis (teaser)</span>
+          <input class="field__input" [(ngModel)]="form.teaser" name="teaser" />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Popis</span>
+          <textarea class="field__input field__input--ta" [(ngModel)]="form.description" name="description" rows="3"></textarea>
+        </label>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Hero obrázok (URL)</span>
+            <input class="field__input" [(ngModel)]="form.heroImage" name="heroImage" />
+          </label>
+          <label class="field">
+            <span class="field__label">Thumb obrázok (URL)</span>
+            <input class="field__input" [(ngModel)]="form.thumbImage" name="thumbImage" />
+          </label>
+        </div>
+
+        <!-- DEPARTURES -->
+        <div class="departures-section">
+          <div class="departures-section__header">
+            <span class="field__label">Odchody</span>
+            <button type="button" class="btn btn--sm btn--ghost" (click)="addDeparture()">+ Pridať odchod</button>
+          </div>
+
+          @for (dep of form.departures!; track $index) {
+            <div class="departure-row">
+              <label class="field">
+                <span class="field__label">Dátum</span>
+                <input class="field__input" type="date" [(ngModel)]="dep.date" [name]="'date_' + $index" />
+              </label>
+              <label class="field">
+                <span class="field__label">Cena (centy)</span>
+                <input class="field__input" type="number" [(ngModel)]="dep.unitPriceCents" [name]="'price_' + $index" min="0" />
+              </label>
+              <label class="field">
+                <span class="field__label">Kapacita</span>
+                <input class="field__input" type="number" [(ngModel)]="dep.capacity" [name]="'cap_' + $index" min="1" />
+              </label>
+              @if (form.departures!.length > 1) {
+                <button type="button" class="btn btn--sm btn--danger" (click)="removeDeparture($index)">✕</button>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Ukladám...' : 'Uložiť zájazd' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- TOURS LIST -->
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (!tours().length) {
+    <p class="state-msg">Žiadne zájazdy.</p>
+  } @else {
+    <div class="tours-list">
+      @for (t of tours(); track t.id) {
+        <div class="card tour-card">
+          <div class="tour-card__header">
+            <div>
+              <h2 class="tour-card__title">{{ t.title }}</h2>
+              <span class="tour-card__slug">{{ t.slug }}</span>
+              @if (t.category) {
+                <span class="badge">{{ t.category }}</span>
+              }
+            </div>
+            <span class="tour-card__currency">{{ t.currency }}</span>
+          </div>
+
+          <div class="departures">
+            @for (dep of t.departures; track dep.id) {
+              <div class="dep-row">
+                <span class="dep-row__date">{{ formatDate(dep.date) }}</span>
+                <span class="dep-row__price">{{ (dep.unitPriceCents / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+                <div class="dep-row__occ">
+                  <div class="occ-bar">
+                    <div class="occ-bar__fill" [style.width.%]="occupancyPct(dep)"></div>
+                  </div>
+                  <span class="occ-text">{{ dep.bookedSeats }}/{{ dep.capacity }}</span>
+                </div>
+              </div>
+            }
+            @if (!t.departures.length) {
+              <span class="dep-empty">Žiadne odchody</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

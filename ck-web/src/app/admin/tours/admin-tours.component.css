@@ -1,0 +1,62 @@
+.page { padding: 2rem; max-width: 900px; }
+.page__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.page__title { font-size: 1.5rem; font-weight: 700; color: #1a3a5c; margin: 0; }
+
+.card { background: #fff; border-radius: 0.75rem; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 1.5rem; margin-bottom: 1rem; }
+.card__title { font-size: 1.1rem; font-weight: 700; color: #1a3a5c; margin: 0 0 1.25rem; }
+
+/* FORM */
+.form-card { border-left: 4px solid #2563eb; }
+.form { display: flex; flex-direction: column; gap: 0.85rem; }
+.form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.form__actions { padding-top: 0.5rem; }
+.form-error { background: #fee2e2; color: #991b1b; border-radius: 0.5rem; padding: 0.6rem 0.9rem; font-size: 0.875rem; margin: 0 0 0.5rem; }
+
+.field { display: flex; flex-direction: column; gap: 0.25rem; }
+.field__label { font-size: 0.78rem; font-weight: 600; color: #374151; }
+.field__input {
+  border: 1.5px solid #d1d5db; border-radius: 0.4rem;
+  padding: 0.45rem 0.65rem; font-size: 0.9rem; outline: none;
+  transition: border-color 0.15s;
+}
+.field__input:focus { border-color: #2563eb; }
+.field__input--ta { resize: vertical; font-family: inherit; }
+
+/* DEPARTURES */
+.departures-section { background: #f8fafc; border-radius: 0.5rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.departures-section__header { display: flex; align-items: center; justify-content: space-between; }
+.departure-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.6rem; align-items: end; }
+
+/* TOUR LIST */
+.tours-list { display: flex; flex-direction: column; gap: 1rem; }
+.tour-card__header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+.tour-card__title { font-size: 1rem; font-weight: 700; color: #1a3a5c; margin: 0 0 0.2rem; }
+.tour-card__slug { font-size: 0.75rem; color: #6b7280; }
+.tour-card__currency { font-size: 0.8rem; color: #6b7280; }
+
+.badge { display: inline-block; background: #dbeafe; color: #1d4ed8; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 2rem; margin-left: 0.5rem; }
+
+/* DEPARTURES */
+.departures { display: flex; flex-direction: column; gap: 0.4rem; }
+.dep-row { display: grid; grid-template-columns: 120px 100px 1fr; gap: 1rem; align-items: center; font-size: 0.875rem; }
+.dep-row__date { color: #374151; font-weight: 500; }
+.dep-row__price { color: #16a34a; font-weight: 700; }
+.dep-row__occ { display: flex; align-items: center; gap: 0.5rem; }
+.dep-empty { font-size: 0.8rem; color: #9ca3af; }
+
+.occ-bar { flex: 1; height: 6px; background: #e5e7eb; border-radius: 99px; overflow: hidden; }
+.occ-bar__fill { height: 100%; background: #2563eb; border-radius: 99px; }
+.occ-text { font-size: 0.78rem; color: #6b7280; white-space: nowrap; }
+
+.state-msg { color: #6b7280; padding: 2rem 0; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 0.5rem; padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: background 0.15s; }
+.btn--primary { background: #2563eb; color: #fff; }
+.btn--primary:hover:not(:disabled) { background: #1d4ed8; }
+.btn--primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn--ghost { background: #fff; border: 1.5px solid #d1d5db; color: #374151; }
+.btn--ghost:hover { background: #f9fafb; }
+.btn--danger { background: #fee2e2; color: #dc2626; padding: 0.45rem 0.65rem; }
+.btn--danger:hover { background: #fecaca; }
+.btn--sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }

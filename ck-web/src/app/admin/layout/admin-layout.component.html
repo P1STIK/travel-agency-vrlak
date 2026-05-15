@@ -1,0 +1,27 @@
+<div class="admin">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <img src="/assets/images/vtrans-logo-black.png" alt="V-TRANS" />
+      <span class="sidebar__badge">Admin</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a routerLink="/admin/zajazdy" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <span class="sidebar__icon">🗺️</span> Zájazdy
+      </a>
+      <a routerLink="/admin/rezervacie" routerLinkActive="sidebar__link--active" class="sidebar__link">
+        <span class="sidebar__icon">📋</span> Rezervácie
+      </a>
+    </nav>
+
+    <button class="sidebar__logout" (click)="auth.logout()">Odhlásiť sa</button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="admin__main">
+    <router-outlet />
+  </main>
+
+</div>
