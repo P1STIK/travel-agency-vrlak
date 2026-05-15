@@ -1,7 +1,8 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 import { Tour, ToursService, firstDeparture, minPriceCents } from '../../services/tours.service';
 
 type SortOrder = 'asc' | 'desc';
@@ -12,20 +13,25 @@ type SortOrder = 'asc' | 'desc';
   templateUrl: './tours.component.html',
   styleUrl: './tours.component.css'
 })
-export class ToursComponent implements OnInit {
+export class ToursComponent {
   private api = inject(ToursService);
-  private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   private allTours = toSignal(this.api.all(), { initialValue: [] as Tour[] });
 
-  activeCategory = signal<string | null>(null);
+  activeCategory = toSignal(
+    inject(ActivatedRoute).queryParams.pipe(
+      map((p): string | null => p['category'] ?? null)
+    ),
+    { initialValue: null as string | null }
+  );
+
   sortOrder = signal<SortOrder>('asc');
 
   categories = [
     { key: 'letne',      label: 'Letné dovolenky' },
     { key: 'jednodnove', label: 'Jednodňové výlety' },
-    { key: 'silvestr',   label: 'Silvestr' },
+    { key: 'silvester',  label: 'Silvester' },
     { key: 'lyzovacky',  label: 'Lyžovačky' },
     { key: 'pute',       label: 'Púte' },
   ];
@@ -45,17 +51,8 @@ export class ToursComponent implements OnInit {
     });
   });
 
-  ngOnInit() {
-    const cat = this.route.snapshot.queryParamMap.get('category');
-    if (cat) this.activeCategory.set(cat);
-  }
-
   setCategory(cat: string | null) {
-    this.activeCategory.set(cat);
-    this.router.navigate([], {
-      queryParams: { category: cat ?? undefined },
-      queryParamsHandling: 'merge',
-    });
+    this.router.navigate(['/zajazdy'], { queryParams: { category: cat } });
   }
 
   toggleSort() { this.sortOrder.update(o => o === 'asc' ? 'desc' : 'asc'); }

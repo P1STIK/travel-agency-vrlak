@@ -32,7 +32,7 @@ export class HeaderComponent {
     { label: 'Všetky zájazdy',   category: null },
     { label: 'Letné dovolenky',  category: 'letne' },
     { label: 'Jednodňové výlety', category: 'jednodnove' },
-    { label: 'Silvestr',         category: 'silvestr' },
+    { label: 'Silvester',        category: 'silvester' },
     { label: 'Lyžovačky',        category: 'lyzovacky' },
     { label: 'Púte',             category: 'pute' },
   ];
@@ -48,5 +48,6 @@ export class HeaderComponent {
   closeAllMenus() {
     this.openTours.set(false);
     this.openMobile.set(false);
+    (document.activeElement as HTMLElement)?.blur();
   }
 }

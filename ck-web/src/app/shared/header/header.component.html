@@ -42,8 +42,9 @@
           @for (m of toursMenu; track m.label) {
             <a
               routerLink="/zajazdy"
-              [queryParams]="m.category ? { category: m.category } : {}"
+              [queryParams]="{ category: m.category }"
               class="dropdown__item"
+              (click)="closeAllMenus()"
             >{{ m.label }}</a>
           }
         </div>
