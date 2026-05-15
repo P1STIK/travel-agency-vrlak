@@ -68,8 +68,16 @@ async function main() {
       }
     });
 
-    // refresh departures mimo nested write
-    await prisma.departure.deleteMany({ where: { tourId: tour.id } });
+    // najprv zmaž rezervácie viazané na odchody tohto zájazdu
+    const depIds = (await prisma.departure.findMany({
+      where: { tourId: tour.id },
+      select: { id: true },
+    })).map(d => d.id);
+
+    if (depIds.length) {
+      await prisma.booking.deleteMany({ where: { departureId: { in: depIds } } });
+      await prisma.departure.deleteMany({ where: { tourId: tour.id } });
+    }
 
     if (departures.length) {
       await prisma.departure.createMany({

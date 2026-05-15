@@ -29,6 +29,50 @@
     ]
   },
   {
+    "slug": "cierna-hora-budva",
+    "title": "Čierna Hora – Budva & Bar",
+    "category": "letne",
+    "teaser": "Stredomorská atmosféra za dostupnú cenu.",
+    "description": "8-dňový pobyt na pobreží Čiernej Hory. Piesočnaté pláže, staré mestá a výlety v okolí. Doprava autobusom, ubytovanie s raňajkami.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "cm-001", "date": "2026-07-11", "unitPriceCents": 49900, "capacity": 50, "bookedSeats": 22 },
+      { "id": "cm-002", "date": "2026-08-01", "unitPriceCents": 54900, "capacity": 50, "bookedSeats": 8 }
+    ]
+  },
+  {
+    "slug": "bulharsko-slnecne-pobrezie",
+    "title": "Bulharsko – Slnečné pobrežie",
+    "category": "letne",
+    "teaser": "Najdlhšia piesočnatá pláž na Čiernom mori.",
+    "description": "7-dňový pobyt na Slnečnom pobreží. All-inclusive hotel priamo pri pláži, animácie, bazény. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/daniela.jpeg",
+    "thumbImage": "/assets/images/daniela.jpeg",
+    "departures": [
+      { "id": "bg-001", "date": "2026-06-20", "unitPriceCents": 42900, "capacity": 55, "bookedSeats": 30 },
+      { "id": "bg-002", "date": "2026-07-18", "unitPriceCents": 46900, "capacity": 55, "bookedSeats": 12 },
+      { "id": "bg-003", "date": "2026-08-22", "unitPriceCents": 44900, "capacity": 55, "bookedSeats": 5 }
+    ]
+  },
+  {
+    "slug": "turecko-antalya",
+    "title": "Turecko – Antalya",
+    "category": "letne",
+    "teaser": "Slnko, more a turecká pohostinnosť.",
+    "description": "10-dňový pobyt v Antalyi. All-inclusive 5* hotel, neobmedzené jedlo a nápoje, pláž, bazény. Doprava autobusom na letisko.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "tr-001", "date": "2026-06-13", "unitPriceCents": 89900, "capacity": 45, "bookedSeats": 20 },
+      { "id": "tr-002", "date": "2026-07-18", "unitPriceCents": 99900, "capacity": 45, "bookedSeats": 35 },
+      { "id": "tr-003", "date": "2026-09-05", "unitPriceCents": 79900, "capacity": 45, "bookedSeats": 6 }
+    ]
+  },
+  {
     "slug": "jednodenni-vieden",
     "title": "Jednodňový výlet – Viedeň",
     "category": "jednodnove",
@@ -58,11 +102,54 @@
     ]
   },
   {
+    "slug": "jednodenni-krakov",
+    "title": "Jednodňový výlet – Krakov",
+    "category": "jednodnove",
+    "teaser": "Historické centrum Poľska za jeden deň.",
+    "description": "Výlet do Krakova – Wawelský hrad, Hlavné námestie, soľná baňa Wieliczka. Odchod ráno, návrat večer.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "kr-001", "date": "2026-07-04", "unitPriceCents": 3200, "capacity": 55, "bookedSeats": 18 },
+      { "id": "kr-002", "date": "2026-09-19", "unitPriceCents": 3200, "capacity": 55, "bookedSeats": 7 }
+    ]
+  },
+  {
+    "slug": "jednodenni-brno",
+    "title": "Jednodňový výlet – Brno",
+    "category": "jednodnove",
+    "teaser": "Moravská metropola s bohatou históriou.",
+    "description": "Výlet do Brna – hrad Špilberk, katedrála sv. Petra, podzemné katakomby. Odchod ráno, návrat večer.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/daniela.jpeg",
+    "thumbImage": "/assets/images/daniela.jpeg",
+    "departures": [
+      { "id": "br-001", "date": "2026-06-13", "unitPriceCents": 1900, "capacity": 55, "bookedSeats": 25 },
+      { "id": "br-002", "date": "2026-08-29", "unitPriceCents": 1900, "capacity": 55, "bookedSeats": 10 }
+    ]
+  },
+  {
+    "slug": "jednodenni-praha",
+    "title": "Jednodňový výlet – Praha",
+    "category": "jednodnove",
+    "teaser": "Zlatá Praha za jeden deň.",
+    "description": "Výlet do Prahy – Pražský hrad, Karlov most, Staromestské námestie. Odchod skoro ráno, návrat neskoro večer.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "pr-001", "date": "2026-05-23", "unitPriceCents": 2200, "capacity": 55, "bookedSeats": 50 },
+      { "id": "pr-002", "date": "2026-07-11", "unitPriceCents": 2200, "capacity": 55, "bookedSeats": 33 },
+      { "id": "pr-003", "date": "2026-10-03", "unitPriceCents": 2200, "capacity": 55, "bookedSeats": 4 }
+    ]
+  },
+  {
     "slug": "silvestr-zakopane",
-    "title": "Silvestrovský pobyt – Zakopaný",
+    "title": "Silvester – Zakopaný",
     "category": "silvester",
     "teaser": "Oslavte Nový rok v Tatrách.",
-    "description": "4-dňový Silvestrovský pobyt v Zakopanom. V cene ubytovanie, polpenzia, silvestrovská večera a doprava autobusom.",
+    "description": "4-dňový Silvestrovský pobyt v Zakopanom. V cene ubytovanie, polpenzia, Silvestrovská večera a doprava autobusom.",
     "currency": "EUR",
     "heroImage": "/assets/images/benatky.jpg",
     "thumbImage": "/assets/images/benatky.jpg",
@@ -72,15 +159,54 @@
   },
   {
     "slug": "silvestr-krakov",
-    "title": "Silvestrovský pobyt – Krakov",
+    "title": "Silvester – Krakov",
     "category": "silvester",
     "teaser": "Historické mesto s výnimočnou atmosférou.",
-    "description": "3-dňový Silvestrovský pobyt v Krakove – historické centrum, Wawel a silvestrovský program. Doprava autobusom.",
+    "description": "3-dňový Silvestrovský pobyt v Krakove – historické centrum, Wawel a Silvestrovský program. Doprava autobusom.",
     "currency": "EUR",
     "heroImage": "/assets/images/pariz.jpg",
     "thumbImage": "/assets/images/pariz.jpg",
     "departures": [
       { "id": "sk-001", "date": "2026-12-30", "unitPriceCents": 22900, "capacity": 50, "bookedSeats": 10 }
+    ]
+  },
+  {
+    "slug": "silvestr-strbske-pleso",
+    "title": "Silvester – Štrbské Pleso",
+    "category": "silvester",
+    "teaser": "Nový rok pod Tatrami.",
+    "description": "3-dňový Silvestrovský pobyt na Štrbskom Plese. Ubytovanie v hoteli, polpenzia, ohňostroj, Silvestrovská zábava. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "sp-001", "date": "2026-12-30", "unitPriceCents": 19900, "capacity": 40, "bookedSeats": 15 }
+    ]
+  },
+  {
+    "slug": "silvestr-praha",
+    "title": "Silvester – Praha",
+    "category": "silvester",
+    "teaser": "Najkrajší ohňostroj v srdci Európy.",
+    "description": "4-dňový Silvestrovský pobyt v Prahe. Pražský hrad, Karlov most, Silvestrovská večera v reštaurácii, ohňostroj. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "sv-001", "date": "2026-12-29", "unitPriceCents": 25900, "capacity": 50, "bookedSeats": 30 }
+    ]
+  },
+  {
+    "slug": "silvestr-vieden",
+    "title": "Silvester – Viedeň",
+    "category": "silvester",
+    "teaser": "Silvester vo viedenskom štýle.",
+    "description": "3-dňový Silvestrovský pobyt vo Viedni. Viedenský ples, Silvestrovský koncert, prehliadka mesta. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/daniela.jpeg",
+    "thumbImage": "/assets/images/daniela.jpeg",
+    "departures": [
+      { "id": "sv2-001", "date": "2026-12-30", "unitPriceCents": 32900, "capacity": 45, "bookedSeats": 20 }
     ]
   },
   {
@@ -113,6 +239,48 @@
     ]
   },
   {
+    "slug": "lyzovacka-soelden",
+    "title": "Lyžovačka – Sölden, Rakúsko",
+    "category": "lyzovacky",
+    "teaser": "Ľadovce a 150 km zjazdoviek.",
+    "description": "6-dňová lyžovačka v rakúskom stredisku Sölden. Skipas, ubytovanie s polpenziou. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "so-001", "date": "2027-01-30", "unitPriceCents": 68900, "capacity": 40, "bookedSeats": 12 },
+      { "id": "so-002", "date": "2027-02-20", "unitPriceCents": 74900, "capacity": 40, "bookedSeats": 25 }
+    ]
+  },
+  {
+    "slug": "lyzovacka-strbske-pleso",
+    "title": "Lyžovačka – Štrbské Pleso, Tatry",
+    "category": "lyzovacky",
+    "teaser": "Lyžovanie pod štítmi Vysokých Tatier.",
+    "description": "4-dňová lyžovačka na Štrbskom Plese. Skipas, ubytovanie s raňajkami, krásne tatranské prostredie. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/pariz.jpg",
+    "thumbImage": "/assets/images/pariz.jpg",
+    "departures": [
+      { "id": "tp-001", "date": "2027-01-09", "unitPriceCents": 24900, "capacity": 50, "bookedSeats": 18 },
+      { "id": "tp-002", "date": "2027-02-06", "unitPriceCents": 27900, "capacity": 50, "bookedSeats": 35 }
+    ]
+  },
+  {
+    "slug": "lyzovacka-livigno",
+    "title": "Lyžovačka – Livigno, Taliansko",
+    "category": "lyzovacky",
+    "teaser": "Bezcolná zóna a 115 km zjazdoviek.",
+    "description": "6-dňová lyžovačka v talianskom Livigne. Skipas, ubytovanie s polpenziou, nákupy v bezcolnej zóne. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "li-001", "date": "2027-02-13", "unitPriceCents": 72900, "capacity": 40, "bookedSeats": 10 },
+      { "id": "li-002", "date": "2027-03-06", "unitPriceCents": 69900, "capacity": 40, "bookedSeats": 5 }
+    ]
+  },
+  {
     "slug": "put-medzdugorie",
     "title": "Púť – Medžugorie",
     "category": "pute",
@@ -136,7 +304,49 @@
     "heroImage": "/assets/images/pariz.jpg",
     "thumbImage": "/assets/images/pariz.jpg",
     "departures": [
-      { "id": "rm-001", "date": "2026-10-03", "unitPriceCents": 48900, "capacity": 45, "bookedSeats": 22 }
+      { "id": "rm-001", "date": "2026-10-03", "unitPriceCents": 48900, "capacity": 45, "bookedSeats": 22 },
+      { "id": "rm-002", "date": "2026-11-07", "unitPriceCents": 48900, "capacity": 45, "bookedSeats": 8 }
+    ]
+  },
+  {
+    "slug": "put-lourdes",
+    "title": "Púť – Lourdes, Francúzsko",
+    "category": "pute",
+    "teaser": "Miesto zjavení Panny Márie.",
+    "description": "8-dňová púť do Lourdes s návštevou jaskyne zjavení, procesií a kúpeľov. Ubytovanie, polpenzia, sprievodca. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/daniela.jpeg",
+    "thumbImage": "/assets/images/daniela.jpeg",
+    "departures": [
+      { "id": "lo-001", "date": "2026-09-12", "unitPriceCents": 55900, "capacity": 45, "bookedSeats": 28 },
+      { "id": "lo-002", "date": "2026-10-17", "unitPriceCents": 55900, "capacity": 45, "bookedSeats": 12 }
+    ]
+  },
+  {
+    "slug": "put-fatima",
+    "title": "Púť – Fatima, Portugalsko",
+    "category": "pute",
+    "teaser": "Jedno z najväčších mariánskych pútnických miest.",
+    "description": "10-dňová púť do Fatimy s ubytovaním, polpenziou a bohatým duchovným programom. Letecká doprava, transfer autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/benatky.jpg",
+    "thumbImage": "/assets/images/benatky.jpg",
+    "departures": [
+      { "id": "fa-001", "date": "2026-10-10", "unitPriceCents": 89900, "capacity": 40, "bookedSeats": 15 }
+    ]
+  },
+  {
+    "slug": "put-assisi",
+    "title": "Púť – Assisi, Taliansko",
+    "category": "pute",
+    "teaser": "Mesto sv. Františka z Assisi.",
+    "description": "6-dňová púť do Assisi s návštevou bazilík, Ríma a Lorety. Ubytovanie, polpenzia, duchovný sprievodca. Doprava autobusom.",
+    "currency": "EUR",
+    "heroImage": "/assets/images/cute.jpeg",
+    "thumbImage": "/assets/images/cute.jpeg",
+    "departures": [
+      { "id": "as-001", "date": "2026-09-19", "unitPriceCents": 42900, "capacity": 45, "bookedSeats": 30 },
+      { "id": "as-002", "date": "2026-11-14", "unitPriceCents": 42900, "capacity": 45, "bookedSeats": 10 }
     ]
   }
 ]
