@@ -1,11 +1,36 @@
- import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
+import { adminGuard } from './admin/admin.guard';
 
 export const routes: Routes = [
-  { path: 'o-nas', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
-  { path: 'zajazdy', loadComponent: () => import('./pages/tours/tours.component').then(m => m.ToursComponent) },
+  // Public
+  { path: 'o-nas',      loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+  { path: 'ski-bus',    loadComponent: () => import('./pages/skibus/skibus.component').then(m => m.SkibusComponent) },
+  { path: 'zajazdy',    loadComponent: () => import('./pages/tours/tours.component').then(m => m.ToursComponent) },
   { path: 'zajazdy/:slug', loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent) },
-  { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent) },
-  { path: 'thank-you', loadComponent: () => import('./pages/thank-you/thank-you.component').then(m => m.ThankYouComponent) },
-  { path: '', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
-  { path: '**', redirectTo: '' }
+  { path: 'checkout',   loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent) },
+  { path: 'thank-you',  loadComponent: () => import('./pages/thank-you/thank-you.component').then(m => m.ThankYouComponent) },
+  { path: '',           loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
+
+  // Admin
+  {
+    path: 'admin',
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./admin/login/login.component').then(m => m.LoginComponent),
+      },
+      {
+        path: '',
+        canActivate: [adminGuard],
+        loadComponent: () => import('./admin/layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+        children: [
+          { path: 'zajazdy',    loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
+          { path: 'rezervacie', loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
+          { path: '', redirectTo: 'zajazdy', pathMatch: 'full' },
+        ],
+      },
+    ],
+  },
+
+  { path: '**', redirectTo: '' },
 ];
