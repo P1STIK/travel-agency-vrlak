@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { Tour, ToursService, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
 
 type SortOrder = 'asc' | 'desc';
 
@@ -28,13 +29,7 @@ export class ToursComponent {
 
   sortOrder = signal<SortOrder>('asc');
 
-  categories = [
-    { key: 'letne',      label: 'Letné dovolenky' },
-    { key: 'jednodnove', label: 'Jednodňové výlety' },
-    { key: 'silvester',  label: 'Silvester' },
-    { key: 'lyzovacky',  label: 'Lyžovačky' },
-    { key: 'pute',       label: 'Púte' },
-  ];
+  categories = TOUR_CATEGORIES;
 
   tours = computed(() => {
     const cat = this.activeCategory();
