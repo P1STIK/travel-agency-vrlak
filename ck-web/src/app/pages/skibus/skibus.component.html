@@ -1,0 +1,76 @@
+<main class="skibus">
+
+  <!-- HERO -->
+  <section class="skibus__hero">
+    <div class="container">
+      <h1 class="skibus__title">Ski-bus</h1>
+      <p class="skibus__subtitle">Zuberec – Habovka – Lyžiarske stredisko Spálená</p>
+    </div>
+  </section>
+
+  <div class="container skibus__content">
+
+    <!-- ZDARMA SKIBUS -->
+    <section class="card">
+      <div class="card__badge">Doprava zdarma</div>
+      <h2 class="card__heading">SKIBUS – premáva každý deň</h2>
+      <p class="card__intro">
+        Počas zimnej lyžiarskej sezóny zabezpečujeme dennú autobusovú prepravu
+        na lyžiarske stredisko Spálená a späť.
+      </p>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Zastávka</th>
+              <th class="center">Odchod</th>
+              <th class="center">Príchod</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of schedule; track row.stop) {
+              <tr [class.table__row--dest]="row.isDestination">
+                <td>
+                  @if (row.isDestination) {
+                    <strong>{{ row.stop }}</strong>
+                  } @else {
+                    {{ row.stop }}
+                  }
+                </td>
+                <td class="center time">{{ row.departure }}</td>
+                <td class="center time">{{ row.arrival }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SKUPINOVA PREPRAVA -->
+    <section class="card">
+      <h2 class="card__heading">Preprava pre kolektívy</h2>
+      <p class="card__intro">
+        Okrem pravidelného skibusu ponúkame prepravu autobusom pre kolektívy
+        aj mimo jeho prevádzkových hodín.
+      </p>
+
+      <div class="prices">
+        @for (item of groupPrices; track item.route) {
+          <div class="price-row">
+            <span class="price-row__route">{{ item.route }}</span>
+            <span class="price-row__price">{{ item.price }}<span class="price-row__note"> / 1 jazda bez DPH</span></span>
+          </div>
+        }
+      </div>
+
+      <p class="card__cta-text">
+        Máte záujem o skupinovú prepravu?
+        <a href="mailto:info@v-trans.sk" class="link">Napíšte nám</a>
+        alebo zavolajte na
+        <a href="tel:+421900000000" class="link">+421 900 000 000</a>.
+      </p>
+    </section>
+
+  </div>
+</main>

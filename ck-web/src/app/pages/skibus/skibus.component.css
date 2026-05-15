@@ -1,0 +1,180 @@
+.skibus {
+  min-height: 100vh;
+}
+
+/* HERO */
+.skibus__hero {
+  background: linear-gradient(135deg, #1a3a5c 0%, #2563eb 100%);
+  color: #fff;
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+
+.skibus__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.skibus__subtitle {
+  font-size: 1.15rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+/* CONTENT */
+.skibus__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  max-width: 800px;
+}
+
+/* CARD */
+.card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 2rem 2.5rem;
+}
+
+.card__badge {
+  display: inline-block;
+  background: #16a34a;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 2rem;
+  margin-bottom: 1rem;
+}
+
+.card__heading {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a3a5c;
+  margin: 0 0 0.75rem;
+  border-bottom: 3px solid #2563eb;
+  padding-bottom: 0.5rem;
+}
+
+.card__intro {
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0 0 1.5rem;
+}
+
+/* TABLE */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.table th {
+  background: #f8fafc;
+  color: #374151;
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.table td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #374151;
+}
+
+.table tr:last-child td { border-bottom: none; }
+
+.table__row--dest td {
+  background: #eff6ff;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.center { text-align: center; }
+
+.time {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* GROUP PRICES */
+.prices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  border-left: 4px solid #2563eb;
+}
+
+.price-row__route {
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.price-row__price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a3a5c;
+  white-space: nowrap;
+}
+
+.price-row__note {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.card__cta-text {
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.link:hover { text-decoration: underline; }
+
+/* RESPONSIVE */
+@media (max-width: 560px) {
+  .skibus__title { font-size: 1.75rem; }
+  .card { padding: 1.5rem 1.25rem; }
+
+  .price-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
