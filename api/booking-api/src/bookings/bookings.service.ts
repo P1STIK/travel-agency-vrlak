@@ -3,11 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { QuoteDto } from './dto/quote.dto';
 import { BookingStatus } from '../common/entities';
-
-function randomCode(len = 8) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
+import { randomCode } from '../common/utils';
 
 @Injectable()
 export class BookingsService {
