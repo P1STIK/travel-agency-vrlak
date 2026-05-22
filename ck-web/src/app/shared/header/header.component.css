@@ -74,9 +74,34 @@
 /* mobile */
 .toggle { @apply inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100; }
 .icon { @apply h-6 w-6 stroke-current fill-none; }
-.mobile { @apply border-t border-gray-200 bg-white; }
-.mobile__nav { @apply container flex flex-col gap-1 py-2; }
-.mobile__link { @apply py-2 text-gray-800 hover:text-blue-600 transition; }
+
+.mobile {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  z-index: 50;
+}
+
+.mobile__nav { @apply container flex flex-col gap-1 py-3; }
+.mobile__link { @apply py-2 text-gray-800 hover:text-blue-600 transition font-medium; }
 .mobile__link--active { @apply text-blue-600 font-semibold; }
 .mobile__submenu { @apply pl-4 pb-2; }
-.mobile__sublink { @apply block py-1 text-gray-700 hover:text-blue-600; }
+.mobile__sublink { @apply block py-1 text-gray-600 hover:text-blue-600; }
+
+.mobile__cta {
+  display: block;
+  margin-top: 0.5rem;
+  background: #2563eb;
+  color: #fff;
+  text-align: center;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.mobile__cta:hover { background: #1d4ed8; }

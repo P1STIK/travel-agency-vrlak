@@ -1,0 +1,91 @@
+<main class="contact">
+
+  <section class="contact__hero">
+    <div class="container">
+      <h1 class="contact__title">Kontakt</h1>
+      <p class="contact__sub">Radi vám poradíme s termínom, ponukou aj prenájmom autobusu</p>
+    </div>
+  </section>
+
+  <div class="container contact__body">
+
+    <!-- KONTAKTNÉ ÚDAJE -->
+    <div class="contact__info">
+      <div class="card">
+        <h2 class="card__heading">V-TRANS, s.r.o.</h2>
+
+        <ul class="info-list">
+          <li class="info-item">
+            <span class="info-item__icon">📞</span>
+            <div>
+              <span class="info-item__label">Telefón</span>
+              <a href="tel:+421900000000" class="info-item__value">+421 900 000 000</a>
+            </div>
+          </li>
+          <li class="info-item">
+            <span class="info-item__icon">✉️</span>
+            <div>
+              <span class="info-item__label">E-mail</span>
+              <a href="mailto:info@v-trans.sk" class="info-item__value">info&#64;v-trans.sk</a>
+            </div>
+          </li>
+          <li class="info-item">
+            <span class="info-item__icon">🕐</span>
+            <div>
+              <span class="info-item__label">Otváracie hodiny</span>
+              <span class="info-item__value">Po – Pi: 8:00 – 16:00</span>
+            </div>
+          </li>
+          <li class="info-item">
+            <span class="info-item__icon">📍</span>
+            <div>
+              <span class="info-item__label">Adresa</span>
+              <span class="info-item__value">Hlavná 12, 010 01 Žilina</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FORMULÁR -->
+    <div class="contact__form-wrap">
+      @if (sent()) {
+        <div class="card card--success">
+          <div class="success-icon">✓</div>
+          <h2 class="card__heading">Správa odoslaná</h2>
+          <p class="card__text">Ďakujeme za správu. Ozveme sa vám čo najskôr.</p>
+        </div>
+      } @else {
+        <div class="card">
+          <h2 class="card__heading">Napíšte nám</h2>
+
+          <form class="form" (ngSubmit)="submit()">
+            <div class="form__row">
+              <label class="field">
+                <span class="field__label">Meno a priezvisko *</span>
+                <input class="field__input" [(ngModel)]="form.name" name="name" required placeholder="Ján Novák" />
+              </label>
+              <label class="field">
+                <span class="field__label">Telefón</span>
+                <input class="field__input" [(ngModel)]="form.phone" name="phone" placeholder="+421 900 000 000" />
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="field__label">E-mail *</span>
+              <input class="field__input" type="email" [(ngModel)]="form.email" name="email" required placeholder="meno@domena.sk" />
+            </label>
+
+            <label class="field">
+              <span class="field__label">Správa *</span>
+              <textarea class="field__input field__input--ta" [(ngModel)]="form.message" name="message" required rows="5" placeholder="Vaša otázka alebo dopyt..."></textarea>
+            </label>
+
+            <button class="btn btn--primary btn--lg" type="submit">Odoslať správu</button>
+          </form>
+        </div>
+      }
+    </div>
+
+  </div>
+</main>

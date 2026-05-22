@@ -1,43 +1,156 @@
- /* layout helpers */
-.container { @apply max-w-screen-xl mx-auto px-4; }
+.ft {
+  background: #0f1f35;
+  color: rgba(255,255,255,0.75);
+}
 
-/* CTA pás */
-.ft__cta { @apply bg-blue-50 border-t border-blue-100; }
-.ft__cta__inner { @apply py-8 md:py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4; }
-.ft__cta__title { @apply text-2xl md:text-3xl font-extrabold text-gray-900; }
-.ft__cta__text { @apply text-gray-700; }
-.ft__cta__actions { @apply flex items-center gap-3; }
-.btn { @apply inline-flex items-center rounded-lg px-4 py-2 text-sm font-medium transition; }
-.btn--primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
-.btn--ghost { @apply border border-gray-300 text-gray-700 hover:bg-gray-50; }
+/* MAIN GRID */
+.ft__main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3rem;
+}
 
-/* hlavný footer */
-.ft { @apply bg-white border-t border-gray-200; }
-.ft__main { @apply py-10; }
-.ft__grid { @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8; }
+/* BRAND */
+.ft__logo-wrap {
+  margin-bottom: 1rem;
+}
 
-/* značka */
-.ft__brand { @apply space-y-3; }
-.ft__logo { @apply h-9 w-auto; }
-.ft__logoBox { @apply inline-flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white font-bold; }
-.ft__brandName { @apply font-semibold text-lg; }
-.ft__about { @apply text-gray-600; }
-.ft__partners { @apply flex items-center gap-3 pt-2; }
-.ft__partner { @apply h-8 w-auto opacity-80; }
+.ft__logo {
+  height: 32px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
 
-/* stĺpce */
-.ft__col { @apply space-y-3; }
-.ft__heading { @apply text-base font-semibold text-gray-900; }
-.ft__list { @apply space-y-2; }
-.ft__list a { @apply text-gray-700 hover:text-blue-600; }
+.ft__about {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.6);
+  margin: 0 0 1.25rem;
+  max-width: 260px;
+}
 
-/* sociálne ikony */
-.ft__socials { @apply flex items-center gap-3 mt-3; }
-.ft__social { @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 hover:bg-gray-50; }
-.ft__icon { @apply h-5 w-5 fill-current text-gray-700; }
+.ft__socials {
+  display: flex;
+  gap: 0.5rem;
+}
 
-/* spodná lišta */
-.ft__legal { @apply bg-gray-50 border-t border-gray-200; }
-.ft__legal__inner { @apply py-4 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-gray-600; }
-.ft__legal__links { @apply flex items-center gap-4; }
-.ft__legal__links a { @apply hover:text-blue-600; }
+.ft__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+  transition: border-color 0.15s, color 0.15s;
+  text-decoration: none;
+}
+
+.ft__social:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+.ft__icon {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* COLUMNS */
+.ft__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ft__heading {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+  margin: 0 0 1rem;
+}
+
+.ft__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ft__list a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.15s;
+}
+
+.ft__list a:hover { color: #fff; }
+
+.ft__list--contact li {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.6);
+}
+
+/* LEGAL */
+.ft__legal {
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.ft__legal__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.ft__legal__links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.ft__legal__links a {
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.ft__legal__links a:hover { color: rgba(255,255,255,0.75); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .ft__main {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .ft__main {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding-top: 2.5rem;
+  }
+
+  .ft__legal__inner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .ft__legal__links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+}

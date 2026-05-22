@@ -65,27 +65,28 @@
   </div>
 
   <!-- MOBILE MENU -->
-  <div class="mobile md:hidden" [class.hidden]="!openMobile()">
-    <nav class="mobile__nav">
-      @for (item of nav; track item.path) {
-        <a [routerLink]="item.path" class="mobile__link" routerLinkActive="mobile__link--active" (click)="closeAllMenus()">
-          {{ item.label }}
-        </a>
-
-        @if (item.hasMenu) {
-          <div class="mobile__submenu">
-            @for (m of toursMenu; track m.label) {
-              <a
-                routerLink="/zajazdy"
-                [queryParams]="m.category ? { category: m.category } : {}"
-                class="mobile__sublink"
-                (click)="closeAllMenus()"
-              >{{ m.label }}</a>
-            }
-          </div>
+  @if (openMobile()) {
+    <div class="mobile">
+      <nav class="mobile__nav">
+        @for (item of nav; track item.path) {
+          <a [routerLink]="item.path" class="mobile__link" routerLinkActive="mobile__link--active" (click)="closeAllMenus()">
+            {{ item.label }}
+          </a>
+          @if (item.hasMenu) {
+            <div class="mobile__submenu">
+              @for (m of toursMenu; track m.label) {
+                <a
+                  routerLink="/zajazdy"
+                  [queryParams]="m.category ? { category: m.category } : {}"
+                  class="mobile__sublink"
+                  (click)="closeAllMenus()"
+                >{{ m.label }}</a>
+              }
+            </div>
+          }
         }
-      }
-      <a routerLink="/kontakt" class="btn btn--primary w-full mt-2" (click)="closeAllMenus()">Kontaktujte nás</a>
-    </nav>
-  </div>
+        <a routerLink="/kontakt" class="mobile__cta" (click)="closeAllMenus()">Kontaktujte nás</a>
+      </nav>
+    </div>
+  }
 </header>
