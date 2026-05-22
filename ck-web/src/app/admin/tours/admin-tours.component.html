@@ -103,7 +103,7 @@
   } @else {
     <div class="tours-list">
       @for (t of tours(); track t.id) {
-        <div class="card tour-card">
+        <div class="card tour-card" [routerLink]="['/admin/zajazdy', t.slug]">
           <div class="tour-card__header">
             <div>
               <h2 class="tour-card__title">{{ t.title }}</h2>
@@ -112,7 +112,7 @@
                 <span class="badge">{{ t.category }}</span>
               }
             </div>
-            <span class="tour-card__currency">{{ t.currency }}</span>
+            <span class="tour-card__arrow">→</span>
           </div>
 
           <div class="departures">

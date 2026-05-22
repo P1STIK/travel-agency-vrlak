@@ -1,12 +1,13 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AdminApiService, AdminTour, CreateTourPayload } from '../admin-api.service';
 import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
 
 @Component({
   selector: 'app-admin-tours',
-  imports: [DecimalPipe, FormsModule],
+  imports: [DecimalPipe, FormsModule, RouterLink],
   templateUrl: './admin-tours.component.html',
   styleUrl: './admin-tours.component.css',
 })

@@ -45,6 +45,33 @@ export interface AdminBooking {
   departure: { date: string; unitPriceCents: number; capacity: number } | null;
 }
 
+export interface AdminDetailBooking {
+  id: string;
+  code: string;
+  email: string;
+  seats: number;
+  unitPriceCents: number;
+  totalAmount: number;
+  status: BookingStatus;
+  createdAt: string;
+  passengers: AdminPassenger[];
+}
+
+export interface AdminDetailDeparture {
+  id: string;
+  date: string;
+  unitPriceCents: number;
+  capacity: number;
+  bookedSeats: number;
+  bookings: AdminDetailBooking[];
+}
+
+export interface AdminTourDetail extends Omit<AdminTour, 'departures'> {
+  description: string | null;
+  thumbImage: string | null;
+  departures: AdminDetailDeparture[];
+}
+
 export interface ManualBookingPayload {
   departureId: string;
   tourSlug: string;
@@ -78,6 +105,10 @@ export class AdminApiService {
 
   getTours() {
     return this.http.get<AdminTour[]>(`${this.base}/tours`, { headers: this.headers() });
+  }
+
+  getTourDetail(slug: string) {
+    return this.http.get<AdminTourDetail>(`${this.base}/tours/${slug}`, { headers: this.headers() });
   }
 
   createTour(payload: CreateTourPayload) {

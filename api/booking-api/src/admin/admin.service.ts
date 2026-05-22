@@ -5,6 +5,8 @@ import { activeStatuses, randomCode, withBookedSeats } from '../common/utils';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { ManualBookingDto } from './dto/manual-booking.dto';
 
+const inactiveStatuses = new Set<string>([BookingStatus.CANCELLED, BookingStatus.REFUNDED]);
+
 const bookingsInclude = {
   where: { status: { notIn: activeStatuses } },
   select: { seats: true },
@@ -29,6 +31,35 @@ export class AdminService {
       ...t,
       departures: t.departures.map(withBookedSeats),
     }));
+  }
+
+  async getTourDetail(slug: string) {
+    const tour = await this.prisma.tour.findUnique({
+      where: { slug },
+      include: {
+        departures: {
+          orderBy: { date: 'asc' },
+          include: {
+            bookings: {
+              orderBy: { createdAt: 'desc' },
+              include: { passengers: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!tour) throw new NotFoundException('Zájazd neexistuje');
+
+    return {
+      ...tour,
+      departures: tour.departures.map(dep => ({
+        ...dep,
+        bookedSeats: dep.bookings
+          .filter(b => !inactiveStatuses.has(b.status))
+          .reduce((sum, b) => sum + b.seats, 0),
+      })),
+    };
   }
 
   async createTour(dto: CreateTourDto) {

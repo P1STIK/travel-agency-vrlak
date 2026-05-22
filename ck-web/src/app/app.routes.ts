@@ -4,6 +4,7 @@ import { adminGuard } from './admin/admin.guard';
 export const routes: Routes = [
   // Public
   { path: 'o-nas',      loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+  { path: 'kontakt',    loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) },
   { path: 'ski-bus',    loadComponent: () => import('./pages/skibus/skibus.component').then(m => m.SkibusComponent) },
   { path: 'zajazdy',    loadComponent: () => import('./pages/tours/tours.component').then(m => m.ToursComponent) },
   { path: 'zajazdy/:slug', loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent) },
@@ -24,8 +25,9 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./admin/layout/admin-layout.component').then(m => m.AdminLayoutComponent),
         children: [
-          { path: 'zajazdy',    loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
-          { path: 'rezervacie', loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
+          { path: 'zajazdy',         loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
+          { path: 'zajazdy/:slug',   loadComponent: () => import('./admin/tour-detail/admin-tour-detail.component').then(m => m.AdminTourDetailComponent) },
+          { path: 'rezervacie',      loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
           { path: '', redirectTo: 'zajazdy', pathMatch: 'full' },
         ],
       },

@@ -1,0 +1,108 @@
+<div class="page">
+
+  <!-- BACK + HEADER -->
+  <div class="page__back">
+    <a routerLink="/admin/zajazdy" class="btn btn--ghost btn--sm">← Späť na zájazdy</a>
+  </div>
+
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (error()) {
+    <p class="state-msg state-msg--error">{{ error() }}</p>
+  } @else {
+  @if (tour(); as t) {
+
+    <!-- TOUR HEADER -->
+    <div class="tour-header">
+      <div>
+        <h1 class="page__title">{{ t.title }}</h1>
+        <div class="tour-header__meta">
+          <span class="slug-text">{{ t.slug }}</span>
+          @if (t.category) { <span class="badge badge--blue">{{ t.category }}</span> }
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    @if (stats(); as s) {
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-card__num">{{ s.activeBookings }}</span>
+          <span class="stat-card__label">Aktívne rezervácie</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__num">{{ s.totalSeats }}</span>
+          <span class="stat-card__label">Zarezervované miesta</span>
+        </div>
+        <div class="stat-card stat-card--revenue">
+          <span class="stat-card__num">{{ (s.totalRevenue / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+          <span class="stat-card__label">Celkový obrat</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__num">{{ s.totalBookings }}</span>
+          <span class="stat-card__label">Všetky rezervácie</span>
+        </div>
+      </div>
+    }
+
+    <!-- DEPARTURES -->
+    @for (dep of t.departures; track dep.id) {
+      <div class="card departure-section">
+        <div class="dep-header">
+          <div class="dep-header__left">
+            <span class="dep-header__date">{{ formatDate(dep.date) }}</span>
+            <span class="dep-header__price">{{ (dep.unitPriceCents / 100) | number:'1.0-0' }} {{ t.currency }} / os.</span>
+          </div>
+          <div class="dep-header__occ">
+            <div class="occ-bar"><div class="occ-bar__fill" [style.width.%]="occupancyPct(dep)"></div></div>
+            <span class="occ-text">{{ dep.bookedSeats }}/{{ dep.capacity }} miest</span>
+          </div>
+        </div>
+
+        @if (!dep.bookings.length) {
+          <p class="empty-msg">Žiadne rezervácie pre tento odchod.</p>
+        } @else {
+          <div class="bookings-table-wrap">
+            <table class="bookings-table">
+              <thead>
+                <tr>
+                  <th>Kód</th>
+                  <th>Cestujúci</th>
+                  <th>E-mail</th>
+                  <th class="text-right">Miesta</th>
+                  <th class="text-right">Suma</th>
+                  <th>Stav</th>
+                  <th>Vytvorená</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (b of dep.bookings; track b.id) {
+                  <tr [class.row--inactive]="b.status === 'CANCELLED' || b.status === 'REFUNDED'">
+                    <td><span class="code-chip">{{ b.code }}</span></td>
+                    <td>
+                      <div class="passengers-list">
+                        @for (p of b.passengers; track p.id) {
+                          <span>{{ p.firstName }} {{ p.lastName }}</span>
+                        }
+                      </div>
+                    </td>
+                    <td class="email-cell">{{ b.email }}</td>
+                    <td class="text-right">{{ b.seats }}</td>
+                    <td class="text-right font-bold">{{ (b.totalAmount / 100) | number:'1.0-0' }} {{ t.currency }}</td>
+                    <td><span class="badge {{ statusClass(b.status) }}">{{ statusLabel(b.status) }}</span></td>
+                    <td class="date-cell">{{ formatDateTime(b.createdAt) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+
+    @if (!t.departures.length) {
+      <p class="state-msg">Tento zájazd nemá žiadne odchody.</p>
+    }
+  }
+  }
+</div>

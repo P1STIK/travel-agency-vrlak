@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminService } from './admin.service';
 import { CreateTourDto } from './dto/create-tour.dto';
@@ -12,6 +12,11 @@ export class AdminController {
   @Get('tours')
   getTours() {
     return this.admin.getAllTours();
+  }
+
+  @Get('tours/:slug')
+  getTourDetail(@Param('slug') slug: string) {
+    return this.admin.getTourDetail(slug);
   }
 
   @Post('tours')
