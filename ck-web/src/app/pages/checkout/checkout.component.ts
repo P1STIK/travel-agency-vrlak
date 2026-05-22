@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { BookingService } from '../../services/booking.service';
+import { ToursService } from '../../services/tours.service';
 
 @Component({
   selector: 'app-checkout',
@@ -11,39 +12,42 @@ import { BookingService } from '../../services/booking.service';
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css'],
 })
-export class CheckoutComponent {
-  // krokový stav
-  step = 1;
+export class CheckoutComponent implements OnInit {
+  private route   = inject(ActivatedRoute);
+  private fb      = inject(FormBuilder);
+  private api     = inject(BookingService);
+  private toursApi = inject(ToursService);
 
-  // parametre zájazdu
+  step = signal(1);
+  readonly STEPS = [
+    { n: 1, label: 'Počet miest' },
+    { n: 2, label: 'Cestujúci' },
+    { n: 3, label: 'Platba' },
+  ];
+
   tourSlug!: string;
   departureId!: string;
   unitPriceCents!: number;
 
-  // formulár
   form!: FormGroup;
   get passengers(): FormArray { return this.form.get('passengers') as FormArray; }
 
-  // stav
-  quote: any;
-  bookingId: string | null = null;
-  loading = false;
-  errorMsg = '';
-
-  constructor(
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private api: BookingService,
-  ) {}
+  tour = signal<any>(null);
+  quote = signal<any>(null);
+  bookingId = signal<string | null>(null);
+  loading = signal(false);
+  errorMsg = signal('');
 
   ngOnInit() {
-    // načítaj query parametre (alebo defaulty)
     const p = this.route.snapshot.queryParamMap;
-    this.tourSlug = p.get('tourSlug') ?? 'pariz-na-vikend';
-    this.departureId = p.get('departureId') ?? 'wp-001';
-    this.unitPriceCents = Number(p.get('price') ?? 12900);
+    this.tourSlug      = p.get('tourSlug')    ?? '';
+    this.departureId   = p.get('departureId') ?? '';
+    this.unitPriceCents = Number(p.get('price') ?? 0);
 
-    // vytvor form až teraz (v DI kontexte)
+    if (this.tourSlug) {
+      this.toursApi.bySlug(this.tourSlug).subscribe(t => this.tour.set(t));
+    }
+
     this.form = this.fb.group({
       seats: [1, [Validators.required, Validators.min(1), Validators.max(50)]],
       email: ['', [Validators.required, Validators.email]],
@@ -64,7 +68,7 @@ export class CheckoutComponent {
     while (this.passengers.length < seats) {
       this.passengers.push(this.fb.group({
         firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
+        lastName:  ['', Validators.required],
       }));
     }
     while (this.passengers.length > seats) {
@@ -72,45 +76,72 @@ export class CheckoutComponent {
     }
   }
 
-  next() { if (this.step < 3) this.step++; }
-  back() { if (this.step > 1) this.step--; }
-
   recalcQuote() {
-  const seats = Number(this.form.get('seats')!.value ?? 1);
-  this.api.quote({ departureId: this.departureId, seats, unitPriceCents: this.unitPriceCents })
-    .subscribe({
-      next: q => this.quote = q,
-      error: () => this.errorMsg = 'Nepodarilo sa vypočítať cenu.',
+    const seats = Number(this.form.get('seats')!.value ?? 1);
+    this.api.quote({ departureId: this.departureId, seats, unitPriceCents: this.unitPriceCents })
+      .subscribe({ next: q => this.quote.set(q) });
+  }
+
+  nextStep() {
+    if (this.step() === 1) {
+      this.form.get('seats')!.markAsTouched();
+      if (this.form.get('seats')!.invalid) return;
+    }
+    if (this.step() < 3) this.step.update(s => s + 1);
+  }
+
+  prevStep() {
+    if (this.step() > 1) this.step.update(s => s - 1);
+  }
+
+  createBooking() {
+    this.form.markAllAsTouched();
+    if (this.form.invalid) return;
+
+    this.loading.set(true);
+    this.errorMsg.set('');
+    const val = this.form.getRawValue();
+
+    this.api.create({
+      departureId:    this.departureId,
+      tourSlug:       this.tourSlug,
+      email:          val.email,
+      seats:          val.seats,
+      unitPriceCents: this.unitPriceCents,
+      passengers:     val.passengers,
+    }).subscribe({
+      next: res => {
+        this.bookingId.set(res.bookingId);
+        this.step.set(3);
+        this.loading.set(false);
+      },
+      error: err => {
+        this.errorMsg.set(err?.error?.message ?? 'Rezerváciu sa nepodarilo vytvoriť.');
+        this.loading.set(false);
+      },
     });
-}
-
-createBooking() {
-  this.form.updateValueAndValidity();
-  if (this.form.invalid) { this.form.markAllAsTouched(); return; }
-
-  this.loading = true; this.errorMsg = '';
-  const val = this.form.getRawValue();
-  console.log('Creating booking with:', val); // pomôže v DevTools
-
-  this.api.create({
-    departureId: this.departureId,
-    tourSlug: this.tourSlug,
-    email: val.email,
-    seats: val.seats,
-    unitPriceCents: this.unitPriceCents,
-    passengers: val.passengers
-  }).subscribe({
-    next: res => { this.bookingId = res.bookingId; this.step = 3; this.loading = false; },
-    error: err => { console.error(err); this.errorMsg = 'Rezerváciu sa nepodarilo vytvoriť.'; this.loading = false; }
-  });
-}
+  }
 
   pay() {
-    if (!this.bookingId) return;
+    if (!this.bookingId()) return;
     const returnUrl = window.location.origin + '/thank-you';
-    this.api.checkoutSession(this.bookingId, returnUrl).subscribe({
-      next: res => window.location.href = res.checkoutUrl,
-      error: () => this.errorMsg = 'Nepodarilo sa spustiť platbu.',
+    this.loading.set(true);
+    this.api.checkoutSession(this.bookingId()!, returnUrl).subscribe({
+      next: res => { window.location.href = res.checkoutUrl; },
+      error: () => {
+        this.errorMsg.set('Nepodarilo sa spustiť platbu.');
+        this.loading.set(false);
+      },
     });
+  }
+
+  formatDate(iso: string): string {
+    return new Date(iso).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  departure() {
+    const t = this.tour();
+    if (!t) return null;
+    return t.departures?.find((d: any) => d.id === this.departureId) ?? t.departures?.[0] ?? null;
   }
 }
