@@ -2,21 +2,22 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
-import { BookingService } from '../../services/booking.service';
 import { ToursService } from '../../services/tours.service';
+import { BookingStore } from '../../services/booking.store';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
   imports: [ReactiveFormsModule, DecimalPipe],
+  providers: [BookingStore], // vlastná instancia na životnosť komponentu, nie root singleton
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
-  private route   = inject(ActivatedRoute);
-  private fb      = inject(FormBuilder);
-  private api     = inject(BookingService);
+  private route    = inject(ActivatedRoute);
+  private fb       = inject(FormBuilder);
   private toursApi = inject(ToursService);
+  readonly store   = inject(BookingStore);
 
   step = signal(1);
   readonly STEPS = [
@@ -33,10 +34,13 @@ export class CheckoutComponent implements OnInit {
   get passengers(): FormArray { return this.form.get('passengers') as FormArray; }
 
   tour = signal<any>(null);
-  quote = signal<any>(null);
-  bookingId = signal<string | null>(null);
-  loading = signal(false);
-  errorMsg = signal('');
+  insuranceFiles = signal<(File | null)[]>([]);
+
+  // Zdieľané signály zo store-u — šablóna ich čítala ako `quote()`, `bookingId()`, `loading()`, `errorMsg()`.
+  readonly quote = this.store.quote;
+  readonly bookingId = this.store.bookingId;
+  readonly loading = this.store.loading;
+  readonly errorMsg = this.store.error;
 
   ngOnInit() {
     const p = this.route.snapshot.queryParamMap;
@@ -67,19 +71,37 @@ export class CheckoutComponent implements OnInit {
     const seats = this.form.get('seats')!.value ?? 1;
     while (this.passengers.length < seats) {
       this.passengers.push(this.fb.group({
-        firstName: ['', Validators.required],
-        lastName:  ['', Validators.required],
+        firstName:  ['', Validators.required],
+        lastName:   ['', Validators.required],
+        birthDate:  [''],
+        nationalId: [''],
+        street:     [''],
+        city:       [''],
+        zip:        [''],
+        phone:      [''],
+        email:      [''],
       }));
+      this.insuranceFiles.update(files => [...files, null]);
     }
     while (this.passengers.length > seats) {
       this.passengers.removeAt(this.passengers.length - 1);
+      this.insuranceFiles.update(files => files.slice(0, -1));
     }
+  }
+
+  onInsuranceFileSelected(index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.insuranceFiles.update(files => {
+      const copy = [...files];
+      copy[index] = file;
+      return copy;
+    });
   }
 
   recalcQuote() {
     const seats = Number(this.form.get('seats')!.value ?? 1);
-    this.api.quote({ departureId: this.departureId, seats, unitPriceCents: this.unitPriceCents })
-      .subscribe({ next: q => this.quote.set(q) });
+    this.store.fetchQuote(this.departureId, seats, this.unitPriceCents);
   }
 
   nextStep() {
@@ -98,40 +120,26 @@ export class CheckoutComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
-    this.loading.set(true);
-    this.errorMsg.set('');
     const val = this.form.getRawValue();
-
-    this.api.create({
+    this.store.createBooking({
       departureId:    this.departureId,
       tourSlug:       this.tourSlug,
       email:          val.email,
       seats:          val.seats,
       unitPriceCents: this.unitPriceCents,
       passengers:     val.passengers,
-    }).subscribe({
-      next: res => {
-        this.bookingId.set(res.bookingId);
-        this.step.set(3);
-        this.loading.set(false);
-      },
-      error: err => {
-        this.errorMsg.set(err?.error?.message ?? 'Rezerváciu sa nepodarilo vytvoriť.');
-        this.loading.set(false);
-      },
+    }, this.insuranceFiles()).subscribe({
+      next: () => this.step.set(3),
+      error: () => {}, // chybová správa je už nastavená v store-i
     });
   }
 
   pay() {
     if (!this.bookingId()) return;
     const returnUrl = window.location.origin + '/thank-you';
-    this.loading.set(true);
-    this.api.checkoutSession(this.bookingId()!, returnUrl).subscribe({
+    this.store.pay(returnUrl).subscribe({
       next: res => { window.location.href = res.checkoutUrl; },
-      error: () => {
-        this.errorMsg.set('Nepodarilo sa spustiť platbu.');
-        this.loading.set(false);
-      },
+      error: () => {}, // chybová správa je už nastavená v store-i
     });
   }
 

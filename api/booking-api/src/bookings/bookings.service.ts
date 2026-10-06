@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { QuoteDto } from './dto/quote.dto';
@@ -47,7 +47,17 @@ export class BookingsService {
         currency: quote.currency,
         status: BookingStatus.PENDING,
         passengers: {
-          create: dto.passengers.map(p => ({ firstName: p.firstName, lastName: p.lastName })),
+          create: dto.passengers.map(p => ({
+            firstName: p.firstName,
+            lastName: p.lastName,
+            birthDate: p.birthDate ? new Date(p.birthDate) : undefined,
+            nationalId: p.nationalId,
+            street: p.street,
+            city: p.city,
+            zip: p.zip,
+            phone: p.phone,
+            email: p.email,
+          })),
         },
       },
       include: { passengers: true },
@@ -59,7 +69,19 @@ export class BookingsService {
       totalCents: created.totalAmount,
       currency: created.currency,
       status: created.status,
+      passengers: created.passengers.map(p => ({ id: p.id, firstName: p.firstName, lastName: p.lastName })),
     };
+  }
+
+  async uploadInsuranceDocument(bookingId: string, passengerId: string, filePath: string) {
+    const passenger = await this.prisma.passenger.findUnique({ where: { id: passengerId } });
+    if (!passenger || passenger.bookingId !== bookingId) {
+      throw new NotFoundException('Passenger not found for this booking');
+    }
+    return this.prisma.passenger.update({
+      where: { id: passengerId },
+      data: { insuranceDocPath: filePath },
+    });
   }
 
   async createCheckoutSession(bookingId: string, returnUrl: string) {

@@ -27,6 +27,9 @@ tmp/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Uploadnuté súbory (poistné dokumenty atď.)
+api/booking-api/uploads/
+
 # Prisma lokálna DB (ak by bola)
 api/booking-api/prisma/*.db*
 api/booking-api/prisma/*.sqlite*

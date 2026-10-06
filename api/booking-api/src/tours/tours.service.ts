@@ -11,6 +11,15 @@ const bookingsInclude = {
 export class ToursService {
   constructor(private prisma: PrismaService) {}
 
+  // Termíny, ktoré už odišli, sa verejne neponúkajú na vyhľadávanie/rezerváciu —
+  // zostávajú ale v DB ako história (bookings, admin prehľady vidia všetko ďalej,
+  // lebo admin modul ide priamo cez Prisma, nie cez tento service).
+  private onlyFutureDepartures<T extends { date: Date }>(departures: T[]): T[] {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+    return departures.filter((d) => d.date >= startOfToday);
+  }
+
   async findAll() {
     const tours = await this.prisma.tour.findMany({
       orderBy: { createdAt: 'desc' },
@@ -22,12 +31,15 @@ export class ToursService {
       },
     });
 
-    return tours.map((t) => ({
-      ...t,
-      minPriceCents: t.departures.length ? Math.min(...t.departures.map((d) => d.unitPriceCents)) : null,
-      firstDeparture: t.departures[0]?.date ?? null,
-      departures: t.departures.map(withBookedSeats),
-    }));
+    return tours
+      .map((t) => ({ ...t, departures: this.onlyFutureDepartures(t.departures) }))
+      .filter((t) => t.departures.length > 0)
+      .map((t) => ({
+        ...t,
+        minPriceCents: t.departures.length ? Math.min(...t.departures.map((d) => d.unitPriceCents)) : null,
+        firstDeparture: t.departures[0]?.date ?? null,
+        departures: t.departures.map(withBookedSeats),
+      }));
   }
 
   async findBySlug(slug: string) {
@@ -43,11 +55,13 @@ export class ToursService {
 
     if (!tour) throw new NotFoundException('Tour not found');
 
+    const futureDepartures = this.onlyFutureDepartures(tour.departures);
+
     return {
       ...tour,
-      minPriceCents: tour.departures.length ? Math.min(...tour.departures.map((d) => d.unitPriceCents)) : null,
-      firstDeparture: tour.departures[0]?.date ?? null,
-      departures: tour.departures.map(withBookedSeats),
+      minPriceCents: futureDepartures.length ? Math.min(...futureDepartures.map((d) => d.unitPriceCents)) : null,
+      firstDeparture: futureDepartures[0]?.date ?? null,
+      departures: futureDepartures.map(withBookedSeats),
     };
   }
 }

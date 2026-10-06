@@ -35,12 +35,14 @@
   <!-- GRID -->
   <section class="tours__section container">
 
-    @if (!tours().length) {
+    @if (loading()) {
+      <p class="tours__empty">Načítavam zájazdy...</p>
+    } @else if (!tours().length) {
       <p class="tours__empty">Žiadne zájazdy v tejto kategórii.</p>
     }
 
     <div class="tours__grid">
-      @for (t of tours(); track t.slug) {
+      @for (t of visibleTours(); track t.slug) {
         <article class="card">
           <div class="card__media">
             <img [src]="thumb(t)" [alt]="t.title" class="card__img" />
@@ -97,6 +99,20 @@
         </article>
       }
     </div>
+
+    @if (tours().length) {
+      <div class="tours__load-more">
+        <span class="tours__count">Zobrazených {{ visibleTours().length }} z {{ tours().length }} zájazdov</span>
+        <div class="tours__load-more-actions">
+          @if (hasMore()) {
+            <button class="btn btn--ghost" (click)="loadMore()">Načítať viac</button>
+          }
+          @if (canShowLess()) {
+            <button class="btn btn--ghost" (click)="showLess()">Zobraziť menej</button>
+          }
+        </div>
+      </div>
+    }
   </section>
 
 </main>

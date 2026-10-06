@@ -1,6 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+export interface PassengerInput {
+  firstName: string; lastName: string;
+  birthDate?: string; nationalId?: string;
+  street?: string; city?: string; zip?: string;
+  phone?: string; email?: string;
+}
+
+export interface CreateBookingPayload {
+  departureId: string; tourSlug: string; email: string;
+  seats: number; unitPriceCents: number;
+  passengers: PassengerInput[];
+  addons?: any[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private baseUrl = '/api';
@@ -11,13 +25,14 @@ export class BookingService {
     return this.http.post<any>(`${this.baseUrl}/booking/quote`, body);
   }
 
-  create(body: {
-    departureId: string; tourSlug: string; email: string;
-    seats: number; unitPriceCents: number;
-    passengers: { firstName: string; lastName: string }[];
-    addons?: any[];
-  }) {
+  create(body: CreateBookingPayload) {
     return this.http.post<any>(`${this.baseUrl}/booking`, body);
+  }
+
+  uploadInsuranceDocument(bookingId: string, passengerId: string, file: File) {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<any>(`${this.baseUrl}/booking/${bookingId}/passengers/${passengerId}/insurance-document`, form);
   }
 
   checkoutSession(bookingId: string, returnUrl: string) {

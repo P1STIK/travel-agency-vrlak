@@ -1,9 +1,17 @@
 import { Type } from 'class-transformer';
-import { IsEmail, IsInt, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import { IsDateString, IsEmail, IsInt, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 
 class PassengerDto {
   @IsString() firstName!: string;
   @IsString() lastName!: string;
+
+  @IsOptional() @IsDateString() birthDate?: string;
+  @IsOptional() @IsString() nationalId?: string;
+  @IsOptional() @IsString() street?: string;
+  @IsOptional() @IsString() city?: string;
+  @IsOptional() @IsString() zip?: string;
+  @IsOptional() @IsString() phone?: string;
+  @IsOptional() @IsEmail() email?: string;
 }
 
 export class CreateBookingDto {

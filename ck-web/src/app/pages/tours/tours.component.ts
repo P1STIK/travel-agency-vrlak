@@ -1,9 +1,10 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { Tour, ToursService, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { Tour, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { ToursStore } from '../../services/tours.store';
 import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
 
 type SortOrder = 'asc' | 'desc';
@@ -15,10 +16,11 @@ type SortOrder = 'asc' | 'desc';
   styleUrl: './tours.component.css'
 })
 export class ToursComponent {
-  private api = inject(ToursService);
+  private store = inject(ToursStore);
   private router = inject(Router);
 
-  private allTours = toSignal(this.api.all(), { initialValue: [] as Tour[] });
+  private allTours = this.store.tours;
+  loading = this.store.loading;
 
   activeCategory = toSignal(
     inject(ActivatedRoute).queryParams.pipe(
@@ -45,6 +47,29 @@ export class ToursComponent {
         : bDate.localeCompare(aDate);
     });
   });
+
+  readonly PAGE_SIZE = 9;
+  visibleCount = signal(this.PAGE_SIZE);
+
+  visibleTours = computed(() => this.tours().slice(0, this.visibleCount()));
+  hasMore = computed(() => this.visibleCount() < this.tours().length);
+  canShowLess = computed(() => this.visibleCount() > this.PAGE_SIZE);
+
+  constructor() {
+    this.store.loadAll();
+    effect(() => {
+      this.activeCategory();
+      this.visibleCount.set(this.PAGE_SIZE);
+    });
+  }
+
+  loadMore() {
+    this.visibleCount.update(c => c + this.PAGE_SIZE);
+  }
+
+  showLess() {
+    this.visibleCount.set(this.PAGE_SIZE);
+  }
 
   setCategory(cat: string | null) {
     this.router.navigate(['/zajazdy'], { queryParams: { category: cat } });
