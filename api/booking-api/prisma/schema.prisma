@@ -34,11 +34,19 @@ model Booking {
 }
 
 model Passenger {
-  id        String   @id @default(cuid())
-  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  bookingId String
-  firstName String
-  lastName  String
+  id               String    @id @default(cuid())
+  booking          Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId        String
+  firstName        String
+  lastName         String
+  birthDate        DateTime?
+  nationalId       String?
+  street           String?
+  city             String?
+  zip              String?
+  phone            String?
+  email            String?
+  insuranceDocPath String?
 }
 
 model Tour {
@@ -65,11 +73,51 @@ model Tour {
 model Departure {
   id             String    @id @default(cuid())
   date           DateTime
+  time           String?
+  timeTo         String?
   unitPriceCents Int
   capacity       Int       @default(50)
   tourId         String
   tour           Tour      @relation(fields: [tourId], references: [id])
   bookings       Booking[]
+  driverId       String?
+  driver         Driver?   @relation(fields: [driverId], references: [id])
+  busId          String?
+  bus            Bus?      @relation(fields: [busId], references: [id])
 
   @@index([tourId])
+}
+
+model Driver {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  phone          String?
+  color          String          @default("#6b7280")
+  departures     Departure[]
+  scheduledRides ScheduledRide[]
+}
+
+model Bus {
+  id             String          @id @default(cuid())
+  name           String
+  licensePlate   String          @unique
+  color          String
+  imageUrl       String?
+  departures     Departure[]
+  scheduledRides ScheduledRide[]
+}
+
+model ScheduledRide {
+  id        String   @id @default(cuid())
+  date      DateTime
+  time      String?
+  timeTo    String?
+  label     String
+  note      String?
+  driverId  String?
+  driver    Driver?  @relation(fields: [driverId], references: [id])
+  busId     String?
+  bus       Bus?     @relation(fields: [busId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

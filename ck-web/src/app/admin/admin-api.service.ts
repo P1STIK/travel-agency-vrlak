@@ -5,6 +5,55 @@ import { AdminAuthService } from './admin-auth.service';
 
 export type BookingStatus = 'PENDING' | 'PAID' | 'CONFIRMED' | 'CANCELLED' | 'REFUNDED';
 
+export interface Driver {
+  id: string;
+  name: string;
+  phone: string | null;
+  color: string;
+}
+
+export interface Bus {
+  id: string;
+  name: string;
+  licensePlate: string;
+  color: string;
+  imageUrl: string | null;
+}
+
+export interface CalendarDeparture {
+  id: string;
+  date: string;
+  time: string | null;
+  timeTo: string | null;
+  tourId: string;
+  unitPriceCents: number;
+  capacity: number;
+  bookedSeats: number;
+  driverId: string | null;
+  driver: Driver | null;
+  busId: string | null;
+  bus: Bus | null;
+  tour: { slug: string; title: string };
+}
+
+export interface CalendarScheduledRide {
+  id: string;
+  date: string;
+  time: string | null;
+  timeTo: string | null;
+  label: string;
+  note: string | null;
+  driverId: string | null;
+  driver: Driver | null;
+  busId: string | null;
+  bus: Bus | null;
+}
+
+export interface CalendarData {
+  departures: CalendarDeparture[];
+  scheduledRides: CalendarScheduledRide[];
+}
+
 export interface AdminDeparture {
   id: string;
   date: string;
@@ -122,5 +171,36 @@ export class AdminApiService {
 
   createManualBooking(payload: ManualBookingPayload) {
     return this.http.post<AdminBooking>(`${this.base}/bookings/manual`, payload, { headers: this.headers() });
+  }
+
+  getDrivers() {
+    return this.http.get<Driver[]>(`${this.base}/drivers`, { headers: this.headers() });
+  }
+
+  getBuses() {
+    return this.http.get<Bus[]>(`${this.base}/buses`, { headers: this.headers() });
+  }
+
+  getCalendar(from: string, to: string) {
+    const params = new HttpParams().set('from', from).set('to', to);
+    return this.http.get<CalendarData>(`${this.base}/calendar`, { headers: this.headers(), params });
+  }
+
+  assignDepartureDriver(id: string, payload: { driverId: string | null; time?: string | null; timeTo?: string | null; busId?: string | null }) {
+    return this.http.patch<CalendarDeparture>(
+      `${this.base}/departures/${id}/driver`, payload, { headers: this.headers() }
+    );
+  }
+
+  createScheduledRide(payload: { date: string; time?: string; timeTo?: string; label: string; note?: string; driverId?: string; busId?: string }) {
+    return this.http.post<CalendarScheduledRide>(`${this.base}/scheduled-rides`, payload, { headers: this.headers() });
+  }
+
+  updateScheduledRide(id: string, payload: { time?: string | null; timeTo?: string | null; label?: string; note?: string | null; driverId?: string | null; busId?: string | null }) {
+    return this.http.patch<CalendarScheduledRide>(`${this.base}/scheduled-rides/${id}`, payload, { headers: this.headers() });
+  }
+
+  deleteScheduledRide(id: string) {
+    return this.http.delete<{ ok: boolean }>(`${this.base}/scheduled-rides/${id}`, { headers: this.headers() });
   }
 }

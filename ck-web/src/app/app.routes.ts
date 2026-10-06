@@ -28,6 +28,7 @@ export const routes: Routes = [
           { path: 'zajazdy',         loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
           { path: 'zajazdy/:slug',   loadComponent: () => import('./admin/tour-detail/admin-tour-detail.component').then(m => m.AdminTourDetailComponent) },
           { path: 'rezervacie',      loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
+          { path: 'kalendar',        loadComponent: () => import('./admin/calendar/admin-calendar.component').then(m => m.AdminCalendarComponent) },
           { path: '', redirectTo: 'zajazdy', pathMatch: 'full' },
         ],
       },

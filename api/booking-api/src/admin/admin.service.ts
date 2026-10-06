@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { activeStatuses, randomCode, withBookedSeats } from '../common/utils';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { ManualBookingDto } from './dto/manual-booking.dto';
+import { AssignDriverDto, CreateScheduledRideDto, UpdateScheduledRideDto } from './dto/scheduled-ride.dto';
 
 const inactiveStatuses = new Set<string>([BookingStatus.CANCELLED, BookingStatus.REFUNDED]);
 
@@ -100,6 +101,103 @@ export class AdminService {
         departure: { select: { date: true, unitPriceCents: true, capacity: true } },
       },
     });
+  }
+
+  async getDrivers() {
+    return this.prisma.driver.findMany({ orderBy: { name: 'asc' } });
+  }
+
+  async getCalendar(from: string, to: string) {
+    const start = new Date(from);
+    const end = new Date(to);
+    end.setHours(23, 59, 59, 999);
+
+    const [departures, scheduledRides] = await Promise.all([
+      this.prisma.departure.findMany({
+        where: { date: { gte: start, lte: end } },
+        include: {
+          tour: { select: { slug: true, title: true } },
+          driver: true,
+          bus: true,
+          bookings: { select: { seats: true, status: true } },
+        },
+        orderBy: { date: 'asc' },
+      }),
+      this.prisma.scheduledRide.findMany({
+        where: { date: { gte: start, lte: end } },
+        include: { driver: true, bus: true },
+        orderBy: { date: 'asc' },
+      }),
+    ]);
+
+    return {
+      departures: departures.map(d => ({
+        ...d,
+        bookedSeats: d.bookings
+          .filter(b => !new Set([BookingStatus.CANCELLED, BookingStatus.REFUNDED]).has(b.status as BookingStatus))
+          .reduce((s, b) => s + b.seats, 0),
+      })),
+      scheduledRides,
+    };
+  }
+
+  async assignDepartureDriver(id: string, dto: AssignDriverDto) {
+    const dep = await this.prisma.departure.findUnique({ where: { id } });
+    if (!dep) throw new NotFoundException('Odchod neexistuje');
+    return this.prisma.departure.update({
+      where: { id },
+      data: {
+        driverId: dto.driverId ?? null,
+        ...('time' in dto && { time: dto.time ?? null }),
+        ...('timeTo' in dto && { timeTo: dto.timeTo ?? null }),
+        ...('busId' in dto && { busId: dto.busId ?? null }),
+      },
+      include: { driver: true, bus: true },
+    });
+  }
+
+  async getBuses() {
+    return this.prisma.bus.findMany({ orderBy: { name: 'asc' } });
+  }
+
+  async createScheduledRide(dto: CreateScheduledRideDto) {
+    return this.prisma.scheduledRide.create({
+      data: {
+        date: new Date(dto.date),
+        time: dto.time ?? null,
+        timeTo: dto.timeTo ?? null,
+        label: dto.label,
+        note: dto.note ?? null,
+        driverId: dto.driverId ?? null,
+        busId: dto.busId ?? null,
+      },
+      include: { driver: true, bus: true },
+    });
+  }
+
+  async updateScheduledRide(id: string, dto: UpdateScheduledRideDto) {
+    const ride = await this.prisma.scheduledRide.findUnique({ where: { id } });
+    if (!ride) throw new NotFoundException('Jazda neexistuje');
+    return this.prisma.scheduledRide.update({
+      where: { id },
+      data: {
+        ...(dto.date && { date: new Date(dto.date) }),
+        ...(dto.label !== undefined && { label: dto.label }),
+        ...('time' in dto && { time: dto.time ?? null }),
+        ...('timeTo' in dto && { timeTo: dto.timeTo ?? null }),
+        ...(dto.note !== undefined && { note: dto.note }),
+        ...('driverId' in dto && { driverId: dto.driverId ?? null }),
+        ...('busId' in dto && { busId: dto.busId ?? null }),
+      },
+      include: { driver: true, bus: true },
+    });
+  }
+
+  async deleteScheduledRide(id: string) {
+    const ride = await this.prisma.scheduledRide.findUnique({ where: { id } });
+    if (!ride) throw new NotFoundException('Jazda neexistuje');
+    await this.prisma.scheduledRide.delete({ where: { id } });
+    return { ok: true };
   }
 
   async createManualBooking(dto: ManualBookingDto) {
