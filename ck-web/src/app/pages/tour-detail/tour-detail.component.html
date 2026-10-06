@@ -1,109 +1,164 @@
 @let t = tour();
 
 @if (t) {
-  <main class="wrap">
-    <a routerLink="/zajazdy" class="muted">&larr; Späť na zoznam</a>
+  <main class="tour">
 
-    <h1 class="title">{{ t!.title }}</h1>
+    <!-- HERO -->
+    <section class="tour__hero">
+      <div class="container">
+        <a routerLink="/zajazdy" class="tour__back">&larr; Späť na zoznam</a>
+        <h1 class="tour__title">{{ t!.title }}</h1>
 
-@if (t!.heroImage || t!.gallery?.length) {
+        @if (t!.teaser) {
+          <p class="tour__subtitle">{{ t!.teaser }}</p>
+        }
 
-  @if (selected()) {
-    <img
-      [ngSrc]="selected()!"
-      width="1200"
-      height="675"
-      alt="{{ t!.title }}"
-      class="hero"
-    >
-  }
+        <div class="tour__meta">
+          @if (t!.category) {
+            <span class="tour__badge">{{ categoryLabel(t!.category!) }}</span>
+          }
+          @if (t!.duration) {
+            <span class="tour__meta-item">⏱ {{ t!.duration }}</span>
+          }
+          @if (minPrice() !== null) {
+            <span class="tour__meta-item tour__meta-item--price">
+              od {{ (minPrice()! / 100) | number:'1.0-0' }} {{ t!.currency }}
+            </span>
+          }
+        </div>
+      </div>
+    </section>
 
-  @if (thumbs().length > 1) {
-    <section class="thumbs">
-      @for (img of thumbs(); track img) {
-        <button
-          type="button"
-          class="thumb"
-          [class.thumb--active]="img === selected()"
-          (click)="select(img)"
-          aria-label="Zobraziť obrázok"
-        >
+    <div class="container tour__content">
+
+      <!-- GALÉRIA -->
+      @if (selected()) {
+        <section class="gallery">
           <img
-            [ngSrc]="img"
-            width="320"
-            height="200"
+            [ngSrc]="selected()!"
+            width="1200"
+            height="675"
             alt="{{ t!.title }}"
+            class="gallery__hero"
+            priority
           >
-        </button>
-      }
-    </section>
-  }
-}
-    @if (t!.description) {
-      <p>{{ t!.description }}</p>
-    }
 
-    <!-- ===== Fakty / dôležité info ===== -->
-    <section class="facts">
-      <ul class="facts__list">
-        <!-- Prípadné dynamické polia nechávame bezpečne podmienené -->
-        @if (t!.duration) {
-          <li><strong>Dĺžka:</strong> {{ t!.duration }}</li>
-        } @else {
-          <li><strong>Dĺžka:</strong> 3 dni (2 noci)</li>
-        }
-
-        <li><strong>V cene:</strong> doprava, ubytovanie, sprievodca</li>
-
-        @if (t!.pickupPoints?.length) {
-          <li><strong>Nástup:</strong> {{ t!.pickupPoints!.join(', ') }}</li>
-        } @else {
-          <li><strong>Nástup:</strong> Bratislava, Trnava (po dohode aj iné)</li>
-        }
-
-        @if (t!.extras?.note) {
-          <li><strong>Poznámka:</strong> {{ t!.extras!.note }}</li>
-        }
-        @if (t!.extras?.difficulty) {
-          <li><strong>Náročnosť:</strong> {{ t!.extras!.difficulty }}</li>
-        }
-      </ul>
-    </section>
-
-    <!-- ===== Termíny ===== -->
-    <h3>Termíny</h3>
-
-    @if (!t!.departures.length) {
-      <p class="muted">Aktuálne nemáme vypísané termíny.</p>
-    } @else {
-      <div class="terms">
-        @for (d of t!.departures; track d.id) {
-          <div class="row">
-            <div>
-              <div><strong>{{ d.date | date:'d.M.yyyy' }}</strong></div>
-              <div class="muted">
-                Cena: {{ (d.unitPriceCents / 100) | number:'1.2-2' }} {{ t!.currency }}
-              </div>
-              <div class="muted">
-                Obsadenosť: {{ d.bookedSeats }}/{{ d.capacity }}
-              </div>
+          @if (thumbs().length > 1) {
+            <div class="gallery__thumbs">
+              @for (img of thumbs(); track img) {
+                <button
+                  type="button"
+                  class="thumb"
+                  [class.thumb--active]="img === selected()"
+                  (click)="select(img)"
+                  aria-label="Zobraziť obrázok"
+                >
+                  <img
+                    [ngSrc]="img"
+                    width="320"
+                    height="200"
+                    alt="{{ t!.title }}"
+                    [priority]="$index === 0"
+                  >
+                </button>
+              }
             </div>
+          }
+        </section>
+      }
 
-            <a
-              class="btn"
-              [routerLink]="['/checkout']"
-              [queryParams]="{
-                tourSlug: t!.slug,
-                departureId: d.id,
-                price: d.unitPriceCents
-              }"
-            >
-              Rezervovať
-            </a>
+      <!-- POPIS -->
+      @if (t!.description) {
+        <section class="card">
+          <h2 class="card__heading">O zájazde</h2>
+          <p class="card__text">{{ t!.description }}</p>
+        </section>
+      }
+
+      <!-- DÔLEŽITÉ INFO -->
+      <section class="card">
+        <h2 class="card__heading">Dôležité informácie</h2>
+        <ul class="facts">
+          @if (t!.duration) {
+            <li class="facts__item">
+              <span class="facts__label">Dĺžka</span>
+              <span>{{ t!.duration }}</span>
+            </li>
+          } @else {
+            <li class="facts__item">
+              <span class="facts__label">Dĺžka</span>
+              <span>3 dni (2 noci)</span>
+            </li>
+          }
+
+          <li class="facts__item">
+            <span class="facts__label">V cene</span>
+            <span>doprava, ubytovanie, sprievodca</span>
+          </li>
+
+          @if (t!.pickupPoints?.length) {
+            <li class="facts__item">
+              <span class="facts__label">Nástup</span>
+              <span>{{ t!.pickupPoints!.join(', ') }}</span>
+            </li>
+          } @else {
+            <li class="facts__item">
+              <span class="facts__label">Nástup</span>
+              <span>Bratislava, Trnava (po dohode aj iné)</span>
+            </li>
+          }
+
+          @if (t!.extras?.note) {
+            <li class="facts__item">
+              <span class="facts__label">Poznámka</span>
+              <span>{{ t!.extras!.note }}</span>
+            </li>
+          }
+          @if (t!.extras?.difficulty) {
+            <li class="facts__item">
+              <span class="facts__label">Náročnosť</span>
+              <span>{{ t!.extras!.difficulty }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <!-- TERMÍNY -->
+      <section class="card">
+        <h2 class="card__heading">Termíny</h2>
+
+        @if (!t!.departures.length) {
+          <p class="muted">Aktuálne nemáme vypísané termíny.</p>
+        } @else {
+          <div class="terms">
+            @for (d of t!.departures; track d.id) {
+              <div class="terms__row">
+                <div class="terms__info">
+                  <div class="terms__date">{{ d.date | date:'d.M.yyyy' }}</div>
+                  <div class="terms__meta">
+                    <span class="terms__price">{{ (d.unitPriceCents / 100) | number:'1.2-2' }} {{ t!.currency }}</span>
+                    <span class="terms__occupancy">Obsadenosť: {{ d.bookedSeats }}/{{ d.capacity }}</span>
+                  </div>
+                </div>
+
+                <a
+                  class="btn btn--primary btn--lg"
+                  [routerLink]="['/checkout']"
+                  [queryParams]="{
+                    tourSlug: t!.slug,
+                    departureId: d.id,
+                    price: d.unitPriceCents
+                  }"
+                >
+                  Rezervovať
+                </a>
+              </div>
+            }
           </div>
         }
-      </div>
-    }
+      </section>
+
+    </div>
 
     <!-- ===== Sticky CTA (len mobil) ===== -->
     @if (t!.departures.length) {

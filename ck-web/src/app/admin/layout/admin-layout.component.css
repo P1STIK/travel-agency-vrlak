@@ -7,7 +7,7 @@
 .sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: #1a3a5c;
+  background: var(--color-ink);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
 .sidebar__badge {
   font-size: 0.7rem;
   font-weight: 700;
-  background: #2563eb;
+  background: var(--color-primary);
   padding: 0.15rem 0.45rem;
   border-radius: 0.25rem;
   letter-spacing: 0.05em;
@@ -59,7 +59,7 @@
 }
 
 .sidebar__link:hover { background: rgba(255,255,255,0.08); color: #fff; }
-.sidebar__link--active { background: #2563eb; color: #fff; }
+.sidebar__link--active { background: var(--color-primary); color: #fff; }
 
 .sidebar__icon { font-size: 1rem; }
 
@@ -80,6 +80,6 @@
 /* MAIN */
 .admin__main {
   flex: 1;
-  background: #f8fafc;
+  background: var(--color-bg-subtle);
   overflow-y: auto;
 }

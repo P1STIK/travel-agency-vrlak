@@ -1,172 +1,268 @@
-/* ========== Layout + typografia ========== */
-.wrap {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+.tour {
+  min-height: 100vh;
 }
 
-.title {
-  font-size: clamp(1.8rem, 2.5vw + 1rem, 2.25rem);
+.muted { color: var(--color-gray-500); }
+
+/* ========== HERO ========== */
+.tour__hero {
+  background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-primary) 100%);
+  color: #fff;
+  padding: 2.5rem 0 3rem;
+}
+
+.tour__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: color 0.15s;
+}
+.tour__back:hover { color: #fff; }
+
+.tour__title {
+  font-size: 2.25rem;
   font-weight: 700;
-  line-height: 1.15;
-  margin: 0.5rem 0 1rem;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
 }
 
-.muted { color: #6b7280; } /* gray-500 */
+.tour__subtitle {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin: 0;
+  max-width: 640px;
+}
 
-/* ========== Hero obrázok ========== */
-.hero {
+.tour__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.tour__badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 2rem;
+}
+
+.tour__meta-item {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 2rem;
+}
+
+.tour__meta-item--price {
+  background: var(--color-success);
+}
+
+/* ========== CONTENT ========== */
+.tour__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  max-width: 800px;
+}
+
+/* ========== GALÉRIA ========== */
+.gallery {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.gallery__hero {
   display: block;
   width: 100%;
-  height: clamp(220px, 40vw, 420px);
+  height: clamp(260px, 48vw, 480px);
   object-fit: cover;
-  border-radius: 0.75rem;      /* 12px */
-  margin: 1rem 0 .75rem;
-  box-shadow: 0 10px 20px rgba(0,0,0,.06);
 }
 
-/* ========== Klikateľné náhľady (mini galéria) ========== */
-/* kontajner s náhľadmi */
-.thumbs {
-  display: grid;
-  gap: .6rem;
-  grid-template-columns: repeat(3, 1fr);
-  margin: .25rem 0 1.1rem;
-}
-@media (min-width: 640px) {
-  .thumbs { grid-template-columns: repeat(5, 1fr); }
-}
-@media (min-width: 900px) {
-  .thumbs { grid-template-columns: repeat(6, 1fr); }
+.gallery__thumbs {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* samotné “tlačidlo” náhľadu */
+.gallery__thumbs::-webkit-scrollbar { height: 6px; }
+.gallery__thumbs::-webkit-scrollbar-thumb {
+  background: var(--color-gray-200);
+  border-radius: 3px;
+}
+
 .thumb {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
   appearance: none;
   background: transparent;
   border: 0;
   padding: 0;
-  border-radius: .55rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   cursor: pointer;
-  position: relative;
-  box-shadow: 0 6px 14px rgba(0,0,0,.06);
   outline: none;
 }
 
-/* obrázok v náhľade */
 .thumb img {
   display: block;
-  width: 100%;
-  height: 5.2rem;         /* mobil */
+  width: 6.5rem;
+  height: 4.25rem;
   object-fit: cover;
-  transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+  transition: transform 0.18s ease, filter 0.18s ease;
 }
 @media (min-width: 768px) {
-  .thumb img { height: 5.6rem; }
+  .thumb img { width: 7.5rem; height: 5rem; }
 }
 
-.thumb:hover img { transform: scale(1.03); }
-.thumb:focus-visible { box-shadow: 0 0 0 3px rgba(37,99,235,.40); }
+.thumb:hover img { transform: scale(1.04); }
+.thumb:focus-visible { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4); }
 
-/* aktívny náhľad */
-.thumb--active {
-  box-shadow: 0 0 0 2px #2563eb inset, 0 6px 14px rgba(0,0,0,.06);
-}
+.thumb--active { box-shadow: 0 0 0 2px var(--color-primary); }
 .thumb--active img { filter: saturate(110%); }
 
-/* ========== Fakty / dôležité info ========== */
-.facts { margin: .75rem 0 1.25rem; }
-.facts__list {
+/* ========== CARD base now comes from the global styles.css ========== */
+.card { padding: 2rem 2.5rem; }
+
+.card__heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 1rem;
+  border-bottom: 3px solid var(--color-primary);
+  padding-bottom: 0.5rem;
+}
+
+.card__text {
+  color: var(--color-gray-700);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ========== FAKTY ========== */
+.facts {
   list-style: none;
-  padding: 0; margin: 0;
-  display: grid; gap: .45rem;
-}
-.facts__list li {
-  background: #f9fafb;
-  border: 1px solid #eef2f7;
-  border-radius: .6rem;
-  padding: .6rem .75rem;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
 }
 
-/* ========== Termíny ========== */
-h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  margin: 1.25rem 0 0.5rem;
+.facts__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  padding: 0.7rem 1.1rem;
+  background: var(--color-bg-subtle);
+  border-radius: 0.5rem;
+  border-left: 4px solid var(--color-primary);
+  font-size: 0.92rem;
+  color: var(--color-gray-700);
 }
 
+.facts__label {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* ========== TERMÍNY ========== */
 .terms {
-  margin-top: .5rem;
-  border: 1px solid #e5e7eb;   /* gray-200 */
-  border-radius: .75rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0.5rem;
   overflow: hidden;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr auto;
+.terms__row {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  padding: .75rem .875rem;
-  border-top: 1px solid #f3f4f6; /* gray-100 */
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-bg-subtle-2);
 }
-.row:first-child { border-top: 0; }
-.row strong { font-weight: 600; }
+.terms__row:last-child { border-bottom: none; }
 
-/* ========== Tlačidlo ========== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .5rem .9rem;
-  border-radius: .6rem;
-  background: #2563eb;   /* blue-600 */
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: .95rem;
-  transition: background .15s ease;
-  white-space: nowrap;
+.terms__date {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-ink);
 }
-.btn:hover { background: #1d4ed8; } /* blue-700 */
 
-/* ========== Sticky CTA (iba mobil) ========== */
+.terms__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+}
+
+.terms__price {
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* ========== TLAČIDLO ========== */
+/* .btn base + primary/lg now come from the global styles.css */
+.btn { gap: 0.5rem; }
+
+/* ========== STICKY CTA (iba mobil) ========== */
 @media (max-width: 640px) {
   .md-hidden { display: block; }
   .cta-sticky {
-    position: sticky; bottom: .75rem; left: 1rem; right: 1rem;
-    margin: .75rem auto 0; text-align: center; z-index: 30;
+    position: sticky; bottom: 0.75rem; left: 1rem; right: 1rem;
+    margin: 0.75rem auto 0; text-align: center; z-index: 30;
     display: block; width: calc(100% - 2rem);
-    padding: .9rem 1rem; border-radius: .9rem;
-    background: #2563eb; color: #fff; font-weight: 700;
-    box-shadow: 0 12px 24px rgba(37,99,235,.25);
+    padding: 0.9rem 1rem; border-radius: 0.9rem;
+    background: var(--color-primary); color: #fff; font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
   }
 }
 @media (min-width: 641px) {
   .md-hidden { display: none; }
 }
 
-/* ========== (Voliteľné) Starý grid galérie – ak by si niekde používal .gallery ========== */
-.gallery {
-  display: grid;
-  gap: .75rem;
-  grid-template-columns: repeat(2, 1fr);
-  margin: .25rem 0 1rem;
-}
-@media (min-width: 768px) {
-  .gallery { grid-template-columns: repeat(3, 1fr); }
-}
-.gallery__img {
-  width: 100%;
-  height: 10rem;
-  object-fit: cover;
-  border-radius: .6rem;
-  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+/* ========== RESPONSÍVNE ========== */
+@media (max-width: 560px) {
+  .tour__title { font-size: 1.75rem; }
+  .card { padding: 1.5rem 1.25rem; }
+
+  .terms__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
-/* ========== Responsívne drobnosti ========== */
-@media (max-width: 640px) {
-  .row { grid-template-columns: 1fr; align-items: start; }
-  .btn { justify-self: start; margin-top: .25rem; }
+/* ========== "Načítavam" fallback ========== */
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
 }

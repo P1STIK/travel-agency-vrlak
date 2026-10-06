@@ -2,9 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Design tokens — single source of truth for colors used across components.
+ * Extracted from the hex values that were duplicated across component CSS files.
+ * Component styles should reference these vars instead of hardcoding hex.
+ */
+:root {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-dark: #1e40af;
+  --color-primary-bg: #dbeafe;
+  --color-primary-light: #eff6ff;
+
+  --color-ink: #1a3a5c;
+
+  --color-gray-900: #111827;
+  --color-gray-700: #374151;
+  --color-gray-600: #4b5563;
+  --color-gray-500: #6b7280;
+  --color-gray-400: #9ca3af;
+  --color-gray-300: #d1d5db;
+  --color-gray-200: #e5e7eb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-50: #f9fafb;
+  --color-gray-25: #fafafa;
+
+  --color-bg-subtle: #f8fafc;
+  --color-bg-subtle-2: #f1f5f9;
+
+  --color-success: #16a34a;
+  --color-success-dark: #166534;
+  --color-success-bg: #dcfce7;
+
+  --color-danger: #dc2626;
+  --color-danger-dark: #991b1b;
+  --color-danger-bg: #fee2e2;
+  --color-danger-bg-hover: #fecaca;
+}
+
 @layer components {
-  .btn { @apply inline-flex items-center rounded-lg px-3 py-1.5 text-sm font-medium transition; }
-  .btn--dark { @apply bg-gray-900 text-white hover:bg-black; }
   .nav__link { @apply transition; }
   .nav__link--active { @apply text-blue-600 font-semibold; }
 }
@@ -12,3 +48,56 @@
 @layer utilities {
   .vh { @apply sr-only; } /* alias */
 }
+
+/*
+ * Shared button classes — single source of truth for the public pages + admin
+ * tours/bookings/tour-detail, which all used near-identical copy-pasted .btn rules.
+ * NOT yet applied to admin-calendar.component.css or header.component.css:
+ * those use a deliberately different, denser visual scale (smaller radius/weight)
+ * and are tracked separately in .claude/refactor-plan.md rather than folded in here.
+ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, opacity 0.15s, border-color 0.15s;
+}
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn--primary { background: var(--color-primary); color: #fff; }
+.btn--primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+
+.btn--ghost { background: #fff; border: 1.5px solid var(--color-gray-300); color: var(--color-gray-700); }
+.btn--ghost:hover:not(:disabled) { background: var(--color-gray-50); }
+
+.btn--danger { background: var(--color-danger-bg); color: var(--color-danger); }
+.btn--danger:hover:not(:disabled) { background: var(--color-danger-bg-hover); }
+
+.btn--outline { border: 2px solid var(--color-primary); color: var(--color-primary); background: transparent; border-radius: 2rem; padding: 0.65rem 2rem; font-size: 0.95rem; }
+.btn--outline:hover:not(:disabled) { background: var(--color-primary); color: #fff; }
+
+.btn--sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+.btn--lg { padding: 0.7rem 1.75rem; font-size: 0.95rem; }
+
+/*
+ * Shared "panel" card — public pages (skibus, tour-detail, contact, checkout)
+ * all used this identical white/shadow/padding box. NOT applied to:
+ * - admin/* .card (denser padding + lighter shadow, deliberately different admin density)
+ * - pages/tours .card (that one is a product card with image+hover, unrelated despite the name)
+ * - pages/thank-you .card (bordered "receipt" style, no shadow, deliberately different)
+ */
+.card {
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+.card--success { text-align: center; border-top: 4px solid var(--color-success); }

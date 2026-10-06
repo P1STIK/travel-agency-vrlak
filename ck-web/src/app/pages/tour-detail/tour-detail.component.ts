@@ -5,7 +5,8 @@ import { Meta, Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs/operators';
 
-import { ToursService, Tour } from '../../services/tours.service';
+import { ToursService, Tour, minPriceCents } from '../../services/tours.service';
+import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
 
 @Component({
   selector: 'app-tour-detail',
@@ -47,6 +48,11 @@ export class TourDetailComponent {
     return Array.from(new Set(all));
   });
 
+  readonly minPrice = computed<number | null>(() => {
+    const t = this.tour();
+    return t ? minPriceCents(t) : null;
+  });
+
   /* ------------ Effects ------------ */
   constructor() {
     effect(() => {
@@ -64,6 +70,10 @@ export class TourDetailComponent {
   }
   select(img: string): void {
     this.selected.set(img);
+  }
+
+  categoryLabel(key: string): string {
+    return TOUR_CATEGORIES.find(c => c.key === key)?.label ?? key;
   }
 
   private updateSeo(t: Tour): void {

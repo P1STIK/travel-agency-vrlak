@@ -4,7 +4,7 @@
 
 /* HERO */
 .about__hero {
-  background: linear-gradient(135deg, #1a3a5c 0%, #2563eb 100%);
+  background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-primary) 100%);
   color: #fff;
   padding: 4rem 0 3rem;
   text-align: center;
@@ -39,14 +39,14 @@
 .about__heading {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a3a5c;
+  color: var(--color-ink);
   margin: 0 0 1rem;
-  border-bottom: 3px solid #2563eb;
+  border-bottom: 3px solid var(--color-primary);
   padding-bottom: 0.5rem;
 }
 
 .about__text {
-  color: #374151;
+  color: var(--color-gray-700);
   line-height: 1.8;
   margin: 0 0 1rem;
 }
@@ -69,12 +69,12 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #374151;
+  color: var(--color-gray-700);
   font-size: 0.95rem;
 }
 
 .about__check {
-  color: #2563eb;
+  color: var(--color-primary);
   font-weight: 700;
   flex-shrink: 0;
 }
