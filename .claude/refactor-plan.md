@@ -61,8 +61,40 @@ Zjednotenie farieb + `.btn` + `.card` pre všetky komponenty mimo zámerne odlí
 - `admin-api.service.ts` a admin komponenty (admin-tours, admin-bookings, admin-calendar) — majú podobný "ad-hoc HttpClient v komponente" vzor, ale ich zjednotenie je vyhradené na **Fázu 4** (admin sekcia), nerobiť teraz nabok od plánu.
 - `tour-detail.component.ts` — používa `toSignal` + `switchMap` priamo na route params, žiadne manuálne loading/error signály, nebol identifikovaný ako problém → nechané ako je.
 
-## Fáza 3 — Rozbitie veľkých komponentov (čaká, len poznámky)
-- `checkout.component.ts` (3 kroky v jednom súbore), `admin-calendar.component.ts` (3 taby + edit panel) sú hlavní kandidáti.
+## Fáza 3 — Rozbitie veľkých komponentov
+
+### Hotovo (2026-10-06) — `checkout`
+Rozbité na 5 malých komponentov, každý vo svojom vlastnom priečinku v `ck-web/src/app/pages/checkout/` (napr. `checkout-passengers-step/checkout-passengers-step.component.{ts,html,css}`):
+- `checkout-stepper` — čisto prezentačný (progress indikátor)
+- `checkout-summary` — sidebar so súhrnom objednávky (používa `.card` z global)
+- `checkout-seats-step` — krok 1
+- `checkout-passengers-step` — krok 2 (najväčší kus, formArray + upload poistky)
+- `checkout-payment-step` — krok 3
+- `checkout.component.*` ostal len ako orchestrátor (route params, FormGroup, step signál, delegovanie na `BookingStore`) — žiadna UI logika krokov.
+- Reactive forms (`FormGroup`/`FormArray`) sa odovzdávajú child komponentom cez `input()`, akcie idú naspäť cez `output()` (signal-based API, prvé použitie v projekte — predtým sa `@Input`/`@Output` nikde nepoužívalo, lebo neboli žiadne child komponenty).
+
+**Bonusové zjednotenie štýlov (nutné pre túto fázu, nie scope creep):** aby child komponenty nemuseli znova duplikovať `.field*`/`.card__heading`/`.card__text`/`.card__actions*`/`.form-error`, tieto sa presunuli do globálneho `styles.css` (boli už aj predtým duplikované v `contact`, `skibus`, `tour-detail`, `admin/*` — fixnuté teraz, nie len pre checkout).
+- `.card__heading`/`.card__text` majú globálnu "compact form" verziu (contact + checkout-rodina). `skibus`/`tour-detail` majú zámerne odlišnú "hero s accent border" verziu — nezlúčené, zdokumentované.
+- `.field*` globálne zjednotené pre public stránky (contact + checkout). Admin formuláre (`admin/tours`, `admin/bookings`, `admin/login`) majú vlastnú denšiu verziu — rovnaký dôvod ako admin `.btn`/`.card`, nezlúčené.
+
+Overené: `tsc --noEmit`, `ng build`, `ng serve` (kompiluje čisto), `curl` na `/checkout` vrátil 200.
+**Nemám tu nástroj na screenshot/prehliadač** — nebolo vizuálne overené, že layout vyzerá rovnako. Odporúčam preletieť checkout flow v browseri.
+
+### Hotovo (2026-10-06) — `admin-calendar`
+Rozbité na 6 komponentov (bolo pôvodne 1542 riadkov v 3 súboroch, teraz 1945 v ~21 súboroch naprieč komponentmi — nárast je boilerplate z rozdelenia, akceptovateľný tradeoff):
+- `admin-calendar-toolbar/` — taby, navigácia dátumu, mesiac/týždeň prepínač
+- `admin-calendar-grid-view/` — kalendárová mriežka (mesiac/týždeň)
+- `admin-calendar-drivers-view/` — tabuľka rozvrhu šoférov
+- `admin-calendar-timeline-view/` — denný timeline s jazdami
+- `admin-calendar-ride-panel/` — edit + nová jazda panel (zdieľané cez `type` rozlíšenie)
+- `admin-calendar-legend/` — **nové, skutočne zdieľané** (nie len "nezlúčiť"): legend pásik sa opakoval identicky v grid/drivers/timeline tiab, takže namiesto kopírovania vznikol jeden komponent s `variant` inputom (`'calendar' | 'drivers' | 'timeline'`), ktorý rozhoduje čo sa dorenderuje za zoznamom šoférov.
+- `admin-calendar.component.*` ostal orchestrátor: vlastní všetky signály (`activeTab`, `viewMode`, `currentDate`, `calendarData`, `drivers`, `buses`, `loading`, `saving`, `editState`, `newRideState`), date-range fetch logiku (`loadCalendar`), a API volania (save/delete). Taby-špecifické computed transformácie (`dayMap`, `driverSchedule`, `timelineRows`) sa presunuli priamo do príslušných view komponentov — každý dostáva len surové `calendarData`+`drivers` a počíta si vlastné zobrazenie sám.
+
+**Nové: `shared/utils/calendar-date.utils.ts`** — čisté funkcie (`toDateKey`, `weekStart`, `buildWeekDays`, `buildMonthDays`, `isToday`, `hexToRgba`) + konštanty `WEEK_DAYS`/`MONTHS`/`DAY_NAMES`, predtým duplikované v rámci jedného súboru, teraz zdieľané naprieč všetkými kalendárovými komponentmi aj orchestrátorom. Toto je presne ten "utils priečinok" typ, čo bol pôvodne požadovaný.
+
+**Vedomá duplicita (zdokumentovaná v kóde aj tu):** `.btn` (admin-calendar škála, 6px radius/500 weight) je duplikovaný v `admin-calendar-toolbar` a `admin-calendar-ride-panel` CSS — len tieto dva komponenty ho potrebujú, vytvárať kvôli 15 riadkom CSS siedmy zdieľaný komponent/importný mechanizmus sa nejavilo ako hodnota.
+
+Overené: `tsc --noEmit`, `ng build`, `ng serve`, curl na `/admin/calendar` (200). **Nemám tu nástroj na screenshot/prehliadač** — logika/štruktúra je 1:1 prenesená zo starého kódu (žiadne prepisovanie správania), ale vizuálne som to neoveril. Odporúčam preletieť všetky 3 taby + edit/new-ride panel v browseri.
 
 ## Fáza 4 — Admin sekcia (čaká)
 
@@ -97,8 +129,43 @@ Nerozpracované, len zapísané nech nezapadnú. Netreba robiť v poradí, žiad
 
 Odskúšané naživo: DB má 25 zájazdov, verejné API vracia 15 (len s budúcimi termínmi).
 
+---
+
+## 🐛 Bugfix: `.hidden` prestalo fungovať na mobile (2026-10-06)
+
+**Príčina:** Fáza 1 pridala `.btn`/`.card`/`.field` ako plain CSS pravidlá do `styles.css` **za** `@tailwind utilities;`. Tailwind generuje `.hidden { display: none }` a `.md:inline-flex { display: inline-flex }` s rovnakou špecifickosťou ako `.btn`. Pri remíze v špecifickosti vyhráva neskorší v súbore → `.btn`-ove `display: inline-flex` prebilo `.hidden`, takže čokoľvek s triedami `btn ... hidden md:inline-flex` (napr. tlačidlo "Kontaktujte nás" v headeri) sa zobrazovalo aj na mobile, hoci malo byť skryté.
+
+**Oprava:** všetky custom triedy (`.btn*`, `.card*`, `.field*`, `.form-error`) presunuté do `@layer components { ... }` v `styles.css` — Tailwindov vrstvový systém garantuje, že `utilities` vrstva vždy vyhrá nad `components`, nezávisle od poradia v súbore. Overené priamo v skompilovanom `dist/.../styles.css` — `.hidden` je teraz až po `.btn`.
+
+**Poučenie pre budúcnosť:** akékoľvek ďalšie custom CSS pridávané do `styles.css` (nie component-scoped CSS, len tento globálny súbor) musí ísť do `@layer components { }` (alebo `@layer utilities` ak má zámerne prebíjať Tailwind utility triedy), nikdy ako "holé" pravidlá mimo vrstiev — inak hrozí rovnaký typ konfliktu nabudúce.
+
+**Nepotvrdené/na overenie:** screenshot, ktorý na tento bug upozornil, ukazoval aj orezaný nadpis "Zájazdy" na `/zajazdy` — to vyzerá ako normálne správanie `position: sticky` headera po miernom scrolli (nie bug), ale keďže nemám prehliadač na overenie, treba to po tomto fixe skontrolovať nanovo na čerstvo načítanej stránke.
+
+---
+
+## Feature: základný cookie consent banner (2026-10-06) ✅ hotové
+
+- `CookieConsentService` (`ck-web/src/app/services/cookie-consent.service.ts`) — signal `consent: 'accepted'|'rejected'|null`, drží v `localStorage`. Appka momentálne nemá žiadnu analytiku/marketing skripty, takže banner zatiaľ len zaznamenáva rozhodnutie návštevníka vopred.
+- `CookieConsentComponent` (`shared/cookie-consent/`) — banner dole na stránke, zobrazí sa len kým `consent()` nie je nastavený. Vypnutý na `/admin/*` (rovnako ako header/footer).
+- **Pred pridaním akéhokoľvek trackovacieho skriptu (GA, Meta pixel...) treba ten skript načítať podmienene** — `if (cookieConsentService.consent() === 'accepted') { ...načítaj skript... }` — inak banner nemá právny zmysel. Zatiaľ nie je čo takto podmieňovať.
+- ~~Link na GDPR/privacy policy stránku v banneri zámerne vynechaný~~ → **hotové 2026-10-06**: Lukas poslal text, vznikli stránky `/gdpr` a `/cookies` (`pages/gdpr/`, `pages/cookies/`), routy pridané do `app.routes.ts`. Banner teraz linkuje na `/cookies`. Footer (`shared/footer/footer.component.html`) na tieto routy už linkoval dávnejšie (`routerLink="/gdpr"`, `routerLink="/cookies"`), boli to predtým mŕtve odkazy — teraz fungujú.
+  - Layout/typografia (`.legal__*`) je v globálnom `styles.css`, zdieľané medzi `/gdpr` a `/cookies` (vytvorené spolu, takže sa rovno zdieľalo namiesto kopírovania).
+  - Footer linkuje aj na `/obchodne-podmienky` a `/galeria` — tie stránky/routy **neexistujú** (mimo scope tejto úlohy, text na ne som nedostal). Zostávajú mŕtve odkazy, treba doriešiť neskôr.
+
 ## Iné otvorené veci (nesúvisiace s FE refaktorom, len si to tu držím nech nezapadne)
 
 - **GDPR / rodné číslo** — Passenger.nationalId sa ukladá ako plain text, bez šifrovania/retenčnej politiky. Lukas to vedome odložil na neskôr (2026-10-06).
-- **Chýbajúca migrácia pre Driver/Bus/ScheduledRide** — tieto modely už sú v `schema.prisma` aj reálne v dev DB (pravdepodobne pridané cez `prisma db push`), ale v `prisma/migrations/` pre ne nie je samostatný záznam. Pri nasadení na čistú DB (`prisma migrate deploy`) by tieto tabuľky chýbali. Treba dorobiť migráciu, ktorá ich vytvorí (podobne ako sa to riešilo pre Passenger 2026-10-06 — `prisma migrate diff` + manuálne vytvorenie migration.sql, pretože `migrate dev` v tomto prostredí nejde neinteraktívne).
+- ~~Chýbajúca migrácia pre Driver/Bus/ScheduledRide~~ → **hotové 2026-10-07**: migrácia `20261007000000_add_ride_calendar` to doriešila (súčasť staff-roles práce).
 - **Backend nemá žiadny test runner** (žiadny Jest config/test script) — flagnuté `tester` agentom, neriešené.
+
+---
+
+## 🚨 INCIDENT: architekt vymazal celú dev databázu (2026-10-07)
+
+Pri kontrole "sedí schéma s migráciami" spustil `prisma migrate diff` s `--shadow-database-url` postaveným cez `sed` rewrite na dočasnú DB. macOS `sed` nepodporuje `\|`, rewrite ticho zlyhal, shadow URL sa vyhodnotilo na **reálnu dev DB** a Prisma ju pred použitím resetla. Vymazané: všetky tabuľky (Tour, Departure, Booking, StaffUser, Driver, Bus) — 51 departures, 4 staff účty (admin + 3 šoféri), žiadna záloha neexistovala.
+
+**Obnovené v tej istej konverzácii:** `npm run seed` (25 zájazdov, 50 termínov, 5 autobusov) + ručne znova vytvorené 4 staff účty (nové heslá — heslá nie sú zapísané tu, Lukas ich dostal priamo v konverzácii).
+
+**Poistka (urobené):** `.claude/agents/architect.md` a `.claude/agents/backend-engineer.md` teraz majú explicitný zákaz `--shadow-database-url`/string-rewrite DB URL príkazov, s popisom presne tohto incidentu a bezpečnou alternatívou (`migrate diff --from-url "$DATABASE_URL" ... --script`, žiadna shadow DB).
+
+**Čo by sme ešte mohli zvážiť** (nerobené, len nápad): pravidelný `pg_dump` lokálnej dev DB pred rizikovejšími operáciami, keďže momentálne neexistuje žiadna záloha vôbec.
