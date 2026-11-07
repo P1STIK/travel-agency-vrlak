@@ -72,8 +72,12 @@
                 <input class="field__input" type="date" [(ngModel)]="dep.date" [name]="'date_' + $index" />
               </label>
               <label class="field">
-                <span class="field__label">Cena (centy)</span>
-                <input class="field__input" type="number" [(ngModel)]="dep.unitPriceCents" [name]="'price_' + $index" min="0" />
+                <span class="field__label">Dátum návratu <span class="field__hint">(nepovinné)</span></span>
+                <input class="field__input" type="date" [(ngModel)]="dep.returnDate" [name]="'returnDate_' + $index" [min]="dep.date" />
+              </label>
+              <label class="field">
+                <span class="field__label">Cena za osobu (€)</span>
+                <input class="field__input" type="number" step="0.01" min="0" [(ngModel)]="dep.priceEur" [name]="'price_' + $index" placeholder="napr. 429" />
               </label>
               <label class="field">
                 <span class="field__label">Kapacita</span>
@@ -118,8 +122,8 @@
           <div class="departures">
             @for (dep of t.departures; track dep.id) {
               <div class="dep-row">
-                <span class="dep-row__date">{{ formatDate(dep.date) }}</span>
-                <span class="dep-row__price">{{ (dep.unitPriceCents / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+                <span class="dep-row__date">{{ formatDepartureRange(dep) }}</span>
+                <span class="dep-row__price">{{ dep.unitPriceCents | price:t.currency }}</span>
                 <div class="dep-row__occ">
                   <div class="occ-bar">
                     <div class="occ-bar__fill" [style.width.%]="occupancyPct(dep)"></div>

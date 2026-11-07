@@ -1,13 +1,25 @@
-import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AdminApiService, AdminTour, CreateTourPayload } from '../admin-api.service';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
+import { formatDateRange } from '../../shared/utils/date-range.utils';
+
+interface DepartureFormRow {
+  date: string;
+  returnDate: string;
+  priceEur: number | null;
+  capacity: number;
+}
+
+interface TourFormModel extends Omit<CreateTourPayload, 'departures'> {
+  departures: DepartureFormRow[];
+}
 
 @Component({
   selector: 'app-admin-tours',
-  imports: [DecimalPipe, FormsModule, RouterLink],
+  imports: [PricePipe, FormsModule, RouterLink],
   templateUrl: './admin-tours.component.html',
   styleUrl: './admin-tours.component.css',
 })
@@ -20,7 +32,7 @@ export class AdminToursComponent implements OnInit {
   saving   = signal(false);
   error    = signal('');
 
-  form: CreateTourPayload = this.emptyForm();
+  form: TourFormModel = this.emptyForm();
 
   ngOnInit() {
     this.load();
@@ -33,28 +45,43 @@ export class AdminToursComponent implements OnInit {
     });
   }
 
-  emptyForm(): CreateTourPayload {
+  emptyForm(): TourFormModel {
     return {
       slug: '', title: '', category: '', teaser: '',
       description: '', currency: 'EUR', heroImage: '', thumbImage: '',
-      departures: [{ date: '', unitPriceCents: 0, capacity: 50 }],
+      departures: [{ date: '', returnDate: '', priceEur: null, capacity: 50 }],
     };
   }
 
   addDeparture() {
-    this.form.departures!.push({ date: '', unitPriceCents: 0, capacity: 50 });
+    this.form.departures.push({ date: '', returnDate: '', priceEur: null, capacity: 50 });
   }
 
   removeDeparture(i: number) {
-    this.form.departures!.splice(i, 1);
+    this.form.departures.splice(i, 1);
   }
 
   submit() {
-    this.saving.set(true);
     this.error.set('');
-    const payload = {
+
+    const activeRows = this.form.departures.filter(d => d.date);
+    const hasInvalidPrice = activeRows.some(
+      d => d.priceEur === null || Number.isNaN(d.priceEur) || d.priceEur < 0,
+    );
+    if (hasInvalidPrice) {
+      this.error.set('Zadajte platnú cenu v eurách pre každý odchod');
+      return;
+    }
+
+    this.saving.set(true);
+    const payload: CreateTourPayload = {
       ...this.form,
-      departures: this.form.departures?.filter(d => d.date),
+      departures: activeRows.map(d => ({
+        date: d.date,
+        returnDate: d.returnDate || null,
+        unitPriceCents: Math.round(d.priceEur! * 100),
+        capacity: d.capacity,
+      })),
     };
     this.api.createTour(payload).subscribe({
       next: () => {
@@ -76,6 +103,10 @@ export class AdminToursComponent implements OnInit {
 
   formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString('sk-SK');
+  }
+
+  formatDepartureRange(dep: AdminTour['departures'][0]): string {
+    return formatDateRange(dep.date, dep.returnDate, {});
   }
 
   categories = TOUR_CATEGORIES;

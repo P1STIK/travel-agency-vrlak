@@ -1,14 +1,14 @@
-import { DecimalPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 
 @Component({
   selector: 'app-thank-you',
   standalone: true,
   templateUrl: './thank-you.component.html',
   styleUrl: './thank-you.component.css',
-  imports: [DecimalPipe],
+  imports: [PricePipe],
 })
 export class ThankYouComponent {
   private route = inject(ActivatedRoute);

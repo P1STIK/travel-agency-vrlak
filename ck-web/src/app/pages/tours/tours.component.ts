@@ -1,17 +1,18 @@
-import { DecimalPipe } from '@angular/common';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { Tour, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { Departure, Tour, firstDeparture, minPriceCents } from '../../services/tours.service';
 import { ToursStore } from '../../services/tours.store';
 import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
+import { formatDateRange } from '../../shared/utils/date-range.utils';
 
 type SortOrder = 'asc' | 'desc';
 
 @Component({
   selector: 'app-tours',
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, PricePipe],
   templateUrl: './tours.component.html',
   styleUrl: './tours.component.css'
 })
@@ -86,7 +87,7 @@ export class ToursComponent {
   thumb(t: Tour): string { return (t as any).thumbImage || t.heroImage || ''; }
   desc(t: Tour): string { return t.teaser || t.description || ''; }
 
-  formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric', year: 'numeric' });
+  formatDate(dep: Departure): string {
+    return formatDateRange(dep.date, dep.returnDate, { day: 'numeric', month: 'numeric', year: 'numeric' });
   }
 }

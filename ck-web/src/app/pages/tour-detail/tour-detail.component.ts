@@ -1,17 +1,19 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { DecimalPipe, DatePipe, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 import { Meta, Title } from '@angular/platform-browser';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs/operators';
 
-import { ToursService, Tour, minPriceCents } from '../../services/tours.service';
+import { ToursService, Tour, Departure, minPriceCents } from '../../services/tours.service';
 import { TOUR_CATEGORIES } from '../../shared/constants/tour-categories';
+import { formatDateRange } from '../../shared/utils/date-range.utils';
 
 @Component({
   selector: 'app-tour-detail',
   standalone: true,
-  imports: [RouterLink, DecimalPipe, DatePipe, NgOptimizedImage],
+  imports: [RouterLink, PricePipe, NgOptimizedImage],
   templateUrl: './tour-detail.component.html',
   styleUrls: ['./tour-detail.component.css'],
 })
@@ -74,6 +76,10 @@ export class TourDetailComponent {
 
   categoryLabel(key: string): string {
     return TOUR_CATEGORIES.find(c => c.key === key)?.label ?? key;
+  }
+
+  formatDepartureRange(d: Departure): string {
+    return formatDateRange(d.date, d.returnDate, { day: 'numeric', month: 'numeric', year: 'numeric' });
   }
 
   private updateSeo(t: Tour): void {

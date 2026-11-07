@@ -1,11 +1,11 @@
-import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminApiService, AdminBooking, AdminTour, ManualBookingPayload } from '../admin-api.service';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 
 @Component({
   selector: 'app-admin-bookings',
-  imports: [DecimalPipe, FormsModule],
+  imports: [PricePipe, FormsModule],
   templateUrl: './admin-bookings.component.html',
   styleUrl: './admin-bookings.component.css',
 })

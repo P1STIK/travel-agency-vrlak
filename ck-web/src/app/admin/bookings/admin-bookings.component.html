@@ -130,7 +130,7 @@
                   <div>{{ p.firstName }} {{ p.lastName }}</div>
                 }
               </td>
-              <td>{{ (b.totalAmount / 100) | number:'1.0-0' }} €</td>
+              <td>{{ b.totalAmount | price }}</td>
               <td><span class="badge" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span></td>
             </tr>
           }

@@ -1,11 +1,12 @@
-import { DecimalPipe } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AdminApiService, AdminDetailDeparture, AdminTourDetail, BookingStatus } from '../admin-api.service';
+import { PricePipe } from '../../shared/pipes/price.pipe';
+import { formatDateRange } from '../../shared/utils/date-range.utils';
 
 @Component({
   selector: 'app-admin-tour-detail',
-  imports: [DecimalPipe, RouterLink],
+  imports: [PricePipe, RouterLink],
   templateUrl: './admin-tour-detail.component.html',
   styleUrl: './admin-tour-detail.component.css',
 })
@@ -44,6 +45,10 @@ export class AdminTourDetailComponent implements OnInit {
 
   formatDate(iso: string): string {
     return new Date(iso).toLocaleDateString('sk-SK');
+  }
+
+  formatDepartureRange(dep: AdminDetailDeparture): string {
+    return formatDateRange(dep.date, dep.returnDate, {});
   }
 
   formatDateTime(iso: string): string {

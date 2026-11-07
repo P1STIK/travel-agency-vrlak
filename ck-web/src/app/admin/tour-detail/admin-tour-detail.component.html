@@ -35,7 +35,7 @@
           <span class="stat-card__label">Zarezervované miesta</span>
         </div>
         <div class="stat-card stat-card--revenue">
-          <span class="stat-card__num">{{ (s.totalRevenue / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+          <span class="stat-card__num">{{ s.totalRevenue | price:t.currency }}</span>
           <span class="stat-card__label">Celkový obrat</span>
         </div>
         <div class="stat-card">
@@ -50,8 +50,8 @@
       <div class="card departure-section">
         <div class="dep-header">
           <div class="dep-header__left">
-            <span class="dep-header__date">{{ formatDate(dep.date) }}</span>
-            <span class="dep-header__price">{{ (dep.unitPriceCents / 100) | number:'1.0-0' }} {{ t.currency }} / os.</span>
+            <span class="dep-header__date">{{ formatDepartureRange(dep) }}</span>
+            <span class="dep-header__price">{{ dep.unitPriceCents | price:t.currency }} / os.</span>
           </div>
           <div class="dep-header__occ">
             <div class="occ-bar"><div class="occ-bar__fill" [style.width.%]="occupancyPct(dep)"></div></div>
@@ -88,7 +88,7 @@
                     </td>
                     <td class="email-cell">{{ b.email }}</td>
                     <td class="text-right">{{ b.seats }}</td>
-                    <td class="text-right font-bold">{{ (b.totalAmount / 100) | number:'1.0-0' }} {{ t.currency }}</td>
+                    <td class="text-right font-bold">{{ b.totalAmount | price:t.currency }}</td>
                     <td><span class="badge {{ statusClass(b.status) }}">{{ statusLabel(b.status) }}</span></td>
                     <td class="date-cell">{{ formatDateTime(b.createdAt) }}</td>
                   </tr>

@@ -22,7 +22,7 @@
           }
           @if (minPrice() !== null) {
             <span class="tour__meta-item tour__meta-item--price">
-              od {{ (minPrice()! / 100) | number:'1.0-0' }} {{ t!.currency }}
+              od {{ minPrice()! | price:t!.currency }}
             </span>
           }
         </div>
@@ -134,9 +134,9 @@
             @for (d of t!.departures; track d.id) {
               <div class="terms__row">
                 <div class="terms__info">
-                  <div class="terms__date">{{ d.date | date:'d.M.yyyy' }}</div>
+                  <div class="terms__date">{{ formatDepartureRange(d) }}</div>
                   <div class="terms__meta">
-                    <span class="terms__price">{{ (d.unitPriceCents / 100) | number:'1.2-2' }} {{ t!.currency }}</span>
+                    <span class="terms__price">{{ d.unitPriceCents | price:t!.currency }}</span>
                     <span class="terms__occupancy">Obsadenosť: {{ d.bookedSeats }}/{{ d.capacity }}</span>
                   </div>
                 </div>

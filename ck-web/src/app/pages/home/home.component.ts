@@ -1,13 +1,14 @@
-import { DecimalPipe } from '@angular/common';
+import { PricePipe } from '../../shared/pipes/price.pipe';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { Tour, ToursService, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { Departure, Tour, ToursService, firstDeparture, minPriceCents } from '../../services/tours.service';
+import { formatDateRange } from '../../shared/utils/date-range.utils';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, DecimalPipe],
+  imports: [RouterLink, PricePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,9 +23,8 @@ export class HomeComponent {
   minPrice(t: Tour) { return minPriceCents(t); }
   departure(t: Tour) { return firstDeparture(t); }
 
-  formatDate(iso: string): string {
-    const d = new Date(iso);
-    return d.toLocaleDateString('sk-SK', { day: 'numeric', month: 'numeric', year: 'numeric' });
+  formatDate(dep: Departure): string {
+    return formatDateRange(dep.date, dep.returnDate, { day: 'numeric', month: 'numeric', year: 'numeric' });
   }
 
   thumb(t: Tour): string {

@@ -31,7 +31,7 @@
               @if (departure(t); as dep) {
                 <div class="fcard__meta">
                   <span class="fcard__meta-label">Termín:</span>
-                  <span>{{ formatDate(dep.date) }}</span>
+                  <span>{{ formatDate(dep) }}</span>
                 </div>
               }
 
@@ -39,7 +39,7 @@
                 <div class="fcard__price-block">
                   <span class="fcard__price-label">CENA ZA OSOBU</span>
                   @if (minPrice(t) !== null) {
-                    <span class="fcard__price">{{ (minPrice(t)! / 100) | number:'1.0-0' }} {{ t.currency }}</span>
+                    <span class="fcard__price">{{ minPrice(t)! | price:t.currency }}</span>
                   } @else {
                     <span class="fcard__price fcard__price--muted">Na vyžiadanie</span>
                   }

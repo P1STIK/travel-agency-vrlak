@@ -3,6 +3,7 @@ import { IsInt, IsOptional, IsString, Min, ValidateNested } from 'class-validato
 
 class DepartureDto {
   @IsString() date!: string;
+  @IsOptional() @IsString() returnDate?: string;
   @IsInt() @Min(0) unitPriceCents!: number;
   @IsInt() @Min(1) capacity!: number;
 }

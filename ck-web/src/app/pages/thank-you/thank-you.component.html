@@ -7,7 +7,7 @@
   @if (booking) {
     <section class="card">
       <p>Počet osôb: <strong>{{ booking.seats }}</strong></p>
-      <p>Suma: <strong>{{ (booking.totalAmount/100) | number:'1.2-2' }} {{ booking.currency }}</strong></p>
+      <p>Suma: <strong>{{ booking.totalAmount | price:booking.currency }}</strong></p>
       <p>Stav v DB: <strong class="badge">{{ booking.status }}</strong></p>
     </section>
   } @else {

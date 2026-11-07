@@ -9,6 +9,7 @@ import { environment } from '../../enviroments/enviroments';
 export interface Departure {
   id: string;
   date: string;            // ISO date string
+  returnDate: string | null;
   unitPriceCents: number;
   capacity: number;
   bookedSeats: number;

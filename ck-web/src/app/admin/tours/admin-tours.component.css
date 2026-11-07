@@ -25,7 +25,8 @@
 /* DEPARTURES */
 .departures-section { background: var(--color-bg-subtle); border-radius: 0.5rem; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
 .departures-section__header { display: flex; align-items: center; justify-content: space-between; }
-.departure-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 0.6rem; align-items: end; }
+.departure-row { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 0.6rem; align-items: end; }
+.field__hint { font-weight: 400; color: var(--color-gray-400); font-size: 0.72rem; }
 
 /* TOUR LIST */
 .tours-list { display: flex; flex-direction: column; gap: 1rem; }
