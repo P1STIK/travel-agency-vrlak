@@ -1,0 +1,39 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Môj účet</h1>
+  </div>
+
+  <div class="card form-card">
+    <h2 class="card__title">Zmena hesla</h2>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+    @if (success()) {
+      <p class="form-success">Heslo bolo úspešne zmenené.</p>
+    }
+
+    <form class="form" (ngSubmit)="submit()">
+      <label class="field">
+        <span class="field__label">Aktuálne heslo *</span>
+        <input class="field__input" type="password" [(ngModel)]="currentPassword" name="currentPassword" autocomplete="current-password" required />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Nové heslo *</span>
+        <input class="field__input" type="password" [(ngModel)]="newPassword" name="newPassword" autocomplete="new-password" required />
+      </label>
+
+      <label class="field">
+        <span class="field__label">Potvrdenie nového hesla *</span>
+        <input class="field__input" type="password" [(ngModel)]="confirmPassword" name="confirmPassword" autocomplete="new-password" required />
+      </label>
+
+      <div class="form__actions">
+        <button class="btn btn--primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Ukladám...' : 'Zmeniť heslo' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

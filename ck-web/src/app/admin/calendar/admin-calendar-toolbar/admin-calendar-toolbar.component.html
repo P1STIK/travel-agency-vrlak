@@ -1,0 +1,22 @@
+<div class="cal-header">
+  <div class="cal-header__left">
+    <h1 class="cal-title">Kalendár jázd</h1>
+    <div class="tab-bar">
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'calendar'" (click)="switchTab.emit('calendar')">Kalendár</button>
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'drivers'" (click)="switchTab.emit('drivers')">Šoféri</button>
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'timeline'" (click)="switchTab.emit('timeline')">Denný prehľad</button>
+    </div>
+  </div>
+  <div class="cal-header__center">
+    <button class="nav-btn" (click)="navigate.emit(-1)">&#8249;</button>
+    <span class="cal-label">{{ headerLabel() }}</span>
+    <button class="nav-btn" (click)="navigate.emit(1)">&#8250;</button>
+    <button class="btn btn--ghost btn--sm" (click)="goToday.emit()">Dnes</button>
+  </div>
+  @if (activeTab() === 'calendar') {
+    <div class="view-toggle">
+      <button class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'month'" (click)="setViewMode.emit('month')">Mesiac</button>
+      <button class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'week'" (click)="setViewMode.emit('week')">Týždeň</button>
+    </div>
+  }
+</div>

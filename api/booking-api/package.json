@@ -13,6 +13,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts",
+    "seed:admin": "ts-node prisma/seed-admin.ts",
     "db:seed": "prisma db seed"
   },
   "dependencies": {

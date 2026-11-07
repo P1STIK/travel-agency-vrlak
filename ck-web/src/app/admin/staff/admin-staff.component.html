@@ -1,0 +1,148 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Zamestnanci</h1>
+    <button class="btn btn--primary" (click)="showForm.set(!showForm())">
+      {{ showForm() ? 'Zrušiť' : '+ Pridať zamestnanca' }}
+    </button>
+  </div>
+
+  @if (showForm()) {
+    <div class="card form-card">
+      <h2 class="card__title">Nový zamestnanec</h2>
+
+      @if (createError()) {
+        <p class="form-error">{{ createError() }}</p>
+      }
+
+      <form class="form" (ngSubmit)="submit()">
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Meno *</span>
+            <input class="field__input" [(ngModel)]="form.name" name="name" required />
+          </label>
+          <label class="field">
+            <span class="field__label">E-mail *</span>
+            <input class="field__input" type="email" [(ngModel)]="form.email" name="email" required />
+          </label>
+        </div>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Heslo *</span>
+            <input class="field__input" type="password" [(ngModel)]="form.password" name="password" autocomplete="new-password" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Rola *</span>
+            <select class="field__input" [(ngModel)]="form.role" name="role" required>
+              <option value="ADMIN">Administrátor</option>
+              <option value="DRIVER">Vodič</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field__label">Prepojený vodič</span>
+          <select class="field__input" [(ngModel)]="form.driverId" name="driverId">
+            <option [ngValue]="null">— žiadny —</option>
+            @for (d of drivers(); track d.id) {
+              <option [ngValue]="d.id">{{ d.name }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="form__actions">
+          <button class="btn btn--primary" type="submit" [disabled]="saving()">
+            {{ saving() ? 'Ukladám...' : 'Vytvoriť zamestnanca' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (!staff().length) {
+    <p class="state-msg">Žiadni zamestnanci.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Meno</th>
+            <th>E-mail</th>
+            <th>Rola</th>
+            <th>Vodič</th>
+            <th>Aktívny</th>
+            <th>Posledné prihlásenie</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of staff(); track s.id) {
+            @if (editId() === s.id && editForm) {
+              <tr>
+                <td colspan="7">
+                  <div class="edit-row">
+                    @if (editError()) {
+                      <p class="form-error">{{ editError() }}</p>
+                    }
+                    <div class="edit-row__fields">
+                      <label class="field">
+                        <span class="field__label">Meno</span>
+                        <input class="field__input" [(ngModel)]="editForm.name" name="edit_name" />
+                      </label>
+                      <label class="field">
+                        <span class="field__label">E-mail</span>
+                        <input class="field__input" type="email" [(ngModel)]="editForm.email" name="edit_email" />
+                      </label>
+                      <label class="field">
+                        <span class="field__label">Rola</span>
+                        <select class="field__input" [(ngModel)]="editForm.role" name="edit_role">
+                          <option value="ADMIN">Administrátor</option>
+                          <option value="DRIVER">Vodič</option>
+                        </select>
+                      </label>
+                      <label class="field">
+                        <span class="field__label">Vodič</span>
+                        <select class="field__input" [(ngModel)]="editForm.driverId" name="edit_driverId">
+                          <option value="">— žiadny —</option>
+                          @for (d of drivers(); track d.id) {
+                            <option [value]="d.id">{{ d.name }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label class="field">
+                        <span class="field__label">Nové heslo</span>
+                        <input class="field__input" type="password" [(ngModel)]="editForm.password" name="edit_password" autocomplete="new-password" placeholder="nezmenené" />
+                      </label>
+                      <label class="field field--checkbox">
+                        <input type="checkbox" [(ngModel)]="editForm.active" name="edit_active" />
+                        <span class="field__label">Aktívny</span>
+                      </label>
+                    </div>
+                    <div class="edit-row__actions">
+                      <button class="btn btn--ghost btn--sm" type="button" (click)="cancelEdit()">Zrušiť</button>
+                      <button class="btn btn--primary btn--sm" type="button" (click)="saveEdit()" [disabled]="editSaving()">
+                        {{ editSaving() ? 'Ukladám...' : 'Uložiť' }}
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            } @else {
+              <tr>
+                <td>{{ s.name }}</td>
+                <td>{{ s.email }}</td>
+                <td>{{ roleLabel(s.role) }}</td>
+                <td>{{ s.driver?.name ?? '–' }}</td>
+                <td><span class="badge" [class]="s.active ? 'badge--green' : 'badge--red'">{{ s.active ? 'Áno' : 'Nie' }}</span></td>
+                <td>{{ formatDate(s.lastLoginAt) }}</td>
+                <td class="center"><button class="btn btn--ghost btn--sm" (click)="startEdit(s)">Upraviť</button></td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

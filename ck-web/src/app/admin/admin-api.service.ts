@@ -57,6 +57,7 @@ export interface CalendarData {
 export interface AdminDeparture {
   id: string;
   date: string;
+  returnDate: string | null;
   unitPriceCents: number;
   capacity: number;
   bookedSeats: number;
@@ -109,6 +110,7 @@ export interface AdminDetailBooking {
 export interface AdminDetailDeparture {
   id: string;
   date: string;
+  returnDate: string | null;
   unitPriceCents: number;
   capacity: number;
   bookedSeats: number;
@@ -130,6 +132,43 @@ export interface ManualBookingPayload {
   passengers: { firstName: string; lastName: string }[];
 }
 
+export interface Me {
+  id: string;
+  name: string;
+  email: string;
+  role: 'ADMIN' | 'DRIVER';
+  driverId: string | null;
+}
+
+export interface StaffMember {
+  id: string;
+  email: string;
+  name: string;
+  role: 'ADMIN' | 'DRIVER';
+  driverId: string | null;
+  driver: { id: string; name: string; color: string } | null;
+  active: boolean;
+  lastLoginAt: string | null;
+  createdAt: string;
+}
+
+export interface CreateStaffPayload {
+  email: string;
+  name: string;
+  password: string;
+  role: 'ADMIN' | 'DRIVER';
+  driverId?: string | null;
+}
+
+export interface UpdateStaffPayload {
+  email?: string;
+  name?: string;
+  role?: 'ADMIN' | 'DRIVER';
+  driverId?: string | null;
+  active?: boolean;
+  password?: string;
+}
+
 export interface CreateTourPayload {
   slug: string;
   title: string;
@@ -139,7 +178,7 @@ export interface CreateTourPayload {
   currency?: string;
   heroImage?: string;
   thumbImage?: string;
-  departures?: { date: string; unitPriceCents: number; capacity: number }[];
+  departures?: { date: string; returnDate?: string | null; unitPriceCents: number; capacity: number }[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -202,5 +241,25 @@ export class AdminApiService {
 
   deleteScheduledRide(id: string) {
     return this.http.delete<{ ok: boolean }>(`${this.base}/scheduled-rides/${id}`, { headers: this.headers() });
+  }
+
+  getMe() {
+    return this.http.get<Me>(`${this.base}/me`, { headers: this.headers() });
+  }
+
+  changePassword(payload: { currentPassword: string; newPassword: string }) {
+    return this.http.patch<{ ok: boolean }>(`${this.base}/me/password`, payload, { headers: this.headers() });
+  }
+
+  getStaff() {
+    return this.http.get<StaffMember[]>(`${this.base}/staff`, { headers: this.headers() });
+  }
+
+  createStaff(payload: CreateStaffPayload) {
+    return this.http.post<StaffMember>(`${this.base}/staff`, payload, { headers: this.headers() });
+  }
+
+  updateStaff(id: string, payload: UpdateStaffPayload) {
+    return this.http.patch<StaffMember>(`${this.base}/staff/${id}`, payload, { headers: this.headers() });
   }
 }

@@ -73,6 +73,7 @@ model Tour {
 model Departure {
   id             String    @id @default(cuid())
   date           DateTime
+  returnDate     DateTime?
   time           String?
   timeTo         String?
   unitPriceCents Int
@@ -95,6 +96,7 @@ model Driver {
   color          String          @default("#6b7280")
   departures     Departure[]
   scheduledRides ScheduledRide[]
+  staffUser      StaffUser?
 }
 
 model Bus {
@@ -105,6 +107,25 @@ model Bus {
   imageUrl       String?
   departures     Departure[]
   scheduledRides ScheduledRide[]
+}
+
+enum StaffRole {
+  ADMIN
+  DRIVER
+}
+
+model StaffUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         StaffRole
+  driverId     String?   @unique
+  driver       Driver?   @relation(fields: [driverId], references: [id])
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model ScheduledRide {

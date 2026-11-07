@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './admin/admin.guard';
+import { adminGuard, adminHomeGuard, adminRoleGuard } from './admin/admin.guard';
 
 export const routes: Routes = [
   // Public
@@ -10,6 +10,8 @@ export const routes: Routes = [
   { path: 'zajazdy/:slug', loadComponent: () => import('./pages/tour-detail/tour-detail.component').then(m => m.TourDetailComponent) },
   { path: 'checkout',   loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent) },
   { path: 'thank-you',  loadComponent: () => import('./pages/thank-you/thank-you.component').then(m => m.ThankYouComponent) },
+  { path: 'gdpr',       loadComponent: () => import('./pages/gdpr/gdpr.component').then(m => m.GdprComponent) },
+  { path: 'cookies',    loadComponent: () => import('./pages/cookies/cookies.component').then(m => m.CookiesComponent) },
   { path: '',           loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
 
   // Admin
@@ -25,11 +27,13 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         loadComponent: () => import('./admin/layout/admin-layout.component').then(m => m.AdminLayoutComponent),
         children: [
-          { path: 'zajazdy',         loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
-          { path: 'zajazdy/:slug',   loadComponent: () => import('./admin/tour-detail/admin-tour-detail.component').then(m => m.AdminTourDetailComponent) },
-          { path: 'rezervacie',      loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
+          { path: 'zajazdy',         canActivate: [adminRoleGuard], loadComponent: () => import('./admin/tours/admin-tours.component').then(m => m.AdminToursComponent) },
+          { path: 'zajazdy/:slug',   canActivate: [adminRoleGuard], loadComponent: () => import('./admin/tour-detail/admin-tour-detail.component').then(m => m.AdminTourDetailComponent) },
+          { path: 'rezervacie',      canActivate: [adminRoleGuard], loadComponent: () => import('./admin/bookings/admin-bookings.component').then(m => m.AdminBookingsComponent) },
+          { path: 'zamestnanci',     canActivate: [adminRoleGuard], loadComponent: () => import('./admin/staff/admin-staff.component').then(m => m.AdminStaffComponent) },
           { path: 'kalendar',        loadComponent: () => import('./admin/calendar/admin-calendar.component').then(m => m.AdminCalendarComponent) },
-          { path: '', redirectTo: 'zajazdy', pathMatch: 'full' },
+          { path: 'ucet',            loadComponent: () => import('./admin/account/admin-account.component').then(m => m.AdminAccountComponent) },
+          { path: '', canActivate: [adminHomeGuard], children: [] },
         ],
       },
     ],

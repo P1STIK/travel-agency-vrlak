@@ -1,380 +1,58 @@
 <div class="cal-page">
 
-  <!-- HEADER -->
-  <div class="cal-header">
-    <div class="cal-header__left">
-      <h1 class="cal-title">Kalendár jázd</h1>
-      <div class="tab-bar">
-        <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'calendar'" (click)="switchTab('calendar')">Kalendár</button>
-        <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'drivers'" (click)="switchTab('drivers')">Šoféri</button>
-      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'timeline'" (click)="switchTab('timeline')">Denný prehľad</button>
-      </div>
-    </div>
-    <div class="cal-header__center">
-      <button class="nav-btn" (click)="navigate(-1)">&#8249;</button>
-      <span class="cal-label">{{ headerLabel() }}</span>
-      <button class="nav-btn" (click)="navigate(1)">&#8250;</button>
-      <button class="btn btn--ghost btn--sm" (click)="goToday()">Dnes</button>
-    </div>
-    @if (activeTab() === 'calendar') {
-      <div class="view-toggle">
-        <button class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'month'" (click)="setViewMode('month')">Mesiac</button>
-        <button class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'week'" (click)="setViewMode('week')">Týždeň</button>
-      </div>
-    }
-  </div>
+  <app-admin-calendar-toolbar
+    [activeTab]="activeTab()"
+    [viewMode]="viewMode()"
+    [headerLabel]="headerLabel()"
+    (switchTab)="switchTab($event)"
+    (navigate)="navigate($event)"
+    (goToday)="goToday()"
+    (setViewMode)="setViewMode($event)"
+  />
 
   @if (loading()) {
     <div class="cal-loading">Načítavam...</div>
   }
 
-  <!-- ===================== CALENDAR TAB ===================== -->
-  @if (activeTab() === 'calendar') {
-    <div class="day-headers">
-      @for (d of WEEK_DAYS; track d) {
-        <div class="day-header">{{ d }}</div>
-      }
-    </div>
-
-    <div class="cal-grid" [class.cal-grid--week]="viewMode() === 'week'">
-      @for (day of gridDays(); track $index) {
-        <div
-          class="day-cell"
-          [class.day-cell--today]="isToday(day)"
-          [class.day-cell--empty]="!day"
-          [class.day-cell--other-month]="viewMode() === 'month' && day && !isCurrentMonth(day)"
-        >
-          @if (day) {
-            <div class="day-cell__head">
-              <span class="day-num" [class.day-num--today]="isToday(day)">{{ day.getDate() }}</span>
-              <button class="add-btn" (click)="openNewRide(day, $event)" title="Pridať jazdu">+</button>
-            </div>
-            <div class="day-cell__events">
-              @for (dep of getDayData(day).departures; track dep.id) {
-                <button class="chip" [ngStyle]="chipStyle(dep.driver)" (click)="openEditDeparture(dep, $event)">
-                  <span class="chip__top-row">
-                    @let tr = formatTimeRange(dep.time, dep.timeTo);
-                    @if (tr) { <span class="chip__time">{{ tr }}</span> }
-                    @if (dep.bus) { <span class="chip__bus-dot" [style.background]="dep.bus.color" [title]="dep.bus.name"></span> }
-                    <span class="chip__type-badge chip__type-badge--dep">Z</span>
-                  </span>
-                  <span class="chip__name">{{ dep.tour.title }}</span>
-                  <span class="chip__sub">
-                    @if (dep.bus) { <span class="chip__spz">{{ dep.bus.licensePlate }}</span> }
-                    @if (dep.driver) { <span class="chip__driver">{{ dep.driver.name }}</span> }
-                    @else { <span class="chip__driver chip__driver--empty">bez šoféra</span> }
-                  </span>
-                </button>
-              }
-              @for (ride of getDayData(day).rides; track ride.id) {
-                <button class="chip" [ngStyle]="chipStyle(ride.driver)" (click)="openEditRide(ride, $event)">
-                  <span class="chip__top-row">
-                    @let tr = formatTimeRange(ride.time, ride.timeTo);
-                    @if (tr) { <span class="chip__time">{{ tr }}</span> }
-                    @if (ride.bus) { <span class="chip__bus-dot" [style.background]="ride.bus.color" [title]="ride.bus.name"></span> }
-                    <span class="chip__type-badge chip__type-badge--ride">J</span>
-                  </span>
-                  <span class="chip__name">{{ ride.label }}</span>
-                  <span class="chip__sub">
-                    @if (ride.bus) { <span class="chip__spz">{{ ride.bus.licensePlate }}</span> }
-                    @if (ride.driver) { <span class="chip__driver">{{ ride.driver.name }}</span> }
-                    @else { <span class="chip__driver chip__driver--empty">bez šoféra</span> }
-                  </span>
-                </button>
-              }
-            </div>
-          }
-        </div>
-      }
-    </div>
-
-    <div class="legend">
-      @for (d of drivers(); track d.id) {
-        <span class="legend__item">
-          <span class="legend__dot" [style.background]="d.color"></span>{{ d.name }}
-        </span>
-      }
-      <span class="legend__item legend__item--sep">
-        <span class="legend__badge legend__badge--dep">Z</span> Zájazd
-        &nbsp;
-        <span class="legend__badge legend__badge--ride">J</span> Vlastná jazda
-        &nbsp;
-        <span class="legend__dot" style="background:#d1d5db"></span> bez šoféra
-      </span>
-    </div>
-  }
-
-  <!-- ===================== DRIVERS TAB ===================== -->
-  @if (activeTab() === 'drivers') {
-    <div class="schedule-wrap">
-      <table class="schedule-table">
-        <thead>
-          <tr>
-            <th class="schedule-table__driver-col">Šofér</th>
-            @for (day of scheduleWeekDays(); track $index) {
-              <th class="schedule-table__day-col" [class.schedule-table__today]="isToday(day)">
-                <span class="sched-day-name">{{ WEEK_DAYS[$index] }}</span>
-                <span class="sched-day-num" [class.sched-day-num--today]="isToday(day)">{{ day.getDate() }}. {{ day.getMonth() + 1 }}.</span>
-              </th>
-            }
-            <th class="schedule-table__total-col">Celkom</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of driverSchedule(); track row.driver.id) {
-            <tr class="schedule-table__row">
-              <td class="schedule-table__driver-cell">
-                <span class="driver-name">{{ row.driver.name }}</span>
-                @if (row.driver.phone) {
-                  <span class="driver-phone">{{ row.driver.phone }}</span>
-                }
-              </td>
-              @for (day of scheduleWeekDays(); track $index) {
-                <td class="schedule-table__trip-cell" [class.schedule-table__today]="isToday(day)">
-                  @let trips = getDriverDayTrips(row, day);
-                  @if (trips.length === 0) {
-                    <span class="trip-empty">—</span>
-                  } @else {
-                    @for (trip of trips; track trip.id) {
-                      <div class="trip-item" [class.trip-item--dep]="trip.type === 'departure'" [class.trip-item--ride]="trip.type === 'ride'">
-                        <span class="trip-top">
-                          @if (trip.time) { <span class="trip-time">{{ trip.time }}</span> }
-                          @if (trip.busColor) { <span class="trip-bus-dot" [style.background]="trip.busColor"></span> }
-                          @if (trip.busPlate) { <span class="trip-bus-plate">{{ trip.busPlate }}</span> }
-                        </span>
-                        <span class="trip-label">{{ trip.label }}</span>
-                      </div>
-                    }
-                  }
-                </td>
-              }
-              <td class="schedule-table__total-cell">
-                @if (row.total > 0) {
-                  <span class="total-badge">{{ row.total }}</span>
-                } @else {
-                  <span class="trip-empty">0</span>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <div class="legend">
-      <span class="legend__item"><span class="legend__dot legend__dot--dep"></span> Zájazd</span>
-      <span class="legend__item"><span class="legend__dot legend__dot--ride"></span> Vlastná jazda</span>
-    </div>
-  }
-
-  <!-- ===================== TIMELINE TAB ===================== -->
-  @if (activeTab() === 'timeline') {
-    <div class="tl-container">
-
-      <!-- HOUR RULER -->
-      <div class="tl-ruler">
-        <div class="tl-ruler__spacer"></div>
-        <div class="tl-ruler__hours" [style.width.px]="TL_W">
-          @for (h of TL_HOURS; track h) {
-            <div class="tl-ruler__hour" [style.left]="tlHourLeft(h)">{{ h }}:00</div>
-          }
-        </div>
-      </div>
-
-      <!-- DRIVER ROWS -->
-      @for (row of timelineRows(); track row.driver.id) {
-        <div class="tl-row">
-          <!-- Driver name (sticky) -->
-          <div class="tl-row__driver">
-            <span class="tl-driver-dot" [style.background]="row.driver.color"></span>
-            <div class="tl-driver-info">
-              <span class="tl-driver-name">{{ row.driver.name }}</span>
-              @if (row.driver.phone) { <span class="tl-driver-phone">{{ row.driver.phone }}</span> }
-            </div>
-          </div>
-
-          <!-- Bar area -->
-          <div class="tl-row__bars" [style.width.px]="TL_W" [style.height]="tlRowHeight(row.laneCount)">
-            <!-- Hour grid lines -->
-            @for (h of TL_HOURS; track h) {
-              <div class="tl-gridline" [style.left]="tlHourLeft(h)"></div>
-            }
-
-            @if (row.trips.length === 0) {
-              <span class="tl-free">voľný</span>
-            }
-
-            <!-- Trip bars -->
-            @for (trip of row.trips; track trip.id) {
-              <div
-                class="tl-bar"
-                [style.left]="tlLeft(trip.startMin)"
-                [style.width]="tlWidth(trip.startMin, trip.endMin)"
-                [style.top]="tlBarTop(trip.lane)"
-                [style.background]="row.driver.color"
-                [title]="trip.label + (trip.busPlate ? ' · ' + trip.busPlate : '')"
-              >
-                @if (trip.busColor) {
-                  <span class="tl-bar__bus-dot" [style.background]="trip.busColor" [title]="trip.busPlate"></span>
-                }
-                <span class="tl-bar__label">{{ trip.label }}</span>
-                @if (trip.busPlate) {
-                  <span class="tl-bar__plate">{{ trip.busPlate }}</span>
-                }
-              </div>
-            }
-          </div>
-        </div>
-      }
-
-    </div>
-
-    <div class="legend">
-      @for (d of drivers(); track d.id) {
-        <span class="legend__item">
-          <span class="legend__dot" [style.background]="d.color"></span>{{ d.name }}
-        </span>
-      }
-      <span class="legend__item legend__item--sep tl-legend-note">
-        Jazdy bez zadaného času sa tu nezobrazujú.
-      </span>
-    </div>
+  @switch (activeTab()) {
+    @case ('calendar') {
+      <app-admin-calendar-grid-view
+        [calendarData]="calendarData()"
+        [drivers]="drivers()"
+        [currentDate]="currentDate()"
+        [viewMode]="viewMode()"
+        [canCreateRide]="canCreateRide()"
+        (openNewRide)="openNewRide($event)"
+        (openEditDeparture)="openEditDeparture($event)"
+        (openEditRide)="openEditRide($event)"
+      />
+    }
+    @case ('drivers') {
+      <app-admin-calendar-drivers-view
+        [calendarData]="calendarData()"
+        [drivers]="drivers()"
+        [currentDate]="currentDate()"
+      />
+    }
+    @case ('timeline') {
+      <app-admin-calendar-timeline-view
+        [calendarData]="calendarData()"
+        [drivers]="drivers()"
+      />
+    }
   }
 
 </div>
 
-<!-- BACKDROP -->
-@if (editState() || newRideState()) {
-  <div class="panel-backdrop" (click)="closePanel()"></div>
-}
-
-<!-- EDIT PANEL -->
-@if (editState(); as es) {
-  <div class="panel">
-    <div class="panel__header">
-      <h2 class="panel__title">
-        @if (es.type === 'departure') { Odchod zájazdu } @else { Jazda }
-      </h2>
-      <button class="panel__close" (click)="closePanel()">✕</button>
-    </div>
-
-    <div class="panel__body">
-      @if (es.type === 'departure') {
-        <div class="panel__info">
-          <strong>{{ asDeparture(es).tour.title }}</strong>
-          <span class="panel__meta">{{ asDeparture(es).date | date:'d. M. yyyy' }} &nbsp;·&nbsp; {{ asDeparture(es).bookedSeats }}/{{ asDeparture(es).capacity }} miest</span>
-        </div>
-      } @else {
-        <div class="form-group">
-          <label class="form-label">Popis jazdy</label>
-          <input class="form-input" [(ngModel)]="es.rideLabel" [placeholder]="asRide(es).label" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Poznámka</label>
-          <textarea class="form-input" [(ngModel)]="es.rideNote" rows="2"></textarea>
-        </div>
-      }
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Čas odchodu</label>
-          <input class="form-input form-input--time" type="time" [(ngModel)]="es.time" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Čas príchodu</label>
-          <input class="form-input form-input--time" type="time" [(ngModel)]="es.timeTo" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Autobus</label>
-        <select class="form-select" [(ngModel)]="es.busId">
-          <option value="">— bez autobusu —</option>
-          @for (b of buses(); track b.id) {
-            <option [value]="b.id">{{ b.licensePlate }} — {{ b.name }}</option>
-          }
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Šofér</label>
-        <select class="form-select" [(ngModel)]="es.driverId">
-          <option value="">— bez šoféra —</option>
-          @for (d of drivers(); track d.id) {
-            <option [value]="d.id">{{ d.name }}{{ d.phone ? ' · ' + d.phone : '' }}</option>
-          }
-        </select>
-      </div>
-    </div>
-
-    <div class="panel__footer">
-      @if (es.type === 'ride') {
-        <button class="btn btn--danger" (click)="deleteRide()" [disabled]="saving()">Zmazať</button>
-      }
-      <div class="panel__footer-right">
-        <button class="btn btn--ghost" (click)="closePanel()">Zrušiť</button>
-        <button class="btn btn--primary" (click)="saveEdit()" [disabled]="saving()">
-          {{ saving() ? 'Ukladám...' : 'Uložiť' }}
-        </button>
-      </div>
-    </div>
-  </div>
-}
-
-<!-- NEW RIDE PANEL -->
-@if (newRideState(); as nr) {
-  <div class="panel">
-    <div class="panel__header">
-      <h2 class="panel__title">Nová jazda — {{ nr.date }}</h2>
-      <button class="panel__close" (click)="closePanel()">✕</button>
-    </div>
-
-    <div class="panel__body">
-      <div class="form-group">
-        <label class="form-label">Popis jazdy *</label>
-        <input class="form-input" [(ngModel)]="nr.label" placeholder="napr. Školský výlet, Firemný prevoz..." />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Čas odchodu</label>
-          <input class="form-input form-input--time" type="time" [(ngModel)]="nr.time" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Čas príchodu</label>
-          <input class="form-input form-input--time" type="time" [(ngModel)]="nr.timeTo" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Autobus</label>
-        <select class="form-select" [(ngModel)]="nr.busId">
-          <option value="">— bez autobusu —</option>
-          @for (b of buses(); track b.id) {
-            <option [value]="b.id">{{ b.licensePlate }} — {{ b.name }}</option>
-          }
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Šofér</label>
-        <select class="form-select" [(ngModel)]="nr.driverId">
-          <option value="">— bez šoféra —</option>
-          @for (d of drivers(); track d.id) {
-            <option [value]="d.id">{{ d.name }}{{ d.phone ? ' · ' + d.phone : '' }}</option>
-          }
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Poznámka</label>
-        <textarea class="form-input" [(ngModel)]="nr.note" rows="2" placeholder="Voliteľná poznámka..."></textarea>
-      </div>
-    </div>
-
-    <div class="panel__footer">
-      <div class="panel__footer-right">
-        <button class="btn btn--ghost" (click)="closePanel()">Zrušiť</button>
-        <button class="btn btn--primary" (click)="saveNewRide()" [disabled]="saving() || !nr.label.trim()">
-          {{ saving() ? 'Ukladám...' : 'Pridať jazdu' }}
-        </button>
-      </div>
-    </div>
-  </div>
-}
+<app-admin-calendar-ride-panel
+  [editState]="editState()"
+  [newRideState]="newRideState()"
+  [drivers]="drivers()"
+  [buses]="buses()"
+  [saving]="saving()"
+  [error]="error()"
+  (close)="closePanel()"
+  (saveEdit)="saveEdit()"
+  (saveNewRide)="saveNewRide()"
+  (deleteRide)="deleteRide()"
+/>

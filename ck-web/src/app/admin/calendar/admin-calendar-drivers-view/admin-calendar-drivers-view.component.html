@@ -1,0 +1,56 @@
+<div class="schedule-wrap">
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th class="schedule-table__driver-col">Šofér</th>
+        @for (day of scheduleWeekDays(); track $index) {
+          <th class="schedule-table__day-col" [class.schedule-table__today]="isToday(day)">
+            <span class="sched-day-name">{{ WEEK_DAYS[$index] }}</span>
+            <span class="sched-day-num" [class.sched-day-num--today]="isToday(day)">{{ day.getDate() }}. {{ day.getMonth() + 1 }}.</span>
+          </th>
+        }
+        <th class="schedule-table__total-col">Celkom</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of driverSchedule(); track row.driver.id) {
+        <tr class="schedule-table__row">
+          <td class="schedule-table__driver-cell">
+            <span class="driver-name">{{ row.driver.name }}</span>
+            @if (row.driver.phone) {
+              <span class="driver-phone">{{ row.driver.phone }}</span>
+            }
+          </td>
+          @for (day of scheduleWeekDays(); track $index) {
+            <td class="schedule-table__trip-cell" [class.schedule-table__today]="isToday(day)">
+              @let trips = getDriverDayTrips(row, day);
+              @if (trips.length === 0) {
+                <span class="trip-empty">—</span>
+              } @else {
+                @for (trip of trips; track trip.id) {
+                  <div class="trip-item" [class.trip-item--dep]="trip.type === 'departure'" [class.trip-item--ride]="trip.type === 'ride'">
+                    <span class="trip-top">
+                      @if (trip.time) { <span class="trip-time">{{ trip.time }}</span> }
+                      @if (trip.busColor) { <span class="trip-bus-dot" [style.background]="trip.busColor"></span> }
+                      @if (trip.busPlate) { <span class="trip-bus-plate">{{ trip.busPlate }}</span> }
+                    </span>
+                    <span class="trip-label">{{ trip.label }}</span>
+                  </div>
+                }
+              }
+            </td>
+          }
+          <td class="schedule-table__total-cell">
+            @if (row.total > 0) {
+              <span class="total-badge">{{ row.total }}</span>
+            } @else {
+              <span class="trip-empty">0</span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<app-admin-calendar-legend variant="drivers" />

@@ -1,0 +1,156 @@
+.tl-container {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+  background: #fff;
+  overflow-x: auto;
+}
+
+/* HOUR RULER */
+.tl-ruler {
+  display: flex;
+  border-bottom: 2px solid var(--color-gray-200);
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--color-gray-50);
+}
+
+.tl-ruler__spacer {
+  width: 175px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-gray-200);
+}
+
+.tl-ruler__hours {
+  position: relative;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.tl-ruler__hour {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-gray-400);
+  padding-top: 0.4rem;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* DRIVER ROWS */
+.tl-row {
+  display: flex;
+  border-bottom: 1px solid var(--color-gray-100);
+  min-height: 40px;
+}
+
+.tl-row:last-child { border-bottom: none; }
+
+.tl-row__driver {
+  width: 175px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  border-right: 1px solid var(--color-gray-200);
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 2;
+}
+
+.tl-driver-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.tl-driver-info { display: flex; flex-direction: column; gap: 0.1rem; }
+.tl-driver-name { font-size: 0.82rem; font-weight: 600; color: var(--color-ink); }
+.tl-driver-phone { font-size: 0.7rem; color: var(--color-gray-400); }
+
+/* BAR AREA */
+.tl-row__bars {
+  position: relative;
+  flex-shrink: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent calc(90px - 1px),
+    var(--color-gray-100) calc(90px - 1px),
+    var(--color-gray-100) 90px
+  );
+}
+
+/* Individual hour gridlines (for exact positioning) */
+.tl-gridline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-gray-200);
+  pointer-events: none;
+}
+
+/* TRIP BARS */
+.tl-bar {
+  position: absolute;
+  height: 26px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: opacity 0.12s, box-shadow 0.12s;
+  white-space: nowrap;
+}
+
+.tl-bar:hover {
+  opacity: 0.92;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tl-bar__bus-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+
+.tl-bar__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.tl-bar__plate {
+  font-size: 0.65rem;
+  opacity: 0.85;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.tl-free {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  color: var(--color-gray-300);
+  font-style: italic;
+  pointer-events: none;
+}

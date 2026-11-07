@@ -13,17 +13,17 @@ export class LoginComponent {
   private auth   = inject(AdminAuthService);
   private router = inject(Router);
 
-  username = '';
+  email = '';
   password = '';
   loading  = signal(false);
   error    = signal('');
 
   submit() {
-    if (!this.username || !this.password) return;
+    if (!this.email || !this.password) return;
     this.loading.set(true);
     this.error.set('');
 
-    this.auth.login(this.username, this.password).subscribe({
+    this.auth.login(this.email, this.password).subscribe({
       next: () => this.router.navigate(['/admin']),
       error: () => {
         this.error.set('Nesprávne meno alebo heslo');

@@ -1,0 +1,61 @@
+<div class="tl-container">
+
+  <!-- HOUR RULER -->
+  <div class="tl-ruler">
+    <div class="tl-ruler__spacer"></div>
+    <div class="tl-ruler__hours" [style.width.px]="TL_W">
+      @for (h of TL_HOURS; track h) {
+        <div class="tl-ruler__hour" [style.left]="tlHourLeft(h)">{{ h }}:00</div>
+      }
+    </div>
+  </div>
+
+  <!-- DRIVER ROWS -->
+  @for (row of timelineRows(); track row.driver.id) {
+    <div class="tl-row">
+      <!-- Driver name (sticky) -->
+      <div class="tl-row__driver">
+        <span class="tl-driver-dot" [style.background]="row.driver.color"></span>
+        <div class="tl-driver-info">
+          <span class="tl-driver-name">{{ row.driver.name }}</span>
+          @if (row.driver.phone) { <span class="tl-driver-phone">{{ row.driver.phone }}</span> }
+        </div>
+      </div>
+
+      <!-- Bar area -->
+      <div class="tl-row__bars" [style.width.px]="TL_W" [style.height]="tlRowHeight(row.laneCount)">
+        <!-- Hour grid lines -->
+        @for (h of TL_HOURS; track h) {
+          <div class="tl-gridline" [style.left]="tlHourLeft(h)"></div>
+        }
+
+        @if (row.trips.length === 0) {
+          <span class="tl-free">voľný</span>
+        }
+
+        <!-- Trip bars -->
+        @for (trip of row.trips; track trip.id) {
+          <div
+            class="tl-bar"
+            [style.left]="tlLeft(trip.startMin)"
+            [style.width]="tlWidth(trip.startMin, trip.endMin)"
+            [style.top]="tlBarTop(trip.lane)"
+            [style.background]="row.driver.color"
+            [title]="trip.label + (trip.busPlate ? ' · ' + trip.busPlate : '')"
+          >
+            @if (trip.busColor) {
+              <span class="tl-bar__bus-dot" [style.background]="trip.busColor" [title]="trip.busPlate"></span>
+            }
+            <span class="tl-bar__label">{{ trip.label }}</span>
+            @if (trip.busPlate) {
+              <span class="tl-bar__plate">{{ trip.busPlate }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</div>
+
+<app-admin-calendar-legend [drivers]="drivers()" variant="timeline" />

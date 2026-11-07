@@ -8,18 +8,30 @@
     </div>
 
     <nav class="sidebar__nav">
-      <a routerLink="/admin/zajazdy" routerLinkActive="sidebar__link--active" class="sidebar__link">
-        <span class="sidebar__icon">🗺️</span> Zájazdy
-      </a>
-      <a routerLink="/admin/rezervacie" routerLinkActive="sidebar__link--active" class="sidebar__link">
-        <span class="sidebar__icon">📋</span> Rezervácie
-      </a>
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin/zajazdy" routerLinkActive="sidebar__link--active" class="sidebar__link">
+          <span class="sidebar__icon">🗺️</span> Zájazdy
+        </a>
+        <a routerLink="/admin/rezervacie" routerLinkActive="sidebar__link--active" class="sidebar__link">
+          <span class="sidebar__icon">📋</span> Rezervácie
+        </a>
+        <a routerLink="/admin/zamestnanci" routerLinkActive="sidebar__link--active" class="sidebar__link">
+          <span class="sidebar__icon">👥</span> Zamestnanci
+        </a>
+      }
       <a routerLink="/admin/kalendar" routerLinkActive="sidebar__link--active" class="sidebar__link">
         <span class="sidebar__icon">📅</span> Kalendár
       </a>
     </nav>
 
-    <button class="sidebar__logout" (click)="auth.logout()">Odhlásiť sa</button>
+    <div class="sidebar__user">
+      <div class="sidebar__user-name">{{ auth.staff()?.name }}</div>
+      <div class="sidebar__user-role">{{ roleLabel() }}</div>
+      <a routerLink="/admin/ucet" routerLinkActive="sidebar__link--active" class="sidebar__link sidebar__link--account">
+        <span class="sidebar__icon">🔑</span> Môj účet
+      </a>
+      <button class="sidebar__logout" (click)="auth.logout()">Odhlásiť sa</button>
+    </div>
   </aside>
 
   <!-- MAIN -->

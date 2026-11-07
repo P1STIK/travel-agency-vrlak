@@ -1,0 +1,61 @@
+<div class="day-headers">
+  @for (d of WEEK_DAYS; track d) {
+    <div class="day-header">{{ d }}</div>
+  }
+</div>
+
+<div class="cal-grid" [class.cal-grid--week]="viewMode() === 'week'">
+  @for (day of gridDays(); track $index) {
+    <div
+      class="day-cell"
+      [class.day-cell--today]="isToday(day)"
+      [class.day-cell--empty]="!day"
+      [class.day-cell--other-month]="viewMode() === 'month' && day && !isCurrentMonth(day)"
+    >
+      @if (day) {
+        <div class="day-cell__head">
+          <span class="day-num" [class.day-num--today]="isToday(day)">{{ day.getDate() }}</span>
+          @if (canCreateRide()) {
+            <button class="add-btn" (click)="openNewRide.emit(day); $event.stopPropagation()" title="Pridať jazdu">+</button>
+          }
+        </div>
+        <div class="day-cell__events">
+          @for (dep of getDayData(day).departures; track dep.id) {
+            <button class="chip" [ngStyle]="chipStyle(dep.driver)" (click)="openEditDeparture.emit(dep); $event.stopPropagation()">
+              <span class="chip__top-row">
+                @let tr = formatTimeRange(dep.time, dep.timeTo);
+                @if (tr) { <span class="chip__time">{{ tr }}</span> }
+                @if (dep.bus) { <span class="chip__bus-dot" [style.background]="dep.bus.color" [title]="dep.bus.name"></span> }
+                <span class="chip__type-badge chip__type-badge--dep">Z</span>
+              </span>
+              <span class="chip__name">{{ dep.tour.title }}</span>
+              <span class="chip__sub">
+                @if (dep.bus) { <span class="chip__spz">{{ dep.bus.licensePlate }}</span> }
+                @if (dep.driver) { <span class="chip__driver">{{ dep.driver.name }}</span> }
+                @else { <span class="chip__driver chip__driver--empty">bez šoféra</span> }
+              </span>
+            </button>
+          }
+          @for (ride of getDayData(day).rides; track ride.id) {
+            <button class="chip" [ngStyle]="chipStyle(ride.driver)" (click)="openEditRide.emit(ride); $event.stopPropagation()">
+              <span class="chip__top-row">
+                @let tr = formatTimeRange(ride.time, ride.timeTo);
+                @if (tr) { <span class="chip__time">{{ tr }}</span> }
+                @if (ride.bus) { <span class="chip__bus-dot" [style.background]="ride.bus.color" [title]="ride.bus.name"></span> }
+                <span class="chip__type-badge chip__type-badge--ride">J</span>
+              </span>
+              <span class="chip__name">{{ ride.label }}</span>
+              <span class="chip__sub">
+                @if (ride.bus) { <span class="chip__spz">{{ ride.bus.licensePlate }}</span> }
+                @if (ride.driver) { <span class="chip__driver">{{ ride.driver.name }}</span> }
+                @else { <span class="chip__driver chip__driver--empty">bez šoféra</span> }
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<app-admin-calendar-legend [drivers]="drivers()" variant="calendar" />

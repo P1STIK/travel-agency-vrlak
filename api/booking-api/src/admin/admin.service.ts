@@ -1,10 +1,13 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
+import { StaffRole } from '@prisma/client';
 import { BookingStatus } from '../common/entities';
 import { PrismaService } from '../prisma/prisma.service';
 import { activeStatuses, randomCode, withBookedSeats } from '../common/utils';
 import { CreateTourDto } from './dto/create-tour.dto';
 import { ManualBookingDto } from './dto/manual-booking.dto';
 import { AssignDriverDto, CreateScheduledRideDto, UpdateScheduledRideDto } from './dto/scheduled-ride.dto';
+import { CreateStaffDto, UpdateMyPasswordDto, UpdateStaffDto } from './dto/staff.dto';
 
 const inactiveStatuses = new Set<string>([BookingStatus.CANCELLED, BookingStatus.REFUNDED]);
 
@@ -13,9 +16,48 @@ const bookingsInclude = {
   select: { seats: true },
 };
 
+export interface Actor {
+  staffId: string;
+  role: StaffRole;
+  driverId: string | null;
+}
+
 @Injectable()
 export class AdminService {
   constructor(private prisma: PrismaService) {}
+
+  private toStaffDto(staff: {
+    id: string;
+    email: string;
+    name: string;
+    role: StaffRole;
+    driverId: string | null;
+    driver: { id: string; name: string; color: string } | null;
+    active: boolean;
+    lastLoginAt: Date | null;
+    createdAt: Date;
+  }) {
+    return {
+      id: staff.id,
+      email: staff.email,
+      name: staff.name,
+      role: staff.role,
+      driverId: staff.driverId,
+      driver: staff.driver,
+      active: staff.active,
+      lastLoginAt: staff.lastLoginAt ? staff.lastLoginAt.toISOString() : null,
+      createdAt: staff.createdAt.toISOString(),
+    };
+  }
+
+  private assertCanWriteRide(actor: Actor, currentDriverId: string | null, nextDriverId?: string | null) {
+    if (actor.role === StaffRole.ADMIN) return;
+    if (!actor.driverId) throw new ForbiddenException('Môžete upravovať iba svoje jazdy');
+    if (currentDriverId !== actor.driverId) throw new ForbiddenException('Môžete upravovať iba svoje jazdy');
+    if (nextDriverId !== undefined && nextDriverId !== actor.driverId) {
+      throw new ForbiddenException('Môžete upravovať iba svoje jazdy');
+    }
+  }
 
   async getAllTours() {
     const tours = await this.prisma.tour.findMany({
@@ -67,6 +109,18 @@ export class AdminService {
     const existing = await this.prisma.tour.findUnique({ where: { slug: dto.slug } });
     if (existing) throw new BadRequestException(`Zájazd so slugom "${dto.slug}" už existuje`);
 
+    for (const d of dto.departures ?? []) {
+      if (!d.returnDate) continue;
+      const departureDate = new Date(d.date);
+      const returnDate = new Date(d.returnDate);
+      if (isNaN(returnDate.getTime())) {
+        throw new BadRequestException('Neplatný dátum návratu');
+      }
+      if (returnDate < departureDate) {
+        throw new BadRequestException('Dátum návratu nemôže byť skôr ako dátum odchodu');
+      }
+    }
+
     return this.prisma.tour.create({
       data: {
         slug: dto.slug,
@@ -82,6 +136,7 @@ export class AdminService {
           ? {
               create: dto.departures.map(d => ({
                 date: new Date(d.date),
+                returnDate: d.returnDate ? new Date(d.returnDate) : null,
                 unitPriceCents: d.unitPriceCents,
                 capacity: d.capacity,
               })),
@@ -141,9 +196,10 @@ export class AdminService {
     };
   }
 
-  async assignDepartureDriver(id: string, dto: AssignDriverDto) {
+  async assignDepartureDriver(id: string, dto: AssignDriverDto, actor: Actor) {
     const dep = await this.prisma.departure.findUnique({ where: { id } });
     if (!dep) throw new NotFoundException('Odchod neexistuje');
+    this.assertCanWriteRide(actor, dep.driverId, dto.driverId ?? null);
     return this.prisma.departure.update({
       where: { id },
       data: {
@@ -160,7 +216,12 @@ export class AdminService {
     return this.prisma.bus.findMany({ orderBy: { name: 'asc' } });
   }
 
-  async createScheduledRide(dto: CreateScheduledRideDto) {
+  async createScheduledRide(dto: CreateScheduledRideDto, actor: Actor) {
+    if (actor.role !== StaffRole.ADMIN) {
+      if (!actor.driverId || dto.driverId !== actor.driverId) {
+        throw new ForbiddenException('Môžete upravovať iba svoje jazdy');
+      }
+    }
     return this.prisma.scheduledRide.create({
       data: {
         date: new Date(dto.date),
@@ -175,9 +236,10 @@ export class AdminService {
     });
   }
 
-  async updateScheduledRide(id: string, dto: UpdateScheduledRideDto) {
+  async updateScheduledRide(id: string, dto: UpdateScheduledRideDto, actor: Actor) {
     const ride = await this.prisma.scheduledRide.findUnique({ where: { id } });
     if (!ride) throw new NotFoundException('Jazda neexistuje');
+    this.assertCanWriteRide(actor, ride.driverId, 'driverId' in dto ? dto.driverId ?? null : undefined);
     return this.prisma.scheduledRide.update({
       where: { id },
       data: {
@@ -193,9 +255,10 @@ export class AdminService {
     });
   }
 
-  async deleteScheduledRide(id: string) {
+  async deleteScheduledRide(id: string, actor: Actor) {
     const ride = await this.prisma.scheduledRide.findUnique({ where: { id } });
     if (!ride) throw new NotFoundException('Jazda neexistuje');
+    this.assertCanWriteRide(actor, ride.driverId);
     await this.prisma.scheduledRide.delete({ where: { id } });
     return { ok: true };
   }
@@ -234,5 +297,105 @@ export class AdminService {
       },
       include: { passengers: true, departure: true },
     });
+  }
+
+  async getMe(actor: Actor) {
+    const staff = await this.prisma.staffUser.findUnique({ where: { id: actor.staffId } });
+    if (!staff) throw new NotFoundException('Používateľ neexistuje');
+    return { id: staff.id, name: staff.name, email: staff.email, role: staff.role, driverId: staff.driverId };
+  }
+
+  async updateMyPassword(actor: Actor, dto: UpdateMyPasswordDto) {
+    const staff = await this.prisma.staffUser.findUnique({ where: { id: actor.staffId } });
+    if (!staff) throw new NotFoundException('Používateľ neexistuje');
+
+    const ok = await bcrypt.compare(dto.currentPassword, staff.passwordHash);
+    if (!ok) throw new BadRequestException('Nesprávne aktuálne heslo');
+
+    const passwordHash = await bcrypt.hash(dto.newPassword, 10);
+    await this.prisma.staffUser.update({ where: { id: staff.id }, data: { passwordHash } });
+    return { ok: true };
+  }
+
+  async getStaff() {
+    const staff = await this.prisma.staffUser.findMany({
+      orderBy: { name: 'asc' },
+      include: { driver: { select: { id: true, name: true, color: true } } },
+    });
+    return staff.map(s => this.toStaffDto(s));
+  }
+
+  private async assertDriverAvailable(driverId: string | null | undefined, excludeStaffId?: string) {
+    if (!driverId) return;
+    const driver = await this.prisma.driver.findUnique({ where: { id: driverId } });
+    if (!driver) throw new NotFoundException('Vodič neexistuje');
+
+    const linked = await this.prisma.staffUser.findUnique({ where: { driverId } });
+    if (linked && linked.id !== excludeStaffId) {
+      throw new ConflictException('Vodič je už priradený inému používateľovi');
+    }
+  }
+
+  async createStaff(dto: CreateStaffDto) {
+    const email = dto.email.trim().toLowerCase();
+    const existing = await this.prisma.staffUser.findUnique({ where: { email } });
+    if (existing) throw new ConflictException('Používateľ s týmto e-mailom už existuje');
+
+    await this.assertDriverAvailable(dto.driverId);
+
+    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const staff = await this.prisma.staffUser.create({
+      data: {
+        email,
+        name: dto.name,
+        passwordHash,
+        role: dto.role,
+        driverId: dto.driverId ?? null,
+      },
+      include: { driver: { select: { id: true, name: true, color: true } } },
+    });
+    return this.toStaffDto(staff);
+  }
+
+  async updateStaff(id: string, dto: UpdateStaffDto) {
+    const existing = await this.prisma.staffUser.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException('Používateľ neexistuje');
+
+    if (dto.email !== undefined) {
+      const email = dto.email.trim().toLowerCase();
+      const other = await this.prisma.staffUser.findUnique({ where: { email } });
+      if (other && other.id !== id) throw new ConflictException('Používateľ s týmto e-mailom už existuje');
+    }
+
+    if (dto.driverId !== undefined) {
+      await this.assertDriverAvailable(dto.driverId, id);
+    }
+
+    const nextRole = dto.role ?? existing.role;
+    const nextActive = dto.active ?? existing.active;
+    if (existing.role === StaffRole.ADMIN && existing.active && (nextRole !== StaffRole.ADMIN || !nextActive)) {
+      const activeAdmins = await this.prisma.staffUser.count({
+        where: { role: StaffRole.ADMIN, active: true, id: { not: id } },
+      });
+      if (activeAdmins === 0) {
+        throw new BadRequestException('Musí zostať aspoň jeden aktívny administrátor');
+      }
+    }
+
+    const passwordHash = dto.password ? await bcrypt.hash(dto.password, 10) : undefined;
+
+    const staff = await this.prisma.staffUser.update({
+      where: { id },
+      data: {
+        ...(dto.email !== undefined && { email: dto.email.trim().toLowerCase() }),
+        ...(dto.name !== undefined && { name: dto.name }),
+        ...(dto.role !== undefined && { role: dto.role }),
+        ...(dto.driverId !== undefined && { driverId: dto.driverId }),
+        ...(dto.active !== undefined && { active: dto.active }),
+        ...(passwordHash !== undefined && { passwordHash }),
+      },
+      include: { driver: { select: { id: true, name: true, color: true } } },
+    });
+    return this.toStaffDto(staff);
   }
 }

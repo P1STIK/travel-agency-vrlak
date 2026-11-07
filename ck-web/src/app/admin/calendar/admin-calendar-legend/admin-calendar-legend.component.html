@@ -1,0 +1,30 @@
+<div class="legend">
+  @if (variant() !== 'drivers') {
+    @for (d of drivers(); track d.id) {
+      <span class="legend__item">
+        <span class="legend__dot" [style.background]="d.color"></span>{{ d.name }}
+      </span>
+    }
+  }
+
+  @switch (variant()) {
+    @case ('calendar') {
+      <span class="legend__item legend__item--sep">
+        <span class="legend__badge legend__badge--dep">Z</span> Zájazd
+        &nbsp;
+        <span class="legend__badge legend__badge--ride">J</span> Vlastná jazda
+        &nbsp;
+        <span class="legend__dot" style="background:#d1d5db"></span> bez šoféra
+      </span>
+    }
+    @case ('drivers') {
+      <span class="legend__item"><span class="legend__dot legend__dot--dep"></span> Zájazd</span>
+      <span class="legend__item"><span class="legend__dot legend__dot--ride"></span> Vlastná jazda</span>
+    }
+    @case ('timeline') {
+      <span class="legend__item legend__item--sep legend__note">
+        Jazdy bez zadaného času sa tu nezobrazujú.
+      </span>
+    }
+  }
+</div>

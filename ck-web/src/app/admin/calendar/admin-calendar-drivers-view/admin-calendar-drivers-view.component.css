@@ -1,0 +1,120 @@
+/* DRIVER SCHEDULE TABLE */
+.schedule-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 700px;
+}
+
+.schedule-table thead th {
+  background: var(--color-gray-50);
+  font-weight: 600;
+  color: var(--color-gray-700);
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 2px solid var(--color-gray-200);
+  white-space: nowrap;
+}
+
+.schedule-table__driver-col { width: 160px; min-width: 140px; position: sticky; left: 0; background: var(--color-gray-50); z-index: 1; }
+.schedule-table__day-col { min-width: 120px; text-align: center !important; }
+.schedule-table__total-col { width: 70px; text-align: center !important; }
+.schedule-table__today { background: var(--color-primary-light) !important; }
+
+.sched-day-name { display: block; font-size: 0.72rem; color: var(--color-gray-400); text-transform: uppercase; letter-spacing: 0.05em; }
+.sched-day-num { display: block; font-size: 0.85rem; font-weight: 600; }
+.sched-day-num--today { color: var(--color-primary); }
+
+.schedule-table__row { border-bottom: 1px solid var(--color-gray-100); }
+.schedule-table__row:last-child { border-bottom: none; }
+.schedule-table__row:hover { background: var(--color-gray-25); }
+
+.schedule-table__driver-cell {
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+  position: sticky;
+  left: 0;
+  background: inherit;
+  z-index: 1;
+  border-right: 1px solid var(--color-gray-200);
+}
+
+.schedule-table__row:hover .schedule-table__driver-cell { background: var(--color-gray-25); }
+
+.driver-name { display: block; font-weight: 600; color: var(--color-ink); }
+.driver-phone { display: block; font-size: 0.73rem; color: var(--color-gray-400); }
+
+.schedule-table__trip-cell {
+  padding: 0.4rem 0.5rem;
+  vertical-align: top;
+  text-align: center;
+  border-right: 1px solid var(--color-gray-100);
+}
+
+.schedule-table__total-cell {
+  padding: 0.4rem 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.trip-empty { color: var(--color-gray-300); font-size: 0.8rem; }
+
+.trip-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  margin: 0.1rem auto;
+  font-size: 0.72rem;
+  text-align: left;
+  width: 100%;
+  max-width: 160px;
+}
+
+.trip-item--dep { background: var(--color-primary-bg); color: var(--color-primary-dark); }
+.trip-item--ride { background: var(--color-success-bg); color: var(--color-success-dark); }
+
+.trip-time { font-weight: 700; font-size: 0.68rem; opacity: 0.8; }
+.trip-label { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+.total-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  width: 22px;
+  height: 22px;
+}
+
+.trip-top {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.trip-bus-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.trip-bus-plate {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}

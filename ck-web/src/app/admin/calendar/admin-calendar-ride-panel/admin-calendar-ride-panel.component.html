@@ -1,0 +1,147 @@
+<!-- BACKDROP -->
+@if (editState() || newRideState()) {
+  <div class="panel-backdrop" (click)="close.emit()"></div>
+}
+
+<!-- EDIT PANEL -->
+@if (editState(); as es) {
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__title">
+        @if (es.type === 'departure') { Odchod zájazdu } @else { Jazda }
+      </h2>
+      <button class="panel__close" (click)="close.emit()">✕</button>
+    </div>
+
+    <div class="panel__body">
+      @if (error()) {
+        <p class="panel__error">{{ error() }}</p>
+      }
+      @if (es.type === 'departure') {
+        <div class="panel__info">
+          <strong>{{ asDeparture(es).tour.title }}</strong>
+          <span class="panel__meta">{{ asDeparture(es).date | date:'d. M. yyyy' }} &nbsp;·&nbsp; {{ asDeparture(es).bookedSeats }}/{{ asDeparture(es).capacity }} miest</span>
+        </div>
+      } @else {
+        <div class="form-group">
+          <label class="form-label">Popis jazdy</label>
+          <input class="form-input" [(ngModel)]="es.rideLabel" [placeholder]="asRide(es).label" [disabled]="es.readonly" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Poznámka</label>
+          <textarea class="form-input" [(ngModel)]="es.rideNote" rows="2" [disabled]="es.readonly"></textarea>
+        </div>
+      }
+
+      @if (es.readonly) {
+        <p class="panel__readonly-hint">Túto jazdu môže upravovať iba priradený vodič.</p>
+      }
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Čas odchodu</label>
+          <input class="form-input form-input--time" type="time" [(ngModel)]="es.time" [disabled]="es.readonly" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Čas príchodu</label>
+          <input class="form-input form-input--time" type="time" [(ngModel)]="es.timeTo" [disabled]="es.readonly" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Autobus</label>
+        <select class="form-select" [(ngModel)]="es.busId" [disabled]="es.readonly">
+          <option value="">— bez autobusu —</option>
+          @for (b of buses(); track b.id) {
+            <option [value]="b.id">{{ b.licensePlate }} — {{ b.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Šofér</label>
+        <select class="form-select" [(ngModel)]="es.driverId" [disabled]="es.readonly || es.lockDriver">
+          <option value="">— bez šoféra —</option>
+          @for (d of drivers(); track d.id) {
+            <option [value]="d.id">{{ d.name }}{{ d.phone ? ' · ' + d.phone : '' }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="panel__footer">
+      @if (es.type === 'ride' && !es.readonly) {
+        <button class="btn btn--danger" (click)="deleteRide.emit()" [disabled]="saving()">Zmazať</button>
+      }
+      <div class="panel__footer-right">
+        <button class="btn btn--ghost" (click)="close.emit()">{{ es.readonly ? 'Zavrieť' : 'Zrušiť' }}</button>
+        @if (!es.readonly) {
+          <button class="btn btn--primary" (click)="saveEdit.emit()" [disabled]="saving()">
+            {{ saving() ? 'Ukladám...' : 'Uložiť' }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- NEW RIDE PANEL -->
+@if (newRideState(); as nr) {
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__title">Nová jazda — {{ nr.date }}</h2>
+      <button class="panel__close" (click)="close.emit()">✕</button>
+    </div>
+
+    <div class="panel__body">
+      @if (error()) {
+        <p class="panel__error">{{ error() }}</p>
+      }
+      <div class="form-group">
+        <label class="form-label">Popis jazdy *</label>
+        <input class="form-input" [(ngModel)]="nr.label" placeholder="napr. Školský výlet, Firemný prevoz..." />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Čas odchodu</label>
+          <input class="form-input form-input--time" type="time" [(ngModel)]="nr.time" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Čas príchodu</label>
+          <input class="form-input form-input--time" type="time" [(ngModel)]="nr.timeTo" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Autobus</label>
+        <select class="form-select" [(ngModel)]="nr.busId">
+          <option value="">— bez autobusu —</option>
+          @for (b of buses(); track b.id) {
+            <option [value]="b.id">{{ b.licensePlate }} — {{ b.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Šofér</label>
+        <select class="form-select" [(ngModel)]="nr.driverId" [disabled]="nr.lockDriver">
+          <option value="">— bez šoféra —</option>
+          @for (d of drivers(); track d.id) {
+            <option [value]="d.id">{{ d.name }}{{ d.phone ? ' · ' + d.phone : '' }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Poznámka</label>
+        <textarea class="form-input" [(ngModel)]="nr.note" rows="2" placeholder="Voliteľná poznámka..."></textarea>
+      </div>
+    </div>
+
+    <div class="panel__footer">
+      <div class="panel__footer-right">
+        <button class="btn btn--ghost" (click)="close.emit()">Zrušiť</button>
+        <button class="btn btn--primary" (click)="saveNewRide.emit()" [disabled]="saving() || !nr.label.trim()">
+          {{ saving() ? 'Ukladám...' : 'Pridať jazdu' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

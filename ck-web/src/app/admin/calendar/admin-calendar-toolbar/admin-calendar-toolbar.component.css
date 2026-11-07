@@ -1,0 +1,86 @@
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.cal-header__left { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.cal-header__center { display: flex; align-items: center; gap: 0.75rem; }
+
+.tab-bar { display: flex; border: 1px solid var(--color-gray-300); border-radius: 6px; overflow: hidden; }
+.tab-btn {
+  background: #fff;
+  border: none;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.tab-btn + .tab-btn { border-left: 1px solid var(--color-gray-300); }
+.tab-btn--active { background: var(--color-ink); color: #fff; }
+
+.cal-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.cal-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  min-width: 220px;
+  text-align: center;
+}
+
+.nav-btn {
+  background: #fff;
+  border: 1px solid var(--color-gray-300);
+  color: var(--color-gray-700);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-btn:hover { background: var(--color-gray-100); border-color: var(--color-gray-400); }
+
+.view-toggle { display: flex; gap: 0; border: 1px solid var(--color-gray-300); border-radius: 6px; overflow: hidden; }
+.view-toggle__btn {
+  background: #fff;
+  border: none;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.view-toggle__btn + .view-toggle__btn { border-left: 1px solid var(--color-gray-300); }
+.view-toggle__btn--active { background: var(--color-ink); color: #fff; }
+
+/* Lokálne .btn — admin-calendar má vlastnú (hustejšiu) škálu než globálny .btn
+   v styles.css (border-radius 6px, font-weight 500). Zdieľané aj s ride-panel
+   komponentom (duplicita 2x, zámerne — pozri .claude/refactor-plan.md). */
+.btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+.btn--ghost { background: transparent; border: 1px solid var(--color-gray-300); color: var(--color-gray-700); }
+.btn--ghost:hover { background: var(--color-gray-100); }

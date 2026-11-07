@@ -1,6 +1,4 @@
-import { DatePipe, NgStyle } from '@angular/common';
 import { Component, OnInit, computed, effect, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import {
   AdminApiService,
   Bus,
@@ -9,75 +7,33 @@ import {
   CalendarScheduledRide,
   Driver,
 } from '../admin-api.service';
-
-type ViewMode = 'week' | 'month';
-type ActiveTab = 'calendar' | 'drivers' | 'timeline';
-
-interface EditState {
-  type: 'departure' | 'ride';
-  data: CalendarDeparture | CalendarScheduledRide;
-  driverId: string;
-  busId: string;
-  time: string;
-  timeTo: string;
-  rideLabel: string;
-  rideNote: string;
-}
-
-interface NewRideState {
-  date: string;
-  label: string;
-  time: string;
-  timeTo: string;
-  busId: string;
-  note: string;
-  driverId: string;
-}
-
-export interface DriverTrip {
-  type: 'departure' | 'ride';
-  id: string;
-  label: string;
-  time: string;
-  busColor: string;
-  busPlate: string;
-}
-
-export interface DriverScheduleRow {
-  driver: Driver;
-  dayTrips: Map<string, DriverTrip[]>;
-  total: number;
-}
-
-export interface TimelineTrip {
-  type: 'departure' | 'ride';
-  id: string;
-  label: string;
-  startMin: number;
-  endMin: number;
-  busColor: string;
-  busPlate: string;
-  lane: number;
-}
-
-export interface TimelineRow {
-  driver: Driver;
-  trips: TimelineTrip[];
-  laneCount: number;
-}
+import { AdminCalendarToolbarComponent, CalendarActiveTab, CalendarViewMode } from './admin-calendar-toolbar/admin-calendar-toolbar.component';
+import { AdminCalendarGridViewComponent } from './admin-calendar-grid-view/admin-calendar-grid-view.component';
+import { AdminCalendarDriversViewComponent } from './admin-calendar-drivers-view/admin-calendar-drivers-view.component';
+import { AdminCalendarTimelineViewComponent } from './admin-calendar-timeline-view/admin-calendar-timeline-view.component';
+import { AdminCalendarRidePanelComponent, EditState, NewRideState } from './admin-calendar-ride-panel/admin-calendar-ride-panel.component';
+import { MONTHS, DAY_NAMES, toDateKey, weekStart } from '../../shared/utils/calendar-date.utils';
+import { AdminAuthService } from '../admin-auth.service';
 
 @Component({
   selector: 'app-admin-calendar',
   standalone: true,
-  imports: [FormsModule, DatePipe, NgStyle],
+  imports: [
+    AdminCalendarToolbarComponent,
+    AdminCalendarGridViewComponent,
+    AdminCalendarDriversViewComponent,
+    AdminCalendarTimelineViewComponent,
+    AdminCalendarRidePanelComponent,
+  ],
   templateUrl: './admin-calendar.component.html',
   styleUrl: './admin-calendar.component.css',
 })
 export class AdminCalendarComponent implements OnInit {
   private api = inject(AdminApiService);
+  private auth = inject(AdminAuthService);
 
-  activeTab = signal<ActiveTab>('calendar');
-  viewMode = signal<ViewMode>('month');
+  activeTab = signal<CalendarActiveTab>('calendar');
+  viewMode = signal<CalendarViewMode>('month');
   currentDate = signal(new Date());
   calendarData = signal<CalendarData | null>(null);
   drivers = signal<Driver[]>([]);
@@ -86,117 +42,26 @@ export class AdminCalendarComponent implements OnInit {
   editState = signal<EditState | null>(null);
   newRideState = signal<NewRideState | null>(null);
   saving = signal(false);
+  error = signal('');
 
-  readonly WEEK_DAYS = ['Po', 'Ut', 'St', 'Št', 'Pi', 'So', 'Ne'];
-  readonly MONTHS = ['Január','Február','Marec','Apríl','Máj','Jún','Júl','August','September','Október','November','December'];
-  readonly DAY_NAMES = ['Nedeľa','Pondelok','Utorok','Streda','Štvrtok','Piatok','Sobota'];
-
-  // Timeline: 05:00 – 22:00, 1.5 px per minute
-  readonly TL_START = 5 * 60;
-  readonly TL_END   = 22 * 60;
-  readonly TL_PX    = 1.5;
-  readonly TL_W     = (this.TL_END - this.TL_START) * this.TL_PX; // 1530px
-  readonly TL_HOURS = Array.from({ length: 18 }, (_, i) => i + 5); // 5..22
-
-  gridDays = computed<(Date | null)[]>(() =>
-    this.viewMode() === 'week' ? this.buildWeekDays(this.currentDate()) : this.buildMonthDays(this.currentDate())
-  );
-
-  scheduleWeekDays = computed<Date[]>(() => this.buildWeekDays(this.currentDate()));
-
-  dayMap = computed(() => {
-    const data = this.calendarData();
-    const map = new Map<string, { departures: CalendarDeparture[]; rides: CalendarScheduledRide[] }>();
-    if (!data) return map;
-    for (const dep of data.departures) {
-      const key = dep.date.slice(0, 10);
-      if (!map.has(key)) map.set(key, { departures: [], rides: [] });
-      map.get(key)!.departures.push(dep);
-    }
-    for (const ride of data.scheduledRides) {
-      const key = ride.date.slice(0, 10);
-      if (!map.has(key)) map.set(key, { departures: [], rides: [] });
-      map.get(key)!.rides.push(ride);
-    }
-    return map;
-  });
-
-  driverSchedule = computed<DriverScheduleRow[]>(() => {
-    const data = this.calendarData();
-    const allDrivers = this.drivers();
-    if (!data) return allDrivers.map(d => ({ driver: d, dayTrips: new Map(), total: 0 }));
-
-    return allDrivers.map(driver => {
-      const dayTrips = new Map<string, DriverTrip[]>();
-
-      for (const dep of data.departures.filter(d => d.driverId === driver.id)) {
-        const key = dep.date.slice(0, 10);
-        if (!dayTrips.has(key)) dayTrips.set(key, []);
-        dayTrips.get(key)!.push({ type: 'departure', id: dep.id, label: dep.tour.title, time: dep.time ?? '', busColor: dep.bus?.color ?? '', busPlate: dep.bus?.licensePlate ?? '' });
-      }
-      for (const ride of data.scheduledRides.filter(r => r.driverId === driver.id)) {
-        const key = ride.date.slice(0, 10);
-        if (!dayTrips.has(key)) dayTrips.set(key, []);
-        dayTrips.get(key)!.push({ type: 'ride', id: ride.id, label: ride.label, time: ride.time ?? '', busColor: ride.bus?.color ?? '', busPlate: ride.bus?.licensePlate ?? '' });
-      }
-      for (const trips of dayTrips.values()) {
-        trips.sort((a, b) => a.time.localeCompare(b.time));
-      }
-
-      const total = [...dayTrips.values()].reduce((s, t) => s + t.length, 0);
-      return { driver, dayTrips, total };
-    });
-  });
-
-  timelineRows = computed<TimelineRow[]>(() => {
-    const data = this.calendarData();
-    const allDrivers = this.drivers();
-    if (!data) return allDrivers.map(d => ({ driver: d, trips: [], laneCount: 1 }));
-
-    const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
-
-    return allDrivers.map(driver => {
-      const raw: Omit<TimelineTrip, 'lane'>[] = [];
-
-      for (const dep of data.departures.filter(d => d.driverId === driver.id && d.time)) {
-        const startMin = toMin(dep.time!);
-        const endMin   = dep.timeTo ? toMin(dep.timeTo) : startMin + 60;
-        raw.push({ type: 'departure', id: dep.id, label: dep.tour.title, startMin, endMin, busColor: dep.bus?.color ?? '', busPlate: dep.bus?.licensePlate ?? '' });
-      }
-      for (const ride of data.scheduledRides.filter(r => r.driverId === driver.id && r.time)) {
-        const startMin = toMin(ride.time!);
-        const endMin   = ride.timeTo ? toMin(ride.timeTo) : startMin + 60;
-        raw.push({ type: 'ride', id: ride.id, label: ride.label, startMin, endMin, busColor: ride.bus?.color ?? '', busPlate: ride.bus?.licensePlate ?? '' });
-      }
-
-      // Assign lanes (greedy interval scheduling)
-      const sorted = [...raw].sort((a, b) => a.startMin - b.startMin);
-      const laneEnds: number[] = [];
-      const trips: TimelineTrip[] = sorted.map(trip => {
-        let lane = laneEnds.findIndex(end => end <= trip.startMin);
-        if (lane === -1) { lane = laneEnds.length; laneEnds.push(0); }
-        laneEnds[lane] = trip.endMin;
-        return { ...trip, lane };
-      });
-
-      return { driver, trips, laneCount: Math.max(1, laneEnds.length) };
-    });
-  });
+  isAdmin = this.auth.isAdmin;
+  myDriverId = this.auth.driverId;
+  canCreateRide = computed(() => this.isAdmin() || this.myDriverId() !== null);
 
   headerLabel = computed(() => {
     const d = this.currentDate();
     if (this.activeTab() === 'timeline') {
-      return `${this.DAY_NAMES[d.getDay()]} ${d.getDate()}. ${this.MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+      return `${DAY_NAMES[d.getDay()]} ${d.getDate()}. ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
     }
     if (this.viewMode() === 'month' && this.activeTab() === 'calendar') {
-      return `${this.MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+      return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
     }
-    const mon = this.weekStart(d);
+    const mon = weekStart(d);
     const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
     if (mon.getMonth() === sun.getMonth()) {
-      return `${mon.getDate()}. – ${sun.getDate()}. ${this.MONTHS[mon.getMonth()]} ${mon.getFullYear()}`;
+      return `${mon.getDate()}. – ${sun.getDate()}. ${MONTHS[mon.getMonth()]} ${mon.getFullYear()}`;
     }
-    return `${mon.getDate()}. ${this.MONTHS[mon.getMonth()]} – ${sun.getDate()}. ${this.MONTHS[sun.getMonth()]} ${sun.getFullYear()}`;
+    return `${mon.getDate()}. ${MONTHS[mon.getMonth()]} – ${sun.getDate()}. ${MONTHS[sun.getMonth()]} ${sun.getFullYear()}`;
   });
 
   constructor() {
@@ -213,56 +78,20 @@ export class AdminCalendarComponent implements OnInit {
     this.api.getBuses().subscribe(b => this.buses.set(b));
   }
 
-  toKey(d: Date): string {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
-  private weekStart(d: Date): Date {
-    const day = d.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    const mon = new Date(d);
-    mon.setDate(d.getDate() + diff);
-    mon.setHours(0, 0, 0, 0);
-    return mon;
-  }
-
-  buildWeekDays(d: Date): Date[] {
-    const mon = this.weekStart(d);
-    return Array.from({ length: 7 }, (_, i) => {
-      const day = new Date(mon); day.setDate(mon.getDate() + i); return day;
-    });
-  }
-
-  private buildMonthDays(d: Date): (Date | null)[] {
-    const year = d.getFullYear(), month = d.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    let startOffset = firstDay.getDay() - 1;
-    if (startOffset < 0) startOffset = 6;
-    const days: (Date | null)[] = [];
-    for (let i = 0; i < startOffset; i++) days.push(null);
-    for (let i = 1; i <= lastDay.getDate(); i++) days.push(new Date(year, month, i));
-    while (days.length % 7 !== 0) days.push(null);
-    return days;
-  }
-
-  private loadCalendar(d: Date, mode: ViewMode, tab: ActiveTab) {
+  private loadCalendar(d: Date, mode: CalendarViewMode, tab: CalendarActiveTab) {
     let from: Date, to: Date;
     if (tab === 'timeline') {
       from = new Date(d.getFullYear(), d.getMonth(), d.getDate());
       to   = new Date(d.getFullYear(), d.getMonth(), d.getDate());
     } else if (mode === 'week' || tab === 'drivers') {
-      from = this.weekStart(d);
+      from = weekStart(d);
       to = new Date(from); to.setDate(from.getDate() + 6);
     } else {
       from = new Date(d.getFullYear(), d.getMonth(), 1);
       to = new Date(d.getFullYear(), d.getMonth() + 1, 0);
     }
     this.loading.set(true);
-    this.api.getCalendar(this.toKey(from), this.toKey(to)).subscribe({
+    this.api.getCalendar(toDateKey(from), toDateKey(to)).subscribe({
       next: data => { this.calendarData.set(data); this.loading.set(false); },
       error: () => this.loading.set(false),
     });
@@ -278,9 +107,9 @@ export class AdminCalendarComponent implements OnInit {
   }
 
   goToday() { this.currentDate.set(new Date()); }
-  setViewMode(mode: ViewMode) { this.viewMode.set(mode); }
+  setViewMode(mode: CalendarViewMode) { this.viewMode.set(mode); }
 
-  switchTab(tab: ActiveTab) {
+  switchTab(tab: CalendarActiveTab) {
     if (tab === 'drivers' && this.viewMode() === 'month') {
       this.viewMode.set('week');
     }
@@ -288,77 +117,47 @@ export class AdminCalendarComponent implements OnInit {
     this.closePanel();
   }
 
-  isToday(d: Date | null): boolean {
-    if (!d) return false;
-    const t = new Date();
-    return d.getDate() === t.getDate() && d.getMonth() === t.getMonth() && d.getFullYear() === t.getFullYear();
+  private canEdit(ownerDriverId: string | null): boolean {
+    if (this.isAdmin()) return true;
+    const myId = this.myDriverId();
+    return myId !== null && ownerDriverId === myId;
   }
 
-  isCurrentMonth(d: Date | null): boolean {
-    if (!d) return false;
-    const cur = this.currentDate();
-    return d.getMonth() === cur.getMonth() && d.getFullYear() === cur.getFullYear();
-  }
-
-  getDayData(d: Date | null) {
-    if (!d) return { departures: [] as CalendarDeparture[], rides: [] as CalendarScheduledRide[] };
-    const entry = this.dayMap().get(this.toKey(d));
-    const deps = [...(entry?.departures ?? [])].sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
-    const rides = [...(entry?.rides ?? [])].sort((a, b) => (a.time ?? '').localeCompare(b.time ?? ''));
-    return { departures: deps, rides };
-  }
-
-  getDriverDayTrips(row: DriverScheduleRow, day: Date): DriverTrip[] {
-    return row.dayTrips.get(this.toKey(day)) ?? [];
-  }
-
-  openEditDeparture(dep: CalendarDeparture, e: Event) {
-    e.stopPropagation();
+  openEditDeparture(dep: CalendarDeparture) {
     this.newRideState.set(null);
-    this.editState.set({ type: 'departure', data: dep, driverId: dep.driverId ?? '', busId: dep.busId ?? '', time: dep.time ?? '', timeTo: dep.timeTo ?? '', rideLabel: '', rideNote: '' });
+    const editable = this.canEdit(dep.driverId);
+    this.editState.set({
+      type: 'departure', data: dep, driverId: dep.driverId ?? '', busId: dep.busId ?? '', time: dep.time ?? '', timeTo: dep.timeTo ?? '',
+      rideLabel: '', rideNote: '', readonly: !editable, lockDriver: !this.isAdmin(),
+    });
   }
 
-  openEditRide(ride: CalendarScheduledRide, e: Event) {
-    e.stopPropagation();
+  openEditRide(ride: CalendarScheduledRide) {
     this.newRideState.set(null);
-    this.editState.set({ type: 'ride', data: ride, driverId: ride.driverId ?? '', busId: ride.busId ?? '', time: ride.time ?? '', timeTo: ride.timeTo ?? '', rideLabel: ride.label, rideNote: ride.note ?? '' });
+    const editable = this.canEdit(ride.driverId);
+    this.editState.set({
+      type: 'ride', data: ride, driverId: ride.driverId ?? '', busId: ride.busId ?? '', time: ride.time ?? '', timeTo: ride.timeTo ?? '',
+      rideLabel: ride.label, rideNote: ride.note ?? '', readonly: !editable, lockDriver: !this.isAdmin(),
+    });
   }
 
-  openNewRide(d: Date, e: Event) {
-    e.stopPropagation();
+  openNewRide(d: Date) {
+    if (!this.canCreateRide()) return;
     this.editState.set(null);
-    this.newRideState.set({ date: this.toKey(d), label: '', time: '', timeTo: '', busId: '', note: '', driverId: '' });
+    const myId = this.myDriverId();
+    this.newRideState.set({
+      date: toDateKey(d), label: '', time: '', timeTo: '', busId: '', note: '',
+      driverId: this.isAdmin() ? '' : (myId ?? ''), lockDriver: !this.isAdmin(),
+    });
   }
 
-  closePanel() { this.editState.set(null); this.newRideState.set(null); }
-
-  asDeparture(es: EditState): CalendarDeparture { return es.data as CalendarDeparture; }
-  asRide(es: EditState): CalendarScheduledRide { return es.data as CalendarScheduledRide; }
-
-  private hexToRgba(hex: string, alpha: number): string {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
-
-  chipStyle(driver: Driver | null): Record<string, string> {
-    const color = driver?.color;
-    if (!color) return { background: '#f3f4f6', 'border-left-color': '#d1d5db' };
-    return { background: this.hexToRgba(color, 0.1), 'border-left-color': color };
-  }
-
-  formatTimeRange(from: string | null, to: string | null): string {
-    if (from && to) return `${from} – ${to}`;
-    if (from) return from;
-    if (to) return `do ${to}`;
-    return '';
-  }
+  closePanel() { this.editState.set(null); this.newRideState.set(null); this.error.set(''); }
 
   saveEdit() {
     const es = this.editState();
-    if (!es) return;
+    if (!es || es.readonly) return;
     this.saving.set(true);
+    this.error.set('');
     const driverId = es.driverId || null;
     const busId = es.busId || null;
     const time = es.time || null;
@@ -370,7 +169,7 @@ export class AdminCalendarComponent implements OnInit {
           this.patchDeparture((es.data as CalendarDeparture).id, updated);
           this.saving.set(false); this.closePanel();
         },
-        error: () => this.saving.set(false),
+        error: (e) => { this.saving.set(false); this.error.set(e?.error?.message ?? 'Chyba pri ukladaní'); },
       });
     } else {
       const ride = es.data as CalendarScheduledRide;
@@ -380,7 +179,7 @@ export class AdminCalendarComponent implements OnInit {
         note: es.rideNote || null,
       }).subscribe({
         next: updated => { this.patchRide(ride.id, updated); this.saving.set(false); this.closePanel(); },
-        error: () => this.saving.set(false),
+        error: (e) => { this.saving.set(false); this.error.set(e?.error?.message ?? 'Chyba pri ukladaní'); },
       });
     }
   }
@@ -389,6 +188,7 @@ export class AdminCalendarComponent implements OnInit {
     const nr = this.newRideState();
     if (!nr || !nr.label.trim()) return;
     this.saving.set(true);
+    this.error.set('');
     this.api.createScheduledRide({
       date: nr.date,
       time: nr.time || undefined,
@@ -403,47 +203,25 @@ export class AdminCalendarComponent implements OnInit {
         if (data) this.calendarData.set({ ...data, scheduledRides: [...data.scheduledRides, ride] });
         this.saving.set(false); this.closePanel();
       },
-      error: () => this.saving.set(false),
+      error: (e) => { this.saving.set(false); this.error.set(e?.error?.message ?? 'Chyba pri ukladaní'); },
     });
   }
 
   deleteRide() {
     const es = this.editState();
-    if (!es || es.type !== 'ride') return;
+    if (!es || es.type !== 'ride' || es.readonly) return;
     const ride = es.data as CalendarScheduledRide;
     if (!confirm(`Zmazať jazdu "${ride.label}"?`)) return;
     this.saving.set(true);
+    this.error.set('');
     this.api.deleteScheduledRide(ride.id).subscribe({
       next: () => {
         const data = this.calendarData();
         if (data) this.calendarData.set({ ...data, scheduledRides: data.scheduledRides.filter(r => r.id !== ride.id) });
         this.saving.set(false); this.closePanel();
       },
-      error: () => this.saving.set(false),
+      error: (e) => { this.saving.set(false); this.error.set(e?.error?.message ?? 'Chyba pri mazaní'); },
     });
-  }
-
-  // Timeline pixel helpers
-  tlLeft(startMin: number): string {
-    return `${Math.max(0, (startMin - this.TL_START) * this.TL_PX)}px`;
-  }
-
-  tlWidth(startMin: number, endMin: number): string {
-    const s = Math.max(startMin, this.TL_START);
-    const e = Math.min(endMin, this.TL_END);
-    return `${Math.max(this.TL_PX * 15, (e - s) * this.TL_PX)}px`; // min 15min visible
-  }
-
-  tlHourLeft(hour: number): string {
-    return `${(hour * 60 - this.TL_START) * this.TL_PX}px`;
-  }
-
-  tlRowHeight(laneCount: number): string {
-    return `${laneCount * 32 + 8}px`;
-  }
-
-  tlBarTop(lane: number): string {
-    return `${lane * 32 + 4}px`;
   }
 
   private patchDeparture(id: string, patch: Partial<CalendarDeparture>) {

@@ -1,0 +1,29 @@
+/* Zdieľané medzi kalendárovým, vodičským a timeline tabom — vždy rovnaký "legend" pásik,
+   len s iným doplnkovým obsahom cez <ng-content> (badge pre Z/J, poznámka pri timeline...). */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  padding: 0.75rem 0.25rem;
+  font-size: 0.78rem;
+  color: var(--color-gray-500);
+}
+.legend__item { display: flex; align-items: center; gap: 0.4rem; }
+.legend__item--sep { border-left: 1px solid var(--color-gray-200); padding-left: 1rem; }
+.legend__dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.legend__dot--dep  { background: #93c5fd; }
+.legend__dot--ride { background: #86efac; }
+.legend__badge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  border-radius: 2px;
+  padding: 0 0.25rem;
+}
+.legend__badge--dep  { background: var(--color-primary-bg); color: var(--color-primary-dark); }
+.legend__badge--ride { background: var(--color-success-bg); color: var(--color-success-dark); }
+
+.legend__note {
+  font-style: italic;
+  color: var(--color-gray-400);
+  font-size: 0.73rem;
+}

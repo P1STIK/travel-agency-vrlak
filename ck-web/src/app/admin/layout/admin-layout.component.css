@@ -1,12 +1,17 @@
 .admin {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
 }
 
-/* SIDEBAR */
+/* SIDEBAR — sticky na celú výšku viewportu, nech je pätička (meno/rola/odhlásenie)
+   vždy vidieť aj keď je .admin__main dlhší a scrolluje sa. */
 .sidebar {
   width: 220px;
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
   background: var(--color-ink);
   color: #fff;
   display: flex;
@@ -63,6 +68,20 @@
 
 .sidebar__icon { font-size: 1rem; }
 
+.sidebar__user {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar__user-name { font-size: 0.9rem; font-weight: 600; color: #fff; }
+.sidebar__user-role { font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 0.4rem; }
+
+.sidebar__link--account { padding: 0.4rem 0.75rem; }
+
 .sidebar__logout {
   background: none;
   border: 1px solid rgba(255,255,255,0.2);
@@ -72,7 +91,6 @@
   font-size: 0.85rem;
   cursor: pointer;
   transition: all 0.15s;
-  margin-top: auto;
 }
 
 .sidebar__logout:hover { border-color: #fff; color: #fff; }

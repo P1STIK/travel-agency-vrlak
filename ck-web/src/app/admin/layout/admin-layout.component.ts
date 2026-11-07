@@ -10,4 +10,8 @@ import { AdminAuthService } from '../admin-auth.service';
 })
 export class AdminLayoutComponent {
   auth = inject(AdminAuthService);
+
+  roleLabel(): string {
+    return this.auth.isAdmin() ? 'Administrátor' : 'Vodič';
+  }
 }
