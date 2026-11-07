@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { CustomerAuthService } from './customer-auth.service';
 
 export interface PassengerInput {
   firstName: string; lastName: string;
@@ -18,6 +19,7 @@ export interface CreateBookingPayload {
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private baseUrl = '/api';
+  private customerAuth = inject(CustomerAuthService);
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +28,9 @@ export class BookingService {
   }
 
   create(body: CreateBookingPayload) {
-    return this.http.post<any>(`${this.baseUrl}/booking`, body);
+    const token = this.customerAuth.getToken();
+    const headers = token ? this.customerAuth.authHeaders() : undefined;
+    return this.http.post<any>(`${this.baseUrl}/booking`, body, headers ? { headers } : {});
   }
 
   uploadInsuranceDocument(bookingId: string, passengerId: string, file: File) {

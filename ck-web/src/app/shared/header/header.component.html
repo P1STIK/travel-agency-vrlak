@@ -10,6 +10,13 @@
         <span class="topbar__text hidden sm:inline">Po–Pi 8:00–16:00</span>
       </div>
       <div class="topbar__right">
+        @if (auth.isLoggedIn()) {
+          <a class="topbar__link" routerLink="/moj-ucet">Môj účet ({{ auth.customer()?.firstName }})</a>
+          <span class="sep">•</span>
+          <button type="button" class="topbar__link bg-transparent border-0 p-0 cursor-pointer" (click)="logout()">Odhlásiť</button>
+        } @else {
+          <a class="topbar__link" routerLink="/prihlasenie">Prihlásiť sa</a>
+        }
       </div>
     </div>
   </div>
@@ -86,6 +93,17 @@
           }
         }
         <a routerLink="/kontakt" class="mobile__cta" (click)="closeAllMenus()">Kontaktujte nás</a>
+
+        <div class="container flex flex-col gap-1 pb-3">
+          @if (auth.isLoggedIn()) {
+            <a routerLink="/moj-ucet" class="mobile__link" (click)="closeAllMenus()">
+              Môj účet ({{ auth.customer()?.firstName }})
+            </a>
+            <button type="button" class="mobile__link bg-transparent border-0 p-0 text-left cursor-pointer" (click)="logout()">Odhlásiť</button>
+          } @else {
+            <a routerLink="/prihlasenie" class="mobile__link" (click)="closeAllMenus()">Prihlásiť sa</a>
+          }
+        </div>
       </nav>
     </div>
   }

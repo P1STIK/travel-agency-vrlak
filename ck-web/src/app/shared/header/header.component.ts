@@ -1,5 +1,6 @@
 import { Component, HostListener, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { CustomerAuthService } from '../../services/customer-auth.service';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class HeaderComponent {
   private router = inject(Router);
+  readonly auth = inject(CustomerAuthService);
 
   // top bar
   phone = '+421 900 000 000';
@@ -49,5 +51,10 @@ export class HeaderComponent {
     this.openTours.set(false);
     this.openMobile.set(false);
     (document.activeElement as HTMLElement)?.blur();
+  }
+
+  logout() {
+    this.closeAllMenus();
+    this.auth.logout();
   }
 }

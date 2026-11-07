@@ -1,0 +1,83 @@
+<main class="auth">
+
+  <section class="auth__hero">
+    <div class="container">
+      <h1 class="auth__title">Registrácia</h1>
+      <p class="auth__sub">Vytvorte si zákaznícky účet</p>
+    </div>
+  </section>
+
+  <div class="container auth__body">
+    <div class="card auth__card">
+      <h2 class="card__heading">Nový účet</h2>
+
+      <p class="auth__note">
+        Registrácia je dobrovoľná — zájazd si môžete objednať aj bez účtu. Viac o spracovaní údajov
+        v <a routerLink="/gdpr">ochrane osobných údajov</a>.
+      </p>
+
+      @if (error()) {
+        <p class="form-error">{{ error() }}</p>
+      }
+
+      <form class="form" (ngSubmit)="submit()">
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Meno *</span>
+            <input class="field__input" [(ngModel)]="form.firstName" name="firstName" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Priezvisko *</span>
+            <input class="field__input" [(ngModel)]="form.lastName" name="lastName" required />
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="field__label">E-mail *</span>
+          <input class="field__input" type="email" [(ngModel)]="form.email" name="email" autocomplete="email" required />
+        </label>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Heslo *</span>
+            <input class="field__input" type="password" [(ngModel)]="form.password" name="password" autocomplete="new-password" minlength="8" maxlength="128" required />
+          </label>
+          <label class="field">
+            <span class="field__label">Heslo znova *</span>
+            <input class="field__input" type="password" [(ngModel)]="form.confirmPassword" name="confirmPassword" autocomplete="new-password" required />
+          </label>
+        </div>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Telefón</span>
+            <input class="field__input" type="tel" [(ngModel)]="form.phone" name="phone" />
+          </label>
+          <label class="field">
+            <span class="field__label">Mesto</span>
+            <input class="field__input" [(ngModel)]="form.city" name="city" />
+          </label>
+        </div>
+
+        <div class="form__row">
+          <label class="field">
+            <span class="field__label">Ulica a číslo</span>
+            <input class="field__input" [(ngModel)]="form.street" name="street" />
+          </label>
+          <label class="field">
+            <span class="field__label">PSČ</span>
+            <input class="field__input" [(ngModel)]="form.zip" name="zip" />
+          </label>
+        </div>
+
+        <button class="btn btn--primary btn--lg" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Registrujem...' : 'Zaregistrovať sa' }}
+        </button>
+      </form>
+
+      <p class="auth__switch">
+        Máte už účet? <a routerLink="/prihlasenie" [queryParams]="{ returnUrl: returnUrl }">Prihláste sa</a>
+      </p>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,15 @@
+.form { display: flex; flex-direction: column; gap: 1rem; }
+.form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.account-success {
+  background: var(--color-success-bg);
+  color: var(--color-success-dark);
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .form__row { grid-template-columns: 1fr; }
+}

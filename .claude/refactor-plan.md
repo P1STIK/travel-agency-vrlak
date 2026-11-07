@@ -169,3 +169,32 @@ Pri kontrole "sedí schéma s migráciami" spustil `prisma migrate diff` s `--sh
 **Poistka (urobené):** `.claude/agents/architect.md` a `.claude/agents/backend-engineer.md` teraz majú explicitný zákaz `--shadow-database-url`/string-rewrite DB URL príkazov, s popisom presne tohto incidentu a bezpečnou alternatívou (`migrate diff --from-url "$DATABASE_URL" ... --script`, žiadna shadow DB).
 
 **Čo by sme ešte mohli zvážiť** (nerobené, len nápad): pravidelný `pg_dump` lokálnej dev DB pred rizikovejšími operáciami, keďže momentálne neexistuje žiadna záloha vôbec.
+
+---
+
+## Feature: Zákaznícke účty (registrácia, prihlásenie, profil) — 2026-11-07 ✅ hotové
+
+Samostatný `User` model (nezávislý od `StaffUser` z fázy staff rolí) — email, heslo, meno, telefón, adresa. **Bez** rodného čísla/dátumu narodenia (tie ostávajú len per-cestujúci v `Passenger`, nie duplicitne v profile — rozhodnutie z predošlej diskusie).
+
+**Postavené (BE + FE + tester, cez architekta):**
+- `POST /auth/customer/register`, `POST /auth/customer/login` — samostatný token typ (`customer`, 30 dní), oddelený od staff tokenu (8h). Rate limit cez `@nestjs/throttler`.
+- `customers/` modul: `GET/PATCH /me`, `PATCH /me/password`, `GET /me/bookings`, `DELETE /me` (rezervácie ostanú, len sa odviažu)
+- `POST /booking` — voliteľné prepojenie na účet (guest checkout funguje ďalej bez zmeny)
+- `GET /admin/customers` — admin-only zoznam zákazníkov (šofér nemá prístup)
+- FE: `/prihlasenie`, `/registracia`, `/moj-ucet` (rozdelené na `account-profile`/`account-password`/`account-bookings`/`account-delete`), login/účet v headeri, predvyplnenie checkoutu z profilu (len prázdne polia, nikdy rodné číslo/dátum narodenia), `admin/zakaznici` stránka
+- GDPR stránka doplnená o faktickú sekciu "Zákaznícky účet" — **čaká na právne schválenie** (právny základ spracovania, dátum účinnosti)
+
+**Bug fixnutý po ceste:** `admin-auth.interceptor.ts` predtým odhlasoval aj zákazníkov na admin login pri 401 z akéhokoľvek requestu — teraz reaguje len na 401 z `/admin/*`.
+
+**DB maintenance, ktorú si architekt všimol a opravil:**
+- Po incidente z 2026-10-07 chýbala Prisma migračná história (`_prisma_migrations`) — DB bola evidentne obnovená priamo zo schémy, nie prehraním migrácií. Opravené cez `prisma migrate resolve --applied` pre všetkých 9 migrácií (len zápis do histórie, žiadna zmena dát).
+- **Prvá reálna záloha dev DB vôbec**: `pg_dump` pred touto prácou, uložený mimo repo (`~/cestovka-db-backups/`). Spomínaný "pravidelný pg_dump" nápad vyššie — toto bol prvý krok tým smerom.
+
+**Testovacie dáta v DB:** demo zákaznícky účet `demo.zakaznik@example.com` (heslo dal Lukasovi priamo v chate, nie v súbore) + pár testovacích rezervácií (teraz guest bookings, keďže testovacie účty sa zmazali) — ponechané na Lukasovo zváženie, či vyčistiť.
+
+**Otvorené:**
+- GDPR text — právne schválenie
+- `ng build` stále zlyháva na CSS limite (`header.component.css`, 8.09 kB vs 8 kB) — nesúvisí s touto funkciou, existovalo už predtým
+- FE má dve cesty k API (`BookingService` cez `/api` proxy, zvyšok cez `environment.api` priamo) — nekonzistencia, nenarobilo problém teraz, treba doriešiť pred nasadením
+- Email sa nedá zmeniť (žiadne overovanie emailu) — vedomé, treba email sending najprv
+- Deferred ako predtým: overenie emailu, reset hesla, prepojenie starých guest rezervácií na účet

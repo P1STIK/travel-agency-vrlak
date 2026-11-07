@@ -1,0 +1,50 @@
+<div class="page">
+  <div class="page__header">
+    <h1 class="page__title">Zákazníci</h1>
+    <input
+      class="search"
+      type="text"
+      placeholder="Hľadať podľa mena, e-mailu alebo telefónu..."
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+      name="search"
+    />
+  </div>
+
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (!customers().length) {
+    <p class="state-msg">Žiadni zákazníci.</p>
+  } @else {
+    <p class="count-msg">Zobrazených {{ filtered().length }} z {{ customers().length }}</p>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Meno</th>
+            <th>E-mail</th>
+            <th>Telefón</th>
+            <th>Mesto</th>
+            <th>Registrovaný</th>
+            <th>Objednávky</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of filtered(); track c.id) {
+            <tr>
+              <td>{{ c.firstName }} {{ c.lastName }}</td>
+              <td><a [href]="'mailto:' + c.email">{{ c.email }}</a></td>
+              <td>{{ c.phone ?? '–' }}</td>
+              <td>{{ c.city ?? '–' }}</td>
+              <td>{{ formatDate(c.createdAt) }}</td>
+              <td class="center">{{ c.bookingCount }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="center">Žiadny zákazník nezodpovedá hľadaniu.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,41 @@
+<div class="card account-delete">
+  <h2 class="card__heading">Zrušenie účtu</h2>
+
+  @if (!open()) {
+    <p class="card__text">
+      Svoj účet môžete kedykoľvek zrušiť. Vaše objednávky zostanú zachované, ale prestanú byť prepojené s účtom.
+    </p>
+    <div class="card__actions">
+      <button class="btn btn--danger" type="button" (click)="open.set(true)">Zrušiť účet</button>
+    </div>
+  } @else {
+    <p class="card__text">
+      Zrušením účtu sa vymažú údaje Vášho účtu (meno, kontaktné údaje, prihlasovacie údaje). Vaše doterajšie
+      objednávky zostanú uchované, len sa odpoja od účtu — rovnako ako objednávky vytvorené bez registrácie.
+      Táto akcia je nevratná.
+    </p>
+
+    @if (error()) {
+      <p class="form-error">{{ error() }}</p>
+    }
+
+    <form class="form" (ngSubmit)="submit()">
+      <label class="field">
+        <span class="field__label">Heslo *</span>
+        <input class="field__input" type="password" [(ngModel)]="password" name="password" autocomplete="current-password" required />
+      </label>
+
+      <label class="field field--checkbox">
+        <input type="checkbox" [(ngModel)]="confirmed" name="confirmed" />
+        <span>Rozumiem, že táto akcia je nevratná a súhlasím so zrušením účtu.</span>
+      </label>
+
+      <div class="card__actions card__actions--spread">
+        <button class="btn btn--ghost" type="button" (click)="open.set(false)">Zrušiť</button>
+        <button class="btn btn--danger" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Spracovávam...' : 'Natrvalo zrušiť účet' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

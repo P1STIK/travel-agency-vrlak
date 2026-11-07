@@ -5,13 +5,16 @@ import {
   Get,
   Param,
   Post,
+  Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { OptionalCustomerAuthGuard } from '../auth/optional-customer-jwt-auth.guard';
 import { BookingsService } from './bookings.service';
 import { QuoteDto } from './dto/quote.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -29,8 +32,9 @@ export class BookingsController {
   }
 
   @Post()
-  create(@Body() dto: CreateBookingDto) {
-    return this.svc.create(dto);
+  @UseGuards(OptionalCustomerAuthGuard)
+  create(@Body() dto: CreateBookingDto, @Req() req: any) {
+    return this.svc.create(dto, req.user?.customerId ?? null);
   }
 
   @Post('checkout/session')

@@ -108,4 +108,9 @@ export class AdminController {
   updateStaff(@Param('id') id: string, @Body() dto: UpdateStaffDto) {
     return this.admin.updateStaff(id, dto);
   }
+
+  @Get('customers')
+  getCustomers() {
+    return this.admin.getCustomers();
+  }
 }

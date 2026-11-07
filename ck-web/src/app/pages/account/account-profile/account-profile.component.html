@@ -1,0 +1,56 @@
+<div class="card">
+  <h2 class="card__heading">Osobné údaje</h2>
+
+  @if (error()) {
+    <p class="form-error">{{ error() }}</p>
+  }
+  @if (success()) {
+    <p class="account-success">Údaje boli uložené.</p>
+  }
+
+  <form class="form" (ngSubmit)="submit()">
+    <label class="field">
+      <span class="field__label">E-mail</span>
+      <input class="field__input" type="email" [value]="customer().email" disabled />
+    </label>
+
+    <div class="form__row">
+      <label class="field">
+        <span class="field__label">Meno *</span>
+        <input class="field__input" [(ngModel)]="form.firstName" name="firstName" required />
+      </label>
+      <label class="field">
+        <span class="field__label">Priezvisko *</span>
+        <input class="field__input" [(ngModel)]="form.lastName" name="lastName" required />
+      </label>
+    </div>
+
+    <div class="form__row">
+      <label class="field">
+        <span class="field__label">Telefón</span>
+        <input class="field__input" type="tel" [(ngModel)]="form.phone" name="phone" />
+      </label>
+      <label class="field">
+        <span class="field__label">Mesto</span>
+        <input class="field__input" [(ngModel)]="form.city" name="city" />
+      </label>
+    </div>
+
+    <div class="form__row">
+      <label class="field">
+        <span class="field__label">Ulica a číslo</span>
+        <input class="field__input" [(ngModel)]="form.street" name="street" />
+      </label>
+      <label class="field">
+        <span class="field__label">PSČ</span>
+        <input class="field__input" [(ngModel)]="form.zip" name="zip" />
+      </label>
+    </div>
+
+    <div class="card__actions">
+      <button class="btn btn--primary" type="submit" [disabled]="saving()">
+        {{ saving() ? 'Ukladám...' : 'Uložiť zmeny' }}
+      </button>
+    </div>
+  </form>
+</div>

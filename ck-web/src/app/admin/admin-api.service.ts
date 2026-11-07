@@ -181,6 +181,19 @@ export interface CreateTourPayload {
   departures?: { date: string; returnDate?: string | null; unitPriceCents: number; capacity: number }[];
 }
 
+export interface AdminCustomer {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  street: string | null;
+  city: string | null;
+  zip: string | null;
+  createdAt: string;
+  bookingCount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
   private http = inject(HttpClient);
@@ -261,5 +274,9 @@ export class AdminApiService {
 
   updateStaff(id: string, payload: UpdateStaffPayload) {
     return this.http.patch<StaffMember>(`${this.base}/staff/${id}`, payload, { headers: this.headers() });
+  }
+
+  getCustomers() {
+    return this.http.get<AdminCustomer[]>(`${this.base}/customers`, { headers: this.headers() });
   }
 }

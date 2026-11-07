@@ -25,6 +25,8 @@
             [form]="form"
             [loading]="store.loading()"
             [errorMsg]="store.error()"
+            [isLoggedIn]="customerAuth.isLoggedIn()"
+            [loginReturnUrl]="loginReturnUrl"
             (back)="prevStep()"
             (submit)="createBooking()"
             (fileSelected)="onInsuranceFileSelected($event)"

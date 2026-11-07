@@ -1,0 +1,39 @@
+<main class="auth">
+
+  <section class="auth__hero">
+    <div class="container">
+      <h1 class="auth__title">Prihlásenie</h1>
+      <p class="auth__sub">Prihláste sa do svojho zákazníckeho účtu</p>
+    </div>
+  </section>
+
+  <div class="container auth__body">
+    <div class="card auth__card">
+      <h2 class="card__heading">Prihlásiť sa</h2>
+
+      @if (error()) {
+        <p class="form-error">{{ error() }}</p>
+      }
+
+      <form class="form" (ngSubmit)="submit()">
+        <label class="field">
+          <span class="field__label">E-mail *</span>
+          <input class="field__input" type="email" [(ngModel)]="email" name="email" autocomplete="email" required />
+        </label>
+
+        <label class="field">
+          <span class="field__label">Heslo *</span>
+          <input class="field__input" type="password" [(ngModel)]="password" name="password" autocomplete="current-password" required />
+        </label>
+
+        <button class="btn btn--primary btn--lg" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Prihlasovanie...' : 'Prihlásiť sa' }}
+        </button>
+      </form>
+
+      <p class="auth__switch">
+        Nemáte účet? <a routerLink="/registracia" [queryParams]="{ returnUrl: returnUrl }">Zaregistrujte sa</a>
+      </p>
+    </div>
+  </div>
+</main>

@@ -1,0 +1,20 @@
+<main class="account">
+
+  <section class="account__hero">
+    <div class="container">
+      <h1 class="account__title">Môj účet</h1>
+      @if (customer(); as c) {
+        <p class="account__sub">Vitajte, {{ c.firstName }}</p>
+      }
+    </div>
+  </section>
+
+  <div class="container account__body">
+    @if (customer(); as c) {
+      <app-account-profile [customer]="c" (updated)="customer.set($event)" />
+      <app-account-password />
+      <app-account-bookings />
+      <app-account-delete />
+    }
+  </div>
+</main>

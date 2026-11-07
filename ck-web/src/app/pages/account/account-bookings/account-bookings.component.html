@@ -1,0 +1,39 @@
+<div class="card">
+  <h2 class="card__heading">Moje objednávky</h2>
+
+  @if (loading()) {
+    <p class="state-msg">Načítavam...</p>
+  } @else if (error()) {
+    <p class="form-error">{{ error() }}</p>
+  } @else if (!bookings().length) {
+    <p class="state-msg">Zatiaľ nemáte žiadne objednávky. <a routerLink="/zajazdy">Prezrite si naše zájazdy</a>.</p>
+  } @else {
+    <div class="bookings">
+      @for (b of bookings(); track b.id) {
+        <div class="booking">
+          <div class="booking__main">
+            <div class="booking__title-row">
+              @if (b.tour) {
+                <a [routerLink]="['/zajazdy', b.tour.slug]" class="booking__title">{{ b.tour.title }}</a>
+              } @else {
+                <span class="booking__title">Zájazd už nie je k dispozícii</span>
+              }
+              <span class="badge" [class]="statusClass(b.status)">{{ statusLabel(b.status) }}</span>
+            </div>
+            <div class="booking__meta">
+              @if (dateRange(b)) {
+                <span>{{ dateRange(b) }}</span>
+                <span class="sep">•</span>
+              }
+              <span>{{ b.seats }} {{ b.seats === 1 ? 'miesto' : 'miesta' }}</span>
+              <span class="sep">•</span>
+              <span>{{ b.totalAmount | price: b.currency }}</span>
+            </div>
+            <div class="booking__passengers">{{ passengerNames(b) }}</div>
+          </div>
+          <div class="booking__code">{{ b.code }}</div>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToursService, Tour } from '../../services/tours.service';
 import { BookingStore } from '../../services/booking.store';
+import { CustomerAuthService } from '../../services/customer-auth.service';
 import { CheckoutStepperComponent, CheckoutStep } from './checkout-stepper/checkout-stepper.component';
 import { CheckoutSummaryComponent } from './checkout-summary/checkout-summary.component';
 import { CheckoutSeatsStepComponent } from './checkout-seats-step/checkout-seats-step.component';
@@ -28,6 +29,7 @@ export class CheckoutComponent implements OnInit {
   private fb       = inject(FormBuilder);
   private toursApi = inject(ToursService);
   readonly store   = inject(BookingStore);
+  readonly customerAuth = inject(CustomerAuthService);
 
   step = signal(1);
   readonly STEPS: CheckoutStep[] = [
@@ -64,11 +66,43 @@ export class CheckoutComponent implements OnInit {
 
     this.syncPassengersToSeats();
     this.recalcQuote();
+    this.prefillFromCustomer();
 
     this.form.get('seats')!.valueChanges.subscribe(() => {
       this.syncPassengersToSeats();
       this.recalcQuote();
     });
+  }
+
+  /** Fills email + the first passenger's contact fields from the logged-in customer's profile — only into empty fields. */
+  private prefillFromCustomer() {
+    const customer = this.customerAuth.customer();
+    if (!customer) return;
+
+    const emailCtrl = this.form.get('email')!;
+    if (!emailCtrl.value) emailCtrl.setValue(customer.email);
+
+    const first = this.passengers.at(0);
+    if (!first) return;
+
+    const fields: Record<string, string | null> = {
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      phone: customer.phone,
+      street: customer.street,
+      city: customer.city,
+      zip: customer.zip,
+      email: customer.email,
+    };
+    for (const [key, value] of Object.entries(fields)) {
+      if (!value) continue;
+      const ctrl = first.get(key);
+      if (ctrl && !ctrl.value) ctrl.setValue(value);
+    }
+  }
+
+  get loginReturnUrl(): string {
+    return window.location.pathname + window.location.search;
   }
 
   private syncPassengersToSeats() {

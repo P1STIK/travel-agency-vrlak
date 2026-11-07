@@ -27,7 +27,7 @@ export class BookingsService {
     };
   }
 
-  async create(dto: CreateBookingDto) {
+  async create(dto: CreateBookingDto, customerId: string | null = null) {
     const quote = this.quote({
       departureId: dto.departureId,
       seats: dto.seats,
@@ -46,6 +46,7 @@ export class BookingsService {
         totalAmount: quote.totalCents,
         currency: quote.currency,
         status: BookingStatus.PENDING,
+        userId: customerId,
         passengers: {
           create: dto.passengers.map(p => ({
             firstName: p.firstName,

@@ -398,4 +398,24 @@ export class AdminService {
     });
     return this.toStaffDto(staff);
   }
+
+  async getCustomers() {
+    const customers = await this.prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { _count: { select: { bookings: true } } },
+    });
+
+    return customers.map(c => ({
+      id: c.id,
+      email: c.email,
+      firstName: c.firstName,
+      lastName: c.lastName,
+      phone: c.phone,
+      street: c.street,
+      city: c.city,
+      zip: c.zip,
+      createdAt: c.createdAt.toISOString(),
+      bookingCount: c._count.bookings,
+    }));
+  }
 }

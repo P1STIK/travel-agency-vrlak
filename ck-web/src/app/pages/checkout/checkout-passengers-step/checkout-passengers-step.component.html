@@ -15,6 +15,13 @@
   <div class="card" style="margin-top: 1rem">
     <h2 class="card__heading">Cestujúci</h2>
 
+    @if (!isLoggedIn()) {
+      <p class="login-hint">
+        Máte účet? <a [routerLink]="'/prihlasenie'" [queryParams]="{ returnUrl: loginReturnUrl() }">Prihláste sa</a>
+        a údaje sa predvyplnia.
+      </p>
+    }
+
     <div formArrayName="passengers" class="passengers">
       @for (group of passengers.controls; track $index; let i = $index) {
         <div class="passenger" [formGroupName]="i">
