@@ -1,0 +1,21 @@
+<div class="card" [formGroup]="form()">
+  <h2 class="card__heading">Počet miest</h2>
+
+  <label class="field">
+    <span class="field__label">Počet cestujúcich</span>
+    <div class="seats-input">
+      <button type="button" class="seats-btn" (click)="decrement()" [disabled]="seatsControl.value <= 1">−</button>
+      <input class="seats-value" type="number" formControlName="seats" min="1" max="50" />
+      <button type="button" class="seats-btn" (click)="increment()" [disabled]="seatsControl.value >= 50">+</button>
+    </div>
+    @if (seatsControl.touched && seatsControl.invalid) {
+      <p class="field__error">Zadaj aspoň 1 osobu.</p>
+    }
+  </label>
+
+  <div class="card__actions">
+    <button type="button" class="btn btn--primary btn--lg" (click)="next.emit()">
+      Pokračovať <span class="btn__arrow">→</span>
+    </button>
+  </div>
+</div>

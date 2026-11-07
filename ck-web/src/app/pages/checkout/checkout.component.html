@@ -4,216 +4,50 @@
   <section class="checkout__hero">
     <div class="container">
       <h1 class="checkout__hero-title">Rezervácia</h1>
-      @if (tour()) {
-        <p class="checkout__hero-sub">{{ tour().title }}</p>
+      @if (tour(); as t) {
+        <p class="checkout__hero-sub">{{ t.title }}</p>
       }
     </div>
   </section>
 
-  <!-- STEPPER -->
-  <div class="stepper-wrap container">
-    <div class="stepper">
-      @for (s of STEPS; track s.n) {
-        <div class="stepper__item" [class.is-active]="step() === s.n" [class.is-done]="step() > s.n">
-          <div class="stepper__circle">
-            @if (step() > s.n) {
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            } @else {
-              {{ s.n }}
-            }
-          </div>
-          <span class="stepper__label">{{ s.label }}</span>
-        </div>
-        @if (!$last) {
-          <div class="stepper__line" [class.is-done]="step() > s.n"></div>
-        }
-      }
-    </div>
-  </div>
+  <app-checkout-stepper [steps]="STEPS" [current]="step()" />
 
   <!-- CONTENT -->
   <div class="container checkout__body">
 
-    <!-- FORM AREA -->
-    <form class="checkout__form" [formGroup]="form">
-
-      <!-- KROK 1 – počet miest -->
-      @if (step() === 1) {
-        <div class="card">
-          <h2 class="card__heading">Počet miest</h2>
-
-          <label class="field">
-            <span class="field__label">Počet cestujúcich</span>
-            <div class="seats-input">
-              <button type="button" class="seats-btn" (click)="form.get('seats')!.setValue(form.get('seats')!.value - 1)" [disabled]="form.get('seats')!.value <= 1">−</button>
-              <input class="seats-value" type="number" formControlName="seats" min="1" max="50" />
-              <button type="button" class="seats-btn" (click)="form.get('seats')!.setValue(form.get('seats')!.value + 1)" [disabled]="form.get('seats')!.value >= 50">+</button>
-            </div>
-            @if (form.get('seats')?.touched && form.get('seats')?.invalid) {
-              <p class="field__error">Zadaj aspoň 1 osobu.</p>
-            }
-          </label>
-
-          <div class="card__actions">
-            <button type="button" class="btn btn--primary btn--lg" (click)="nextStep()">
-              Pokračovať <span class="btn__arrow">→</span>
-            </button>
-          </div>
-        </div>
-      }
-
-      <!-- KROK 2 – cestujúci -->
-      @if (step() === 2) {
-        <div class="card">
-          <h2 class="card__heading">Kontaktné údaje</h2>
-
-          <label class="field">
-            <span class="field__label">E-mail na potvrdenie</span>
-            <input class="field__input" type="email" formControlName="email" placeholder="meno@domena.sk" />
-            @if (form.get('email')?.touched && form.get('email')?.invalid) {
-              <p class="field__error">Zadaj platný e-mail.</p>
-            }
-          </label>
-        </div>
-
-        <div class="card" style="margin-top: 1rem">
-          <h2 class="card__heading">Cestujúci</h2>
-
-          <div formArrayName="passengers" class="passengers">
-            @for (group of passengers.controls; track $index; let i = $index) {
-              <div class="passenger" [formGroupName]="i">
-                <div class="passenger__num">{{ i + 1 }}</div>
-                <div class="passenger__fields">
-                  <label class="field">
-                    <span class="field__label">Meno</span>
-                    <input class="field__input" formControlName="firstName" placeholder="Ján" />
-                    @if (group.get('firstName')?.touched && group.get('firstName')?.invalid) {
-                      <p class="field__error">Meno je povinné.</p>
-                    }
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Priezvisko</span>
-                    <input class="field__input" formControlName="lastName" placeholder="Novák" />
-                    @if (group.get('lastName')?.touched && group.get('lastName')?.invalid) {
-                      <p class="field__error">Priezvisko je povinné.</p>
-                    }
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Dátum narodenia</span>
-                    <input class="field__input" type="date" formControlName="birthDate" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Rodné číslo / číslo OP</span>
-                    <input class="field__input" formControlName="nationalId" placeholder="900101/1234" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Ulica a číslo</span>
-                    <input class="field__input" formControlName="street" placeholder="Hlavná 1" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Mesto</span>
-                    <input class="field__input" formControlName="city" placeholder="Bratislava" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">PSČ</span>
-                    <input class="field__input" formControlName="zip" placeholder="811 01" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">Telefón</span>
-                    <input class="field__input" type="tel" formControlName="phone" placeholder="+421 900 000 000" />
-                  </label>
-                  <label class="field">
-                    <span class="field__label">E-mail osoby</span>
-                    <input class="field__input" type="email" formControlName="email" placeholder="jan@novak.sk" />
-                  </label>
-                  <label class="field field--file">
-                    <span class="field__label">Poistný dokument (PDF/JPG/PNG)</span>
-                    <input class="field__input" type="file" accept=".pdf,image/jpeg,image/png,image/webp" (change)="onInsuranceFileSelected(i, $event)" />
-                  </label>
-                </div>
-              </div>
-            }
-          </div>
-
-          @if (errorMsg()) {
-            <p class="form-error">{{ errorMsg() }}</p>
-          }
-
-          <div class="card__actions card__actions--spread">
-            <button type="button" class="btn btn--ghost" (click)="prevStep()">← Späť</button>
-            <button type="button" class="btn btn--primary btn--lg" [disabled]="loading()" (click)="createBooking()">
-              {{ loading() ? 'Spracovávam...' : 'Pokračovať na platbu →' }}
-            </button>
-          </div>
-        </div>
-      }
-
-      <!-- KROK 3 – platba -->
-      @if (step() === 3) {
-        <div class="card card--success">
-          <div class="success-icon">✓</div>
-          <h2 class="card__heading">Rezervácia potvrdená</h2>
-          <p class="card__text">Vaša rezervácia bola úspešne vytvorená. Pre dokončenie je potrebná platba.</p>
-
-          @if (bookingId()) {
-            <div class="booking-code">
-              <span class="booking-code__label">Kód rezervácie</span>
-              <span class="booking-code__value">{{ bookingId() }}</span>
-            </div>
-          }
-
-          @if (errorMsg()) {
-            <p class="form-error">{{ errorMsg() }}</p>
-          }
-
-          <div class="card__actions">
-            <button type="button" class="btn btn--primary btn--lg" [disabled]="loading()" (click)="pay()">
-              {{ loading() ? 'Presmerovávam...' : 'Zaplatiť teraz' }}
-            </button>
-          </div>
-        </div>
-      }
-
-    </form>
-
-    <!-- SÚHRN -->
-    <aside class="checkout__summary">
-      <div class="summary">
-        <h3 class="summary__title">Súhrn objednávky</h3>
-
-        @if (tour()) {
-          <div class="summary__tour">
-            @if (tour().thumbImage || tour().heroImage) {
-              <img [src]="tour().thumbImage || tour().heroImage" [alt]="tour().title" class="summary__img" />
-            }
-            <div class="summary__tour-info">
-              <p class="summary__tour-name">{{ tour().title }}</p>
-              @if (departure()) {
-                <p class="summary__tour-date">{{ formatDate(departure().date) }}</p>
-              }
-            </div>
-          </div>
+    <div class="checkout__form">
+      @switch (step()) {
+        @case (1) {
+          <app-checkout-seats-step [form]="form" (next)="nextStep()" />
         }
+        @case (2) {
+          <app-checkout-passengers-step
+            [form]="form"
+            [loading]="store.loading()"
+            [errorMsg]="store.error()"
+            (back)="prevStep()"
+            (submit)="createBooking()"
+            (fileSelected)="onInsuranceFileSelected($event)"
+          />
+        }
+        @case (3) {
+          <app-checkout-payment-step
+            [bookingId]="store.bookingId()"
+            [loading]="store.loading()"
+            [errorMsg]="store.error()"
+            (pay)="pay()"
+          />
+        }
+      }
+    </div>
 
-        <div class="summary__rows">
-          <div class="summary__row">
-            <span>Cena / osoba</span>
-            <span>{{ (unitPriceCents / 100) | number:'1.0-0' }} €</span>
-          </div>
-          <div class="summary__row">
-            <span>Počet miest</span>
-            <span>{{ form.get('seats')?.value ?? 1 }}</span>
-          </div>
-        </div>
-
-        <div class="summary__total">
-          <span>Celkom</span>
-          @if (quote()) {
-            <span class="summary__total-price">{{ (quote().totalCents / 100) | number:'1.0-0' }} {{ quote().currency }}</span>
-          }
-        </div>
-      </div>
-    </aside>
+    <app-checkout-summary
+      [tour]="tour()"
+      [departureId]="departureId"
+      [unitPriceCents]="unitPriceCents"
+      [seats]="form.get('seats')?.value ?? 1"
+      [quote]="store.quote()"
+    />
 
   </div>
 </main>

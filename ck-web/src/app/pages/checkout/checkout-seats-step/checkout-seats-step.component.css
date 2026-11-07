@@ -1,0 +1,47 @@
+/* .card, .card__heading, .card__actions, .field, .btn base pattern prichádzajú z globálneho styles.css */
+.field { margin-bottom: 1rem; }
+
+.seats-input {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: fit-content;
+  border: 1.5px solid var(--color-gray-300);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.seats-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--color-bg-subtle);
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-gray-700);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.seats-btn:hover:not(:disabled) { background: var(--color-gray-200); }
+.seats-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.seats-value {
+  width: 3.5rem;
+  border: none;
+  border-left: 1.5px solid var(--color-gray-200);
+  border-right: 1.5px solid var(--color-gray-200);
+  padding: 0;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  height: 2.5rem;
+  outline: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.seats-value::-webkit-outer-spin-button,
+.seats-value::-webkit-inner-spin-button { -webkit-appearance: none; appearance: none; }
+
+.btn { gap: 0.4rem; }

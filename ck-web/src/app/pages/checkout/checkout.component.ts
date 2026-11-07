@@ -1,14 +1,24 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
-import { ToursService } from '../../services/tours.service';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ToursService, Tour } from '../../services/tours.service';
 import { BookingStore } from '../../services/booking.store';
+import { CheckoutStepperComponent, CheckoutStep } from './checkout-stepper/checkout-stepper.component';
+import { CheckoutSummaryComponent } from './checkout-summary/checkout-summary.component';
+import { CheckoutSeatsStepComponent } from './checkout-seats-step/checkout-seats-step.component';
+import { CheckoutPassengersStepComponent } from './checkout-passengers-step/checkout-passengers-step.component';
+import { CheckoutPaymentStepComponent } from './checkout-payment-step/checkout-payment-step.component';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [ReactiveFormsModule, DecimalPipe],
+  imports: [
+    CheckoutStepperComponent,
+    CheckoutSummaryComponent,
+    CheckoutSeatsStepComponent,
+    CheckoutPassengersStepComponent,
+    CheckoutPaymentStepComponent,
+  ],
   providers: [BookingStore], // vlastná instancia na životnosť komponentu, nie root singleton
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css'],
@@ -20,7 +30,7 @@ export class CheckoutComponent implements OnInit {
   readonly store   = inject(BookingStore);
 
   step = signal(1);
-  readonly STEPS = [
+  readonly STEPS: CheckoutStep[] = [
     { n: 1, label: 'Počet miest' },
     { n: 2, label: 'Cestujúci' },
     { n: 3, label: 'Platba' },
@@ -33,14 +43,8 @@ export class CheckoutComponent implements OnInit {
   form!: FormGroup;
   get passengers(): FormArray { return this.form.get('passengers') as FormArray; }
 
-  tour = signal<any>(null);
+  tour = signal<Tour | null>(null);
   insuranceFiles = signal<(File | null)[]>([]);
-
-  // Zdieľané signály zo store-u — šablóna ich čítala ako `quote()`, `bookingId()`, `loading()`, `errorMsg()`.
-  readonly quote = this.store.quote;
-  readonly bookingId = this.store.bookingId;
-  readonly loading = this.store.loading;
-  readonly errorMsg = this.store.error;
 
   ngOnInit() {
     const p = this.route.snapshot.queryParamMap;
@@ -89,7 +93,7 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  onInsuranceFileSelected(index: number, event: Event) {
+  onInsuranceFileSelected({ index, event }: { index: number; event: Event }) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
     this.insuranceFiles.update(files => {
@@ -135,21 +139,11 @@ export class CheckoutComponent implements OnInit {
   }
 
   pay() {
-    if (!this.bookingId()) return;
+    if (!this.store.bookingId()) return;
     const returnUrl = window.location.origin + '/thank-you';
     this.store.pay(returnUrl).subscribe({
       next: res => { window.location.href = res.checkoutUrl; },
       error: () => {}, // chybová správa je už nastavená v store-i
     });
-  }
-
-  formatDate(iso: string): string {
-    return new Date(iso).toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' });
-  }
-
-  departure() {
-    const t = this.tour();
-    if (!t) return null;
-    return t.departures?.find((d: any) => d.id === this.departureId) ?? t.departures?.[0] ?? null;
   }
 }

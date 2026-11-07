@@ -1,0 +1,19 @@
+<div class="stepper-wrap container">
+  <div class="stepper">
+    @for (s of steps(); track s.n) {
+      <div class="stepper__item" [class.is-active]="current() === s.n" [class.is-done]="current() > s.n">
+        <div class="stepper__circle">
+          @if (current() > s.n) {
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          } @else {
+            {{ s.n }}
+          }
+        </div>
+        <span class="stepper__label">{{ s.label }}</span>
+      </div>
+      @if (!$last) {
+        <div class="stepper__line" [class.is-done]="current() > s.n"></div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<aside class="checkout__summary">
+  <div class="card summary">
+    <h3 class="summary__title">Súhrn objednávky</h3>
+
+    @if (tour(); as t) {
+      <div class="summary__tour">
+        @if (t.thumbImage || t.heroImage) {
+          <img [src]="t.thumbImage || t.heroImage" [alt]="t.title" class="summary__img" />
+        }
+        <div class="summary__tour-info">
+          <p class="summary__tour-name">{{ t.title }}</p>
+          @if (departure(); as d) {
+            <p class="summary__tour-date">{{ formatDate(d) }}</p>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="summary__rows">
+      <div class="summary__row">
+        <span>Cena / osoba</span>
+        <span>{{ unitPriceCents() | price }}</span>
+      </div>
+      <div class="summary__row">
+        <span>Počet miest</span>
+        <span>{{ seats() }}</span>
+      </div>
+    </div>
+
+    <div class="summary__total">
+      <span>Celkom</span>
+      @if (quote(); as q) {
+        <span class="summary__total-price">{{ q.totalCents | price:q.currency }}</span>
+      }
+    </div>
+  </div>
+</aside>

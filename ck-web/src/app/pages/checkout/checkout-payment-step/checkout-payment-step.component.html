@@ -1,0 +1,22 @@
+<div class="card card--success">
+  <div class="success-icon">✓</div>
+  <h2 class="card__heading">Rezervácia potvrdená</h2>
+  <p class="card__text">Vaša rezervácia bola úspešne vytvorená. Pre dokončenie je potrebná platba.</p>
+
+  @if (bookingId()) {
+    <div class="booking-code">
+      <span class="booking-code__label">Kód rezervácie</span>
+      <span class="booking-code__value">{{ bookingId() }}</span>
+    </div>
+  }
+
+  @if (errorMsg()) {
+    <p class="form-error">{{ errorMsg() }}</p>
+  }
+
+  <div class="card__actions">
+    <button type="button" class="btn btn--primary btn--lg" [disabled]="loading()" (click)="pay.emit()">
+      {{ loading() ? 'Presmerovávam...' : 'Zaplatiť teraz' }}
+    </button>
+  </div>
+</div>

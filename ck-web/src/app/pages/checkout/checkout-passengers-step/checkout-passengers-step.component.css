@@ -1,0 +1,47 @@
+/* .card, .card__heading, .card__actions*, .field*, .form-error, .btn prichádzajú z globálneho styles.css */
+
+.passengers {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.passenger {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.passenger__num {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-primary-bg);
+  color: var(--color-primary-hover);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.6rem;
+}
+
+.passenger__fields {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.field {
+  margin-bottom: 0; /* layout tu riadi `.passenger__fields` grid gap, nie margin */
+}
+
+.field--file {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 520px) {
+  .passenger__fields { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,86 @@
+<div [formGroup]="form()">
+
+  <div class="card">
+    <h2 class="card__heading">Kontaktné údaje</h2>
+
+    <label class="field">
+      <span class="field__label">E-mail na potvrdenie</span>
+      <input class="field__input" type="email" formControlName="email" placeholder="meno@domena.sk" />
+      @if (form().get('email')?.touched && form().get('email')?.invalid) {
+        <p class="field__error">Zadaj platný e-mail.</p>
+      }
+    </label>
+  </div>
+
+  <div class="card" style="margin-top: 1rem">
+    <h2 class="card__heading">Cestujúci</h2>
+
+    <div formArrayName="passengers" class="passengers">
+      @for (group of passengers.controls; track $index; let i = $index) {
+        <div class="passenger" [formGroupName]="i">
+          <div class="passenger__num">{{ i + 1 }}</div>
+          <div class="passenger__fields">
+            <label class="field">
+              <span class="field__label">Meno</span>
+              <input class="field__input" formControlName="firstName" placeholder="Ján" />
+              @if (group.get('firstName')?.touched && group.get('firstName')?.invalid) {
+                <p class="field__error">Meno je povinné.</p>
+              }
+            </label>
+            <label class="field">
+              <span class="field__label">Priezvisko</span>
+              <input class="field__input" formControlName="lastName" placeholder="Novák" />
+              @if (group.get('lastName')?.touched && group.get('lastName')?.invalid) {
+                <p class="field__error">Priezvisko je povinné.</p>
+              }
+            </label>
+            <label class="field">
+              <span class="field__label">Dátum narodenia</span>
+              <input class="field__input" type="date" formControlName="birthDate" />
+            </label>
+            <label class="field">
+              <span class="field__label">Rodné číslo / číslo OP</span>
+              <input class="field__input" formControlName="nationalId" placeholder="900101/1234" />
+            </label>
+            <label class="field">
+              <span class="field__label">Ulica a číslo</span>
+              <input class="field__input" formControlName="street" placeholder="Hlavná 1" />
+            </label>
+            <label class="field">
+              <span class="field__label">Mesto</span>
+              <input class="field__input" formControlName="city" placeholder="Bratislava" />
+            </label>
+            <label class="field">
+              <span class="field__label">PSČ</span>
+              <input class="field__input" formControlName="zip" placeholder="811 01" />
+            </label>
+            <label class="field">
+              <span class="field__label">Telefón</span>
+              <input class="field__input" type="tel" formControlName="phone" placeholder="+421 900 000 000" />
+            </label>
+            <label class="field">
+              <span class="field__label">E-mail osoby</span>
+              <input class="field__input" type="email" formControlName="email" placeholder="jan@novak.sk" />
+            </label>
+            <label class="field field--file">
+              <span class="field__label">Poistný dokument (PDF/JPG/PNG)</span>
+              <input class="field__input" type="file" accept=".pdf,image/jpeg,image/png,image/webp" (change)="onFileChange(i, $event)" />
+            </label>
+          </div>
+        </div>
+      }
+    </div>
+
+    @if (errorMsg()) {
+      <p class="form-error">{{ errorMsg() }}</p>
+    }
+
+    <div class="card__actions card__actions--spread">
+      <button type="button" class="btn btn--ghost" (click)="back.emit()">← Späť</button>
+      <button type="button" class="btn btn--primary btn--lg" [disabled]="loading()" (click)="submit.emit()">
+        {{ loading() ? 'Spracovávam...' : 'Pokračovať na platbu →' }}
+      </button>
+    </div>
+  </div>
+
+</div>
