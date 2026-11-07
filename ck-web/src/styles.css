@@ -40,64 +40,201 @@
   --color-danger-bg-hover: #fecaca;
 }
 
-@layer components {
-  .nav__link { @apply transition; }
-  .nav__link--active { @apply text-blue-600 font-semibold; }
-}
-
 @layer utilities {
   .vh { @apply sr-only; } /* alias */
 }
 
 /*
- * Shared button classes — single source of truth for the public pages + admin
- * tours/bookings/tour-detail, which all used near-identical copy-pasted .btn rules.
- * NOT yet applied to admin-calendar.component.css or header.component.css:
- * those use a deliberately different, denser visual scale (smaller radius/weight)
- * and are tracked separately in .claude/refactor-plan.md rather than folded in here.
+ * Everything below lives in @layer components, same as Tailwind's own
+ * .btn/.nav__link used to. This is NOT optional styling — Tailwind's layer
+ * system guarantees `utilities` always beats `components` in the cascade
+ * regardless of source order. Without this layer, a plain CSS rule like
+ * `.btn { display: inline-flex }` placed after `@tailwind utilities` wins
+ * the display property over Tailwind's `.hidden`/`.md:inline-flex` on any
+ * element carrying both classes (same specificity, later in file wins) —
+ * this is exactly what broke the "Kontaktujte nás" header button staying
+ * visible on mobile despite `hidden md:inline-flex` (fixed 2026-10-06).
  */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s, opacity 0.15s, border-color 0.15s;
+@layer components {
+  .nav__link { @apply transition; }
+  .nav__link--active { @apply text-blue-600 font-semibold; }
+
+  /*
+   * Shared button classes — single source of truth for the public pages + admin
+   * tours/bookings/tour-detail, which all used near-identical copy-pasted .btn rules.
+   * NOT yet applied to admin-calendar.component.css or header.component.css:
+   * those use a deliberately different, denser visual scale (smaller radius/weight)
+   * and are tracked separately in .claude/refactor-plan.md rather than folded in here.
+   */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, opacity 0.15s, border-color 0.15s;
+  }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .btn--primary { background: var(--color-primary); color: #fff; }
+  .btn--primary:hover:not(:disabled) { background: var(--color-primary-hover); }
+
+  .btn--ghost { background: #fff; border: 1.5px solid var(--color-gray-300); color: var(--color-gray-700); }
+  .btn--ghost:hover:not(:disabled) { background: var(--color-gray-50); }
+
+  .btn--danger { background: var(--color-danger-bg); color: var(--color-danger); }
+  .btn--danger:hover:not(:disabled) { background: var(--color-danger-bg-hover); }
+
+  .btn--outline { border: 2px solid var(--color-primary); color: var(--color-primary); background: transparent; border-radius: 2rem; padding: 0.65rem 2rem; font-size: 0.95rem; }
+  .btn--outline:hover:not(:disabled) { background: var(--color-primary); color: #fff; }
+
+  .btn--sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+  .btn--lg { padding: 0.7rem 1.75rem; font-size: 0.95rem; }
+
+  /*
+   * Shared "panel" card — public pages (skibus, tour-detail, contact, checkout)
+   * all used this identical white/shadow/padding box. NOT applied to:
+   * - admin/* .card (denser padding + lighter shadow, deliberately different admin density)
+   * - pages/tours .card (that one is a product card with image+hover, unrelated despite the name)
+   * - pages/thank-you .card (bordered "receipt" style, no shadow, deliberately different)
+   */
+  .card {
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+  }
+  .card--success { text-align: center; border-top: 4px solid var(--color-success); }
+
+  /*
+   * Shared form-field styles — contact + checkout (and its step sub-components)
+   * used this identical pattern. NOT applied to admin forms (admin/tours,
+   * admin/bookings, admin/login) — same denser admin scale as .btn/.card,
+   * tracked separately rather than merged without visual verification.
+   * Inter-field spacing (margin/gap) is NOT part of this base — each layout
+   * context decides that itself (flex gap vs margin-bottom), since that varies
+   * legitimately by context.
+   */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .field__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-gray-700);
+  }
+  .field__input {
+    border: 1.5px solid var(--color-gray-300);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    font-family: inherit;
+  }
+  .field__input:focus { border-color: var(--color-primary); }
+  .field__error {
+    color: var(--color-danger);
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  .form-error {
+    background: var(--color-danger-bg);
+    color: var(--color-danger-dark);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.875rem;
+  }
+
+  /*
+   * Compact "form card" heading/text/actions — contact + checkout's step
+   * components used this identical pattern. NOT the same as the bigger hero-style
+   * heading with accent border used in skibus/tour-detail (.card__heading there
+   * is intentionally bigger + has a border-bottom accent) — that's a different,
+   * deliberate visual treatment, kept local to those two files.
+   */
+  .card__heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    margin: 0 0 1.25rem;
+  }
+  .card__text {
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin: 0;
+  }
+  .card__actions {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .card__actions--spread { justify-content: space-between; }
+
+  /*
+   * Legal document pages (gdpr, cookies) — identical layout/typography,
+   * shared here from the start since both were authored together rather
+   * than letting them drift into copy-pasted duplicates like .btn/.card did.
+   */
+  .legal__hero {
+    background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-primary) 100%);
+    color: #fff;
+    padding: 2.5rem 0 2rem;
+  }
+  .legal__title { font-size: 2rem; font-weight: 700; margin: 0 0 0.35rem; }
+  .legal__subtitle { font-size: 1rem; opacity: 0.85; margin: 0; }
+
+  .legal__section { padding: 2rem 1rem 3rem; max-width: 820px; margin: 0 auto; }
+  .legal__card { padding: 2rem; }
+
+  .legal__lead {
+    font-size: 1rem;
+    color: var(--color-gray-700);
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+  }
+  .legal__heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-ink);
+    margin: 1.75rem 0 0.75rem;
+  }
+  .legal__heading:first-child { margin-top: 0; }
+  .legal__subheading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+    margin: 1.25rem 0 0.5rem;
+  }
+  .legal__text {
+    color: var(--color-gray-700);
+    line-height: 1.7;
+    margin: 0 0 0.9rem;
+  }
+  .legal__text a { color: var(--color-primary); }
+  .legal__list {
+    margin: 0 0 0.9rem;
+    padding-left: 1.25rem;
+    color: var(--color-gray-700);
+    line-height: 1.7;
+  }
+  .legal__list li { margin-bottom: 0.3rem; }
+  .legal__updated {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-gray-200);
+    font-size: 0.85rem;
+    color: var(--color-gray-500);
+    font-style: italic;
+  }
 }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.btn--primary { background: var(--color-primary); color: #fff; }
-.btn--primary:hover:not(:disabled) { background: var(--color-primary-hover); }
-
-.btn--ghost { background: #fff; border: 1.5px solid var(--color-gray-300); color: var(--color-gray-700); }
-.btn--ghost:hover:not(:disabled) { background: var(--color-gray-50); }
-
-.btn--danger { background: var(--color-danger-bg); color: var(--color-danger); }
-.btn--danger:hover:not(:disabled) { background: var(--color-danger-bg-hover); }
-
-.btn--outline { border: 2px solid var(--color-primary); color: var(--color-primary); background: transparent; border-radius: 2rem; padding: 0.65rem 2rem; font-size: 0.95rem; }
-.btn--outline:hover:not(:disabled) { background: var(--color-primary); color: #fff; }
-
-.btn--sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
-.btn--lg { padding: 0.7rem 1.75rem; font-size: 0.95rem; }
-
-/*
- * Shared "panel" card — public pages (skibus, tour-detail, contact, checkout)
- * all used this identical white/shadow/padding box. NOT applied to:
- * - admin/* .card (denser padding + lighter shadow, deliberately different admin density)
- * - pages/tours .card (that one is a product card with image+hover, unrelated despite the name)
- * - pages/thank-you .card (bordered "receipt" style, no shadow, deliberately different)
- */
-.card {
-  background: #fff;
-  border-radius: 0.75rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
-}
-.card--success { text-align: center; border-top: 4px solid var(--color-success); }

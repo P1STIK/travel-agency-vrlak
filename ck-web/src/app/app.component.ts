@@ -4,15 +4,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs/operators';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { CookieConsentComponent } from './shared/cookie-consent/cookie-consent.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, CookieConsentComponent],
   template: `
     @if (!isAdmin()) { <app-header /> }
     <router-outlet />
     @if (!isAdmin()) { <app-footer /> }
+    @if (!isAdmin()) { <app-cookie-consent /> }
   `,
 })
 export class AppComponent {

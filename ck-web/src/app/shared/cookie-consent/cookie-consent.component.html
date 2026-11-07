@@ -1,0 +1,12 @@
+@if (visible()) {
+  <div class="cookie-banner">
+    <p class="cookie-banner__text">
+      Táto stránka používa cookies nevyhnutné pre jej fungovanie. So súhlasom môžeme použiť aj cookies na analytiku a zlepšovanie služieb.
+      Viac v <a class="cookie-banner__link" routerLink="/cookies">zásadách používania cookies</a>.
+    </p>
+    <div class="cookie-banner__actions">
+      <button type="button" class="btn btn--ghost" (click)="reject()">Odmietnuť</button>
+      <button type="button" class="btn btn--primary" (click)="accept()">Prijať všetky</button>
+    </div>
+  </div>
+}
